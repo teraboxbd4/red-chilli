@@ -25,7 +25,7 @@
         
         h3 { font-size: 1.4em; font-weight: 600; margin: 0 4px 16px 4px; text-align: left; }
         
-        /* --- DYNAMIC HEADER STYLES (NO 3-DOTS) --- */
+        /* --- DYNAMIC HEADER STYLES (NO 3-DOTS, NO STATIC TEXT) --- */
         header { background-color: var(--card-background); padding: 10px 15px; border-bottom: 1px solid #f1f1f1; }
         .header-content { display: flex; align-items: center; justify-content: space-between; }
         .header-left { display: flex; align-items: center; gap: 12px; }
@@ -33,7 +33,7 @@
         .user-details { text-align: left; }
         .user-details h2#user-name { margin: 0 0 4px 0; font-size: 1.2em; font-weight: 600; }
         .user-details #balance-display { margin: 0; color: var(--text-light); font-weight: 500; font-size: 0.9em; }
-        .header-right .menu-icon { display: none; }
+        .header-right .menu-icon { display: none; } /* Hiding the three dots menu icon */
 
         .page { animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -83,6 +83,7 @@
                             <p id="balance-display">ব্যালেন্স: 0 টাকা 💰</p>
                         </div>
                     </div>
+                    <div class="header-right"><span class="menu-icon">&#8942;</span></div>
                 </div>
             </header>
             <main id="main-content">
