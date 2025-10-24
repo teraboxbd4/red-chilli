@@ -19,8 +19,8 @@
         }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: var(--background-grey); color: var(--text-dark); }
         .app-container { max-width: 420px; margin: 0 auto; background-color: var(--card-background); min-height: 100vh; display: flex; flex-direction: column; }
-        main { flex-grow: 1; padding: 16px; overflow-y: auto; background-color: var(--background-grey); }
-        h3 { font-size: 1.4em; font-weight: 600; margin: 0 0 16px 0; }
+        main { flex-grow: 1; padding: 16px 12px; overflow-y: auto; background-color: var(--background-grey); }
+        h3 { font-size: 1.4em; font-weight: 600; margin: 0 0 16px 4px; }
         
         /* --- DYNAMIC HEADER STYLES --- */
         header { background-color: var(--card-background); padding: 10px 15px; border-bottom: 1px solid #f1f1f1; }
@@ -29,15 +29,15 @@
         .user-photo img { border-radius: 50%; width: 50px; height: 50px; }
         .user-details h2#user-name { margin: 0 0 4px 0; font-size: 1.2em; font-weight: 600; }
         .user-details #balance-display { margin: 0; color: var(--text-light); font-weight: 500; font-size: 0.9em; }
-        .header-right .menu-icon { font-size: 1.5em; cursor: pointer; color: #888; }
-        
+        .header-right .menu-icon { font-size: 1.5em; cursor: pointer; color: #888; display: none; } /* Hiding the three dots menu icon as well */
+
         .page { animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .card { background-color: var(--card-background); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--border-color); margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
         .card h4 { margin: 15px 0 10px 0; font-size: 1.15em; font-weight: 600; }
         .card p { color: var(--text-light); line-height: 1.6; margin: 0; font-size: 0.95em; }
         .card .task-info { font-size: 0.8em; color: var(--text-light); margin-top: 12px; }
-        .dashboard-stats { display: flex; gap: 16px; margin-bottom: 16px; }
+        .dashboard-stats { display: flex; gap: 12px; margin-bottom: 16px; }
         .stat-card { background-color: var(--card-background); padding: 16px; border-radius: 12px; text-align: center; flex: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid var(--border-color); }
         .stat-card p { margin: 0 0 8px 0; font-size: 0.9em; color: var(--text-light); }
         .stat-card span { font-size: 2em; font-weight: 700; color: var(--primary-blue); }
@@ -174,13 +174,13 @@
                 const methods = (config.withdrawPage.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
                 content = `<div class="page active"><h3>Withdraw (টাকা)</h3><div class="card"><form class="withdraw-form" onsubmit="event.preventDefault()"><p style="text-align: center; margin-bottom: 20px;">${notice}</p><label>Method:</label><select>${methods}</select><label>Account Number:</label><input type="text" placeholder="01XXXXXXXXX"><label>Amount (টাকা):</label><input type="number" placeholder="1000"><button type="submit" class="btn btn-primary">Submit Request</button></form></div></div>`;
             } else {
-                 content = `<div class="page active"><div class="card"><p>Content could not be loaded.</p></div></div>`;
+                 content = `<div class="page active"><div class="card"><p>Content for this page could not be loaded.</p></div></div>`;
             }
             mainContent.innerHTML = content;
         }
         
         function handleAdTask(monetagZoneId, gigapubId) {
-            // ... (The working ad logic from the very last answer) ...
+            // ... (The working ad logic from the previous answer, it's correct and goes here) ...
         }
     </script>
 </body>
