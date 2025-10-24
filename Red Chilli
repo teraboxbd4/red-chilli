@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Chilli</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root { --primary-blue: #007bff; --secondary-green: #28a745; --background-color: #f4f6f9; --card-background: #ffffff; --text-primary: #212529; --text-secondary: #6c757d; --border-color: #eeeeee; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; background-color: var(--background-color); color: var(--text-primary); }
+        .app-container { max-width: 400px; margin: 0 auto; background-color: var(--card-background); min-height: 100vh; display: flex; flex-direction: column; }
+        main { flex-grow: 1; padding: 20px 15px; overflow-y: auto; background-color: var(--background-color); }
+        h3 { font-size: 1.25em; font-weight: 600; margin-top: 0; margin-bottom: 20px; padding-left: 5px; color: var(--text-primary); }
+        header { background-color: var(--card-background); padding: 10px 15px; border-bottom: 1px solid var(--border-color); }
+        .header-content { display: flex; align-items: center; justify-content: space-between; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .user-photo img { border-radius: 50%; width: 50px; height: 50px; }
+        .user-details h2#user-name { margin: 0 0 4px 0; font-size: 1.2em; font-weight: 600; }
+        .user-details #balance-display { margin: 0; color: var(--text-secondary); font-weight: 500; font-size: 0.9em; }
+        .header-right .menu-icon { font-size: 1.5em; cursor: pointer; color: #888; }
+        .page { display: none; }
+        .page.active { display: block; }
+        .card { background-color: var(--card-background); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--border-color); margin-bottom: 15px; }
+        .card h4 { margin: 15px 0 10px 0; font-size: 1.1em; }
+        .card p { color: var(--text-secondary); line-height: 1.5; margin: 0; }
+        .card .task-info { font-size: 0.8em; color: #aaa; margin-top: 15px; }
+        .icon-wrapper { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+        .icon-wrapper svg { width: 32px; height: 32px; fill: white; }
+        .icon-bg-blue, .icon-bg-play-circle, .icon-bg-video-camera { background-color: var(--primary-blue); }
+        .icon-bg-telegram { background-color: #2AABEE; }
+        .icon-bg-youtube { background-color: #FF0000; }
+        .icon-bg-facebook { background-color: #1877F2; }
+        .button-group { display: flex; gap: 10px; margin-top: 20px; }
+        .btn { width: 100%; padding: 13px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 500; }
+        .btn-primary { background-color: var(--primary-blue); color: white; }
+        .btn-secondary { background-color: var(--secondary-green); color: white; }
+        .dashboard-stats { display: flex; gap: 15px; margin-bottom: 20px; }
+        .stat-card { background-color: var(--card-background); padding: 20px; border-radius: 12px; text-align: center; flex: 1; border: 1px solid var(--border-color); }
+        .stat-card p { margin: 0 0 8px 0; font-size: 0.9em; color: var(--text-secondary); }
+        .stat-card span { font-size: 1.7em; font-weight: 700; color: var(--text-primary); }
+        .refer-card .referral-link input { width: 90%; padding: 10px; border: 1px dashed var(--primary-blue); border-radius: 8px; text-align: center; margin: 20px 0; background-color: #f8f9fa; font-size: 0.9em; }
+        .withdraw-form label { display: block; margin: 15px 0 8px 0; font-weight: 500; text-align: left; }
+        .withdraw-form input, .withdraw-form select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+        .withdraw-form button { margin-top: 20px; }
+        nav { display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid var(--border-color); background-color: var(--card-background); position: sticky; bottom: 0; }
+        .nav-btn { background: none; border: none; font-size: 0.85em; color: var(--text-secondary); cursor: pointer; padding: 5px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-btn.active { color: var(--primary-blue); }
+        .nav-btn .nav-icon { width: 24px; height: 24px; }
+    </style>
+</head>
+<body>
+    <!-- SVG আইকনগুলো এখানে থাকবে -->
+    <svg style="position: absolute; width: 0; height: 0; overflow: hidden;"><defs><symbol id="icon-video-camera" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></symbol><symbol id="icon-telegram" viewBox="0 0 24 24"><path d="m9.417 15.181-.397 5.584c.568 0 .814-.244 1.109-.537l2.663-2.545 5.518 4.041c1.012.564 1.725.267 1.998-.931L22.0 .931c.309-1.25-.5-1.841-1.559-1.434L.182 6.582c-1.274.482-1.241 1.169-.23 1.555l5.88 1.813L17.585 4.8c.702-.454 1.323-.212.799.278L8.38 13.331l.055.055Z"/></symbol><symbol id="icon-youtube" viewBox="0 0 24 24"><path d="M10,16.5V7.5L16,12M20,4.4C19.4,4.2 15.7,4 12,4C8.3,4 4.6,4.2 4,4.4C3.4,4.6 3,5.4 3,6.2V17.8C3,18.6 3.4,19.4 4,19.6C4.6,19.8 8.3,20 12,20C15.7,20 19.4,19.8 20,19.6C20.6,19.4 21,18.6 21,17.8V6.2C21,5.4 20.6,4.6 20,4.4Z"/></symbol><symbol id="icon-facebook" viewBox="0 0 24 24"><path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3V22h4v-8.5z"/></symbol><symbol id="icon-play-circle" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></symbol><symbol id="icon-home" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></symbol><symbol id="icon-support" viewBox="0 0 24 24"><path d="M12 1a9 9 0 0 0-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2a7 7 0 0 1 14 0v2h-4v8h4c1.66 0 3-1.34 3-3v-7a9 9 0 0 0-9-9z"/></symbol><symbol id="icon-tasks" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></symbol><symbol id="icon-withdraw" viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></symbol></defs></svg>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header><div class="header-content"><div class="header-left"><div class="user-photo"><img id="user-photo" src="" alt="User"></div><div class="user-details"><h2 id="user-name">Loading...</h2><p id="balance-display">ব্যালেন্স: 0 টাকা 💰</p></div></div><div class="header-right"><span class="menu-icon">&#8942;</span></div></div></header>
+        
+        <main id="main-content">
+            <!-- Home Page -->
+            <div id="home" class="page active">
+                <h3>Dashboard</h3>
+                <div class="dashboard-stats"><div class="stat-card"><p>Daily Ads Watched</p><span id="ads-watched">0 / 10</span></div><div class="stat-card"><p>Total Referrals</p><span id="total-referrals">0</span></div></div>
+                <div class="card refer-card"><h4>Refer & Earn More!</h4><p>রেফার বোনাস পেতে লিঙ্কটি কপি করে আপনার বন্ধুদের কাছে শেয়ার করুন। প্রতি রেফারে আয় 40 টাকা।</p><div class="referral-link"><input type="text" value="Loading..." id="referral-link-input" readonly></div><div class="button-group"><button class="btn btn-primary" id="copy-btn">Copy Referral Link</button><button class="btn btn-secondary" id="share-btn">Share Now</button></div></div>
+            </div>
+            <!-- Support Page -->
+            <div id="support" class="page"><h3 id="support-page-title">Support</h3><div id="support-content-area"><div class="card"><p>Loading support info...</p></div></div></div>
+            <!-- Tasks Page -->
+            <div id="tasks" class="page"><h3>Complete Tasks</h3><div id="tasks-list-area"><div class="card"><p>Loading tasks...</p></div></div></div>
+            <!-- Withdraw Page -->
+            <div id="withdraw" class="page">
+                <h3>Withdraw (টাকা)</h3>
+                <div class="card">
+                    <form class="withdraw-form" onsubmit="event.preventDefault();">
+                        <p id="withdraw-info" style="text-align: center; margin-bottom: 20px;">Loading withdraw rules...</p>
+                        <label for="method">Method:</label>
+                        <select id="withdraw-methods"><option>Loading...</option></select>
+                        <label for="account">Account Number:</label><input type="text" id="account" placeholder="01XXXXXXXXX">
+                        <label for="amount">Amount (টাকা):</label><input type="number" id="amount" placeholder="1000">
+                        <button type="submit" class="btn btn-primary">Submit Request</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Navigation -->
+        <nav>
+            <button class="nav-btn active" data-page="home"><svg class="nav-icon"><use href="#icon-home"></use></svg>Home</button>
+            <button class="nav-btn" data-page="support"><svg class="nav-icon"><use href="#icon-support"></use></svg>Support</button>
+            <button class="nav-btn" data-page="tasks"><svg class="nav-icon"><use href="#icon-tasks"></use></svg>Tasks</button>
+            <button class="nav-btn" data-page="withdraw"><svg class="nav-icon"><use href="#icon-withdraw"></use></svg>Withdraw</button>
+        </nav>
+    </div>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAIXpawpQH3yRozPbTzP7Tzm6IFsNVpAzQ",
+            authDomain: "fake-earn-5d8bd.firebaseapp.com",
+            databaseURL: "https://fake-earn-5d8bd-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "fake-earn-5d8bd",
+            storageBucket: "fake-earn-5d8bd.firebasestorage.app",
+            messagingSenderId: "763892818801",
+            appId: "1:763892818801:web:ea1d0fe6a006616dbd8cd0"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        
+        document.addEventListener('DOMContentLoaded', function () {
+            let tg = window.Telegram.WebApp;
+            let currentUser;
+            // User Initialization
+            if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) {
+                currentUser = tg.initDataUnsafe.user;
+                tg.ready();
+            } else {
+                currentUser = { id: 12345, first_name: "Test", last_name: "User", photo_url: "https://via.placeholder.com/50" };
+            }
+            
+            // Setup User Info in Header
+            const userNameEl = document.getElementById('user-name');
+            const userPhotoEl = document.getElementById('user-photo');
+            userNameEl.textContent = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim();
+            userPhotoEl.src = currentUser.photo_url || "https://via.placeholder.com/50";
+            
+            // Load Dynamic Content from Firebase
+            const configRef = database.ref('config');
+            configRef.on('value', (snapshot) => {
+                const config = snapshot.val();
+                if (config) {
+                    renderSupportPage(config.supportPage);
+                    renderTasksPage(config.tasks);
+                    renderWithdrawPage(config.withdrawPage);
+                } else {
+                    document.getElementById('main-content').innerHTML = `<div class="card" style="margin-top: 50px;"><h4>App configuration not found.</h4><p>Please contact support.</p></div>`;
+                }
+            });
+            
+            // Navigation Logic
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const pages = document.querySelectorAll('.page');
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    pages.forEach(page => page.classList.remove('active'));
+                    button.classList.add('active');
+                    document.getElementById(button.getAttribute('data-page')).classList.add('active');
+                });
+            });
+        });
+
+        function renderSupportPage(config) {
+            if (!config || !Array.isArray(config.items)) return;
+            document.getElementById('support-page-title').textContent = config.title || "Support";
+            const container = document.getElementById('support-content-area');
+            container.innerHTML = '';
+            config.items.forEach(item => {
+                container.innerHTML += `
+                    <div class="card">
+                        <div class="icon-wrapper icon-bg-${item.icon}"><svg><use href="#icon-${item.icon}"></use></svg></div>
+                        <h4>${item.title}</h4><p>${item.description}</p>
+                        <button class="btn btn-primary" style="margin-top: 20px;" onclick="window.open('${item.buttonUrl}', '_blank')">${item.buttonText}</button>
+                        <p class="task-info">${item.notice}</p>
+                    </div>`;
+            });
+        }
+
+        function renderTasksPage(tasks) {
+            if (!Array.isArray(tasks)) return;
+            const container = document.getElementById('tasks-list-area');
+            container.innerHTML = '';
+            tasks.forEach(task => {
+                if (!task.enabled) return;
+                let content = '';
+                if (task.type === 'ads') {
+                    content = `<div class="card"><div class="icon-wrapper icon-bg-${task.icon}"><svg><use href="#icon-${task.icon}"></use></svg></div><h4>${task.title}</h4><p>${task.description}</p><button class="btn btn-primary" style="margin-top: 20px;" onclick="handleAdTask('${task.adNetworks.monetag.zoneId}', '${task.adNetworks.gigapub.code}')">Verify ☑</button><p class="task-info">${task.notice}</p></div>`;
+                } else if (task.type === 'social') {
+                    const iconClass = `icon-bg-${task.icon.toLowerCase()}`;
+                    const buttonsHTML = task.buttons.map(btn => `<button class="btn btn-primary" onclick="${btn.url ? `window.open('${btn.url}', '_blank')` : `alert('Action: ${btn.action}')`}">${btn.text}</button>`).join('');
+                    content = `<div class="card"><div class="icon-wrapper ${iconClass}"><svg><use href="#icon-${task.icon}"></use></svg></div><h4>${task.title}</h4><p>${task.description}</p><div class="button-group">${buttonsHTML}</div><p class="task-info">পুরস্কার: ${task.reward} টাকা</p></div>`;
+                }
+                container.innerHTML += content;
+            });
+        }
+
+        function renderWithdrawPage(config) {
+            if (!config) return;
+            const infoText = (config.noticeText || "")
+                .replace('{minAmount}', config.minAmount || 0)
+                .replace('{minReferrals}', config.minReferrals || 0);
+            document.getElementById('withdraw-info').textContent = infoText;
+
+            const methodsSelect = document.getElementById('withdraw-methods');
+            methodsSelect.innerHTML = '';
+            if (Array.isArray(config.methods)) {
+                config.methods.forEach(method => {
+                    methodsSelect.innerHTML += `<option value="${method}">${method}</option>`;
+                });
+            }
+        }
+        
+        function handleAdTask(monetagZoneId, gigapubCode) {
+            alert(`Showing ads... Monetag: ${monetagZoneId}, Gigapub: ${gigapubCode}`);
+        }
+    </script>
+</body>
+</html>
