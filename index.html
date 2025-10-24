@@ -17,7 +17,6 @@
         .user-photo img { border-radius: 50%; width: 50px; height: 50px; }
         .user-details h2#user-name { margin: 0 0 4px 0; font-size: 1.2em; font-weight: 600; }
         .user-details #balance-display { margin: 0; color: var(--text-secondary); font-weight: 500; font-size: 0.9em; }
-        .header-right .menu-icon { font-size: 1.5em; cursor: pointer; color: #888; }
         .page { display: none; }
         .page.active { display: block; }
         .card { background-color: var(--card-background); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--border-color); margin-bottom: 15px; }
@@ -33,11 +32,8 @@
         .button-group { display: flex; gap: 10px; margin-top: 20px; }
         .btn { width: 100%; padding: 13px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 500; }
         .btn-primary { background-color: var(--primary-blue); color: white; }
-        .btn-secondary { background-color: var(--secondary-green); color: white; }
         .dashboard-stats { display: flex; gap: 15px; margin-bottom: 20px; }
         .stat-card { background-color: var(--card-background); padding: 20px; border-radius: 12px; text-align: center; flex: 1; border: 1px solid var(--border-color); }
-        .stat-card p { margin: 0 0 8px 0; font-size: 0.9em; color: var(--text-secondary); }
-        .stat-card span { font-size: 1.7em; font-weight: 700; color: var(--text-primary); }
         .refer-card .referral-link input { width: 90%; padding: 10px; border: 1px dashed var(--primary-blue); border-radius: 8px; text-align: center; margin: 20px 0; background-color: #f8f9fa; font-size: 0.9em; }
         .withdraw-form label { display: block; margin: 15px 0 8px 0; font-weight: 500; text-align: left; }
         .withdraw-form input, .withdraw-form select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
@@ -57,30 +53,7 @@
         <header><div class="header-content"><div class="header-left"><div class="user-photo"><img id="user-photo" src="" alt="User"></div><div class="user-details"><h2 id="user-name">Loading...</h2><p id="balance-display">ব্যালেন্স: 0 টাকা 💰</p></div></div><div class="header-right"><span class="menu-icon">&#8942;</span></div></div></header>
         
         <main id="main-content">
-            <!-- Home Page -->
-            <div id="home" class="page active">
-                <h3>Dashboard</h3>
-                <div class="dashboard-stats"><div class="stat-card"><p>Daily Ads Watched</p><span id="ads-watched">0 / 10</span></div><div class="stat-card"><p>Total Referrals</p><span id="total-referrals">0</span></div></div>
-                <div class="card refer-card"><h4>Refer & Earn More!</h4><p>রেফার বোনাস পেতে লিঙ্কটি কপি করে আপনার বন্ধুদের কাছে শেয়ার করুন। প্রতি রেফারে আয় 40 টাকা।</p><div class="referral-link"><input type="text" value="Loading..." id="referral-link-input" readonly></div><div class="button-group"><button class="btn btn-primary" id="copy-btn">Copy Referral Link</button><button class="btn btn-secondary" id="share-btn">Share Now</button></div></div>
-            </div>
-            <!-- Support Page -->
-            <div id="support" class="page"><h3 id="support-page-title">Support</h3><div id="support-content-area"><div class="card"><p>Loading support info...</p></div></div></div>
-            <!-- Tasks Page -->
-            <div id="tasks" class="page"><h3>Complete Tasks</h3><div id="tasks-list-area"><div class="card"><p>Loading tasks...</p></div></div></div>
-            <!-- Withdraw Page -->
-            <div id="withdraw" class="page">
-                <h3>Withdraw (টাকা)</h3>
-                <div class="card">
-                    <form class="withdraw-form" onsubmit="event.preventDefault();">
-                        <p id="withdraw-info" style="text-align: center; margin-bottom: 20px;">Loading withdraw rules...</p>
-                        <label for="method">Method:</label>
-                        <select id="withdraw-methods"><option>Loading...</option></select>
-                        <label for="account">Account Number:</label><input type="text" id="account" placeholder="01XXXXXXXXX">
-                        <label for="amount">Amount (টাকা):</label><input type="number" id="amount" placeholder="1000">
-                        <button type="submit" class="btn btn-primary">Submit Request</button>
-                    </form>
-                </div>
-            </div>
+            <!-- All pages will be rendered dynamically -->
         </main>
         
         <!-- Navigation -->
@@ -110,7 +83,6 @@
         document.addEventListener('DOMContentLoaded', function () {
             let tg = window.Telegram.WebApp;
             let currentUser;
-            // User Initialization
             if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) {
                 currentUser = tg.initDataUnsafe.user;
                 tg.ready();
@@ -118,91 +90,84 @@
                 currentUser = { id: 12345, first_name: "Test", last_name: "User", photo_url: "https://via.placeholder.com/50" };
             }
             
-            // Setup User Info in Header
             const userNameEl = document.getElementById('user-name');
             const userPhotoEl = document.getElementById('user-photo');
             userNameEl.textContent = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim();
             userPhotoEl.src = currentUser.photo_url || "https://via.placeholder.com/50";
-            
-            // Load Dynamic Content from Firebase
+
+            const mainContent = document.getElementById('main-content');
             const configRef = database.ref('config');
+            
             configRef.on('value', (snapshot) => {
                 const config = snapshot.val();
                 if (config) {
-                    renderSupportPage(config.supportPage);
-                    renderTasksPage(config.tasks);
-                    renderWithdrawPage(config.withdrawPage);
+                    renderPage('home', config); // Render home page by default
                 } else {
-                    document.getElementById('main-content').innerHTML = `<div class="card" style="margin-top: 50px;"><h4>App configuration not found.</h4><p>Please contact support.</p></div>`;
+                    mainContent.innerHTML = `<div class="card" style="margin-top: 50px;"><h4>App configuration not found.</h4><p>Please contact support.</p></div>`;
                 }
             });
-            
-            // Navigation Logic
-            const navButtons = document.querySelectorAll('.nav-btn');
-            const pages = document.querySelectorAll('.page');
-            navButtons.forEach(button => {
+
+            document.querySelectorAll('.nav-btn').forEach(button => {
                 button.addEventListener('click', () => {
-                    navButtons.forEach(btn => btn.classList.remove('active'));
-                    pages.forEach(page => page.classList.remove('active'));
+                    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
                     button.classList.add('active');
-                    document.getElementById(button.getAttribute('data-page')).classList.add('active');
+                    configRef.once('value', snapshot => renderPage(button.dataset.page, snapshot.val()));
                 });
             });
         });
 
-        function renderSupportPage(config) {
-            if (!config || !Array.isArray(config.items)) return;
-            document.getElementById('support-page-title').textContent = config.title || "Support";
-            const container = document.getElementById('support-content-area');
-            container.innerHTML = '';
-            config.items.forEach(item => {
-                container.innerHTML += `
-                    <div class="card">
-                        <div class="icon-wrapper icon-bg-${item.icon}"><svg><use href="#icon-${item.icon}"></use></svg></div>
-                        <h4>${item.title}</h4><p>${item.description}</p>
-                        <button class="btn btn-primary" style="margin-top: 20px;" onclick="window.open('${item.buttonUrl}', '_blank')">${item.buttonText}</button>
-                        <p class="task-info">${item.notice}</p>
-                    </div>`;
-            });
-        }
-
-        function renderTasksPage(tasks) {
-            if (!Array.isArray(tasks)) return;
-            const container = document.getElementById('tasks-list-area');
-            container.innerHTML = '';
-            tasks.forEach(task => {
-                if (!task.enabled) return;
-                let content = '';
-                if (task.type === 'ads') {
-                    content = `<div class="card"><div class="icon-wrapper icon-bg-${task.icon}"><svg><use href="#icon-${task.icon}"></use></svg></div><h4>${task.title}</h4><p>${task.description}</p><button class="btn btn-primary" style="margin-top: 20px;" onclick="handleAdTask('${task.adNetworks.monetag.zoneId}', '${task.adNetworks.gigapub.code}')">Verify ☑</button><p class="task-info">${task.notice}</p></div>`;
-                } else if (task.type === 'social') {
-                    const iconClass = `icon-bg-${task.icon.toLowerCase()}`;
-                    const buttonsHTML = task.buttons.map(btn => `<button class="btn btn-primary" onclick="${btn.url ? `window.open('${btn.url}', '_blank')` : `alert('Action: ${btn.action}')`}">${btn.text}</button>`).join('');
-                    content = `<div class="card"><div class="icon-wrapper ${iconClass}"><svg><use href="#icon-${task.icon}"></use></svg></div><h4>${task.title}</h4><p>${task.description}</p><div class="button-group">${buttonsHTML}</div><p class="task-info">পুরস্কার: ${task.reward} টাকা</p></div>`;
-                }
-                container.innerHTML += content;
-            });
-        }
-
-        function renderWithdrawPage(config) {
-            if (!config) return;
-            const infoText = (config.noticeText || "")
-                .replace('{minAmount}', config.minAmount || 0)
-                .replace('{minReferrals}', config.minReferrals || 0);
-            document.getElementById('withdraw-info').textContent = infoText;
-
-            const methodsSelect = document.getElementById('withdraw-methods');
-            methodsSelect.innerHTML = '';
-            if (Array.isArray(config.methods)) {
-                config.methods.forEach(method => {
-                    methodsSelect.innerHTML += `<option value="${method}">${method}</option>`;
-                });
+        function renderPage(pageName, config) {
+            const mainContent = document.getElementById('main-content');
+            let content = '';
+            if (!config) {
+                mainContent.innerHTML = `<div class="card"><p>Content could not be loaded.</p></div>`;
+                return;
             }
+
+            if (pageName === 'home') {
+                content = `
+                    <div class="page active">
+                        <h3>Dashboard</h3>
+                        <div class="dashboard-stats"><div class="stat-card"><p>Daily Ads Watched</p><span>0 / 10</span></div><div class="stat-card"><p>Total Referrals</p><span>0</span></div></div>
+                        <div class="card refer-card"><h4>Refer & Earn More!</h4><p>রেফার বোনাস পেতে লিঙ্কটি কপি করে আপনার বন্ধুদের কাছে শেয়ার করুন। প্রতি রেফারে আয় 40 টাকা।</p><div class="referral-link"><input type="text" value="t.me/your_bot" readonly></div><div class="button-group"><button class="btn btn-primary">Copy</button><button class="btn btn-secondary">Share</button></div></div>
+                    </div>`;
+            } else if (pageName === 'support' && config.supportPage) {
+                const supportItems = (config.supportPage.items || []).map(item => `
+                    <div class="card">
+                        <div class="icon-wrapper icon-bg-${item.icon || 'blue'}"><svg><use href="#icon-${item.icon || 'play-circle'}"></use></svg></div>
+                        <h4>${item.title || ''}</h4><p>${item.description || ''}</p>
+                        <button class="btn btn-primary" style="margin-top: 20px;" onclick="window.open('${item.buttonUrl || '#'}', '_blank')">${item.buttonText || ''}</button>
+                        <p class="task-info">${item.notice || ''}</p>
+                    </div>`).join('');
+                content = `<div class="page active"><h3>${config.supportPage.title || 'Support'}</h3>${supportItems}</div>`;
+            } else if (pageName === 'tasks' && config.tasks) {
+                const taskItems = (config.tasks || []).filter(task => task.enabled).map(task => {
+                    if (task.type === 'ads') {
+                        return `<div class="card"><div class="icon-wrapper icon-bg-${task.icon}"><svg><use href="#icon-${task.icon}"></use></svg></div><h4>${task.title}</h4><p>${task.description}</p><button class="btn btn-primary" style="margin-top: 20px;" onclick="handleAdTask('${task.adNetworks.monetag.zoneId}', '${task.adNetworks.gigapub.code}')">Verify ☑</button><p class="task-info">${task.notice}</p></div>`;
+                    } else {
+                        const buttonsHTML = (task.buttons || []).map(btn => `<button class="btn btn-primary" onclick="${btn.url ? `window.open('${btn.url}', '_blank')` : `alert('Action: ${btn.action}')`}">${btn.text}</button>`).join('');
+                        return `<div class="card"><div class="icon-wrapper icon-bg-${task.icon}"><svg><use href="#icon-${task.icon}"></use></svg></div><h4>${task.title}</h4><p>${task.description}</p><div class="button-group">${buttonsHTML}</div><p class="task-info">পুরস্কার: ${task.reward || 0} টাকা</p></div>`;
+                    }
+                }).join('');
+                content = `<div class="page active"><h3>Complete Tasks</h3>${taskItems}</div>`;
+            } else if (pageName === 'withdraw' && config.withdrawPage) {
+                const notice = (config.withdrawPage.noticeText || "").replace('{minAmount}', config.withdrawPage.minAmount || 0).replace('{minReferrals}', config.withdrawPage.minReferrals || 0);
+                const methods = (config.withdrawPage.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
+                content = `
+                    <div class="page active"><h3>Withdraw (টাকা)</h3>
+                        <div class="card"><form class="withdraw-form"><p style="text-align: center; margin-bottom: 20px;">${notice}</p>
+                            <label>Method:</label><select>${methods}</select>
+                            <label>Account Number:</label><input type="text" placeholder="01XXXXXXXXX">
+                            <label>Amount (টাকা):</label><input type="number" placeholder="1000">
+                            <button type="submit" class="btn btn-primary">Submit Request</button>
+                        </form></div>
+                    </div>`;
+            } else {
+                 content = `<div class="page active"><div class="card"><p>Content for this page is not configured.</p></div></div>`;
+            }
+            mainContent.innerHTML = content;
         }
-        
-        function handleAdTask(monetagZoneId, gigapubCode) {
-            alert(`Showing ads... Monetag: ${monetagZoneId}, Gigapub: ${gigapubCode}`);
-        }
+        function handleAdTask(monetagZoneId, gigapubCode) { alert(`Showing ads... Monetag: ${monetagZoneId}, Gigapub: ${gigapubCode}`); }
     </script>
 </body>
 </html>
