@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Red Chilli</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- Monetag SDK -->
+    <script async src='//libtl.com/sdk.js'></script>
+    <!-- Gigapub SDK -->
+    <script src="https://ad.gigapub.tech/script"></script>
+
     <style>
         :root {
             --primary-blue: #007bff;
@@ -103,25 +109,21 @@
         };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+        let currentUser;
         
         document.addEventListener('DOMContentLoaded', function () {
             let tg = window.Telegram.WebApp;
-            let currentUser;
             if (tg && tg.initData) {
                 currentUser = tg.initDataUnsafe.user;
                 tg.ready();
             } else {
-                currentUser = { id: 12345, first_name: "Test", last_name: "User", photo_url: "https://via.placeholder.com/50/007bff/ffffff?text=U" };
+                currentUser = { id: 12345, first_name: "Test", last_name: "User", photo_url: "https://via.placeholder.com/50" };
             }
             
             const userNameEl = document.getElementById('user-name');
             const userPhotoEl = document.getElementById('user-photo');
             userNameEl.textContent = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'User';
-            if (currentUser.photo_url) {
-                userPhotoEl.src = currentUser.photo_url;
-            } else {
-                userPhotoEl.src = `https://via.placeholder.com/50/eeeeee/cccccc?text=${(currentUser.first_name || 'U').charAt(0)}`;
-            }
+            userPhotoEl.src = currentUser.photo_url || `https://via.placeholder.com/50/eeeeee/cccccc?text=${(currentUser.first_name || 'U').charAt(0)}`;
 
             const configRef = database.ref('config');
             
@@ -152,11 +154,11 @@
             }
 
             if (pageName === 'home') {
-                const referralLink = `https://t.me/Red_Chilli_bot/app?startapp=${user.id}`;
+                const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${user.id}`;
                 content = `
                     <div class="page active"><h3>Dashboard</h3>
                         <div class="dashboard-stats"><div class="stat-card"><p>Daily Ads Watched</p><span>0 / 10</span></div><div class="stat-card"><p>Total Referrals</p><span>0</span></div></div>
-                        <div class="card refer-card"><h4>Refer & Earn More!</h4><p>রেফার বোনাস পেতে লিঙ্কটি কপি করে আপনার বন্ধুদের কাছে শেয়ার করুন। প্রতি রেফারে আয় 40 টাকা।</p><div class="referral-link"><input type="text" value="${referralLink}" readonly></div><div class="button-group"><button class="btn btn-primary">Copy</button><button class="btn btn-secondary">Share</button></div></div>
+                        <div class="card refer-card"><h4>Refer & Earn More!</h4><p>রেফার বোনাস পেতে লিঙ্কটি কপি করে আপনার বন্ধুদের কাছে শেয়ার করুন। প্রতি রেফারে আয় 40 টাকা।</p><div class="referral-link"><input type="text" value="${referralLink}" readonly></div><div class="button-group"><button class="btn btn-primary">Copy Referral Link</button><button class="btn btn-secondary">Share Now</button></div></div>
                     </div>`;
             } else if (pageName === 'support' && config.supportPage) {
                 const supportItems = (config.supportPage.items || []).map(item => `
@@ -170,7 +172,7 @@
             } else if (pageName === 'tasks' && config.tasks) {
                 const taskItems = (config.tasks || []).filter(task => task.enabled).map(task => {
                     if (task.type === 'ads') {
-                        return `<div class="card"><div class="icon-wrapper icon-bg-${task.icon}"><svg><use href="#icon-${task.icon}"></use></svg></div><h4>${task.title}</h4><p>${task.description}</p><button class="btn btn-primary" style="margin-top: 20px;" onclick="handleAdTask('${task.adNetworks.monetag.zoneId}', '${task.adNetworks.gigapub.code}')">Verify ☑</button><p class="task-info">${task.notice}</p></div>`;
+                        return `<div class="card"><div class="icon-wrapper icon-bg-${task.icon}"><svg><use href="#icon-${task.icon}"></use></svg></div><h4>${task.title}</h4><p>${task.description}</p><button class="btn btn-primary" style="margin-top: 20px;" onclick="handleAdTask('${task.adNetworks.monetag.zoneId}', '${task.adNetworks.gigapub.id}')">Verify ☑</button><p class="task-info">${task.notice}</p></div>`;
                     } else {
                         const buttonsHTML = (task.buttons || []).map(btn => `<button class="btn btn-primary" onclick="${btn.url ? `window.open('${btn.url}', '_blank')` : `alert('Action: ${btn.action}')`}">${btn.text}</button>`).join('');
                         return `<div class="card"><div class="icon-wrapper icon-bg-${task.icon}"><svg><use href="#icon-${task.icon}"></use></svg></div><h4>${task.title}</h4><p>${task.description}</p><div class="button-group">${buttonsHTML}</div><p class="task-info">পুরস্কার: ${task.reward || 0} টাকা</p></div>`;
@@ -194,7 +196,41 @@
             }
             mainContent.innerHTML = content;
         }
-        function handleAdTask(monetagZoneId, gigapubCode) { alert(`Showing ads... Monetag: ${monetagZoneId}, Gigapub: ${gigapubCode}`); }
+        
+        function handleAdTask(monetagZoneId, gigapubId) {
+            const monetagShowFunction = window['show_' + monetagZoneId];
+            
+            if (typeof monetagShowFunction !== 'function') {
+                alert('Monetag ad is not ready. Please try again.');
+                console.error('Monetag function window.show_' + monetagZoneId + ' is not available.');
+                return;
+            }
+            
+            // Initialize Gigapub with the ID from Firebase
+            if (window.initGiga) {
+                window.initGiga(gigapubId);
+            }
+
+            alert("Showing first ad...");
+            monetagShowFunction().then(() => {
+                alert("First ad complete. Showing second ad...");
+                if (typeof window.showGiga === 'function') {
+                    window.showGiga().then(() => {
+                        alert("Thank you! You have been rewarded.");
+                        // --- ADD YOUR REWARD LOGIC HERE ---
+                        // e.g., updateUserBalance(5);
+                    }).catch(e => {
+                        console.error('Gigapub ad error:', e);
+                        alert('Could not show the second ad. Please try again.');
+                    });
+                } else {
+                    alert('Second ad network is not ready.');
+                }
+            }).catch(e => {
+                console.error('Monetag ad error:', e);
+                alert('Could not show the ad. Please check for ad-blockers and try again.');
+            });
+        }
     </script>
 </body>
 </html>
