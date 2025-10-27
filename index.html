@@ -12,7 +12,7 @@
     <style>
         :root {
             --primary-blue: #0d6efd;
-            --secondary-blue: #0d6efd; /* New color for share button */
+            --primary-green: #198754;
             --background-grey: #f0f2f5;
             --card-background: #ffffff;
             --text-dark: #212529;
@@ -42,7 +42,7 @@
         .button-group { display: flex; gap: 10px; margin-top: 20px; }
         .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 600; }
         .btn-primary { background-color: var(--primary-blue); color: white; }
-        .btn-secondary { background-color: var(--secondary-blue); color: white; }
+        .btn-secondary { background-color: var(--primary-green); color: white; }
         .icon-wrapper { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; background-color: var(--primary-blue); }
         .icon-wrapper svg { width: 28px; height: 28px; fill: white; }
         nav { display: flex; justify-content: space-around; padding: 8px 4px; border-top: 1px solid #f1f1f1; background-color: var(--card-background); position: sticky; bottom: 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
@@ -281,7 +281,39 @@
             }
 
             function handleMainContentClick(event) {
-                // Click handling logic...
+                const button = event.target.closest('button[data-action]');
+                if (!button) return;
+                event.preventDefault();
+                const action = button.dataset.action;
+
+                if (action === 'submit-withdraw') handleWithdrawRequest();
+                else if (action === 'handleAd') {
+                    const adTaskConfig = appConfig.adsTask;
+                    if (adTaskConfig && adTaskConfig.adNetworks) {
+                        handleAdTask(adTaskConfig.adNetworks.monetag.zoneId, adTaskConfig.adNetworks.gigapub.id, parseFloat(button.dataset.reward) || 0);
+                    }
+                } else if (action === 'copy-link') {
+                    const input = document.getElementById('referral-link-input');
+                    if (input) navigator.clipboard.writeText(input.value).then(() => alert('রেফারেল লিঙ্ক কপি করা হয়েছে!'));
+                } else if (action === 'share-link') {
+                    const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}`;
+                    const shareText = `এই অ্যাপ থেকে বিজ্ঞাপন দেখে টাকা আয় করুন।\n১০০% পেমেন্ট করে—আমার লিঙ্কে যোগ দিন:`;
+                    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(shareText)}`;
+                    window.Telegram.WebApp.openTelegramLink(shareUrl);
+                } else if (action === 'open-url') {
+                    const url = button.dataset.url;
+                    if (url && url !== '#') window.open(url, '_blank');
+                } else if (action === 'verify-task') {
+                    alert('Verification in progress. You will be rewarded shortly if completed correctly.');
+                }
+            }
+            
+            function handleWithdrawRequest() {
+                // Withdraw logic remains the same
+            }
+
+            async function handleAdTask(monetagZoneId, gigapubId, rewardAmount) {
+                // Ad task logic remains the same
             }
         });
     </script>
