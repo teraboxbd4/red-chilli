@@ -63,6 +63,11 @@
     </style>
 </head>
 <body>
+    <!-- Ad Progress Bar -->
+    <div id="ad-progress-container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 4px; background-color: #e0e0e0; z-index: 9999;">
+        <div id="ad-progress-bar" style="width: 0%; height: 100%; background-color: var(--primary-green); transition: width 0.5s linear;"></div>
+    </div>
+
     <div id="app-root">
         <svg style="position: absolute; width: 0; height: 0; overflow: hidden;"><defs><symbol id="icon-video-camera" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></symbol><symbol id="icon-telegram" viewBox="0 0 24 24"><path d="m9.417 15.181-.397 5.584c.568 0 .814-.244 1.109-.537l2.663-2.545 5.518 4.041c1.012.564 1.725.267 1.998-.931L22.0 .931c.309-1.25-.5-1.841-1.559-1.434L.182 6.582c-1.274.482-1.241 1.169-.23 1.555l5.88 1.813L17.585 4.8c.702-.454 1.323-.212.799.278L8.38 13.331l.055.055Z"/></symbol><symbol id="icon-youtube" viewBox="0 0 24 24"><path d="M10,16.5V7.5L16,12M20,4.4C19.4,4.2 15.7,4 12,4C8.3,4 4.6,4.2 4,4.4C3.4,4.6 3,5.4 3,6.2V17.8C3,18.6 3.4,19.4 4,19.6C4.6,19.8 8.3,20 12,20C15.7,20 19.4,19.8 20,19.6C20.6,19.4 21,18.6 21,17.8V6.2C21,5.4 20.6,4.6 20,4.4Z"/></symbol><symbol id="icon-facebook" viewBox="0 0 24 24"><path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3V22h4v-8.5z"/></symbol><symbol id="icon-play-circle" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></symbol><symbol id="icon-home" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></symbol><symbol id="icon-support" viewBox="0 0 24 24"><path d="M12 1a9 9 0 0 0-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2a7 7 0 0 1 14 0v2h-4v8h4c1.66 0 3-1.34 3-3v-7a9 9 0 0 0-9-9z"/></symbol><symbol id="icon-tasks" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></symbol><symbol id="icon-withdraw" viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></symbol></defs></svg>
         <div class="app-container">
@@ -189,43 +194,76 @@
             mainContent.innerHTML = content;
         }
         
-        function handleAdTask(monetagZoneId, gigapubId) {
-            alert("বিজ্ঞাপন প্রক্রিয়া শুরু হচ্ছে...");
-            if (window.initGiga) { window.initGiga(gigapubId); }
-            const monetagShowFunction = window['show_' + monetagZoneId];
-            if (typeof monetagShowFunction === 'function') {
-                monetagShowFunction().then(() => {
-                    alert("প্রথম বিজ্ঞাপন সম্পন্ন। এবার দ্বিতীয়টি দেখানো হবে...");
-                    showSecondAd('gigapub');
-                }).catch(e => {
-                    showFirstAdAsGigaPub();
-                });
-            } else if (typeof window.showGiga === 'function') {
-                showFirstAdAsGigaPub();
+        // --- NEW AND UPDATED AD HANDLING CODE STARTS HERE ---
+
+        function updateProgressBar(progress) {
+            const progressBar = document.getElementById('ad-progress-bar');
+            const progressBarContainer = document.getElementById('ad-progress-container');
+
+            if (progress > 0) {
+                progressBarContainer.style.display = 'block';
+                // A small delay is added so the transition works correctly after changing display
+                setTimeout(() => {
+                    progressBar.style.width = progress + '%';
+                }, 50);
             } else {
-                alert("দুঃখিত, এই মুহূর্তে কোনো বিজ্ঞাপন নেটওয়ার্ক উপলব্ধ নেই।");
+                // Set width to 0% before hiding the bar
+                progressBar.style.width = '0%';
+                setTimeout(() => {
+                    progressBarContainer.style.display = 'none';
+                }, 500); // Wait 500ms for the transition to finish
             }
-            function showFirstAdAsGigaPub() {
-                window.showGiga().then(() => {
-                    rewardUser("প্রথম বিজ্ঞাপনটি সফল হয়েছে।");
-                }).catch(e => {
-                    alert("দুঃখিত, কোনো বিজ্ঞাপন দেখানো সম্ভব হচ্ছে না।");
-                });
-            }
-            function showSecondAd(network) {
-                if (network === 'gigapub' && typeof window.showGiga === 'function') {
-                    window.showGiga().then(() => {
-                        rewardUser("দুটি বিজ্ঞাপনই সফলভাবে সম্পন্ন হয়েছে।");
-                    }).catch(e => {
-                        rewardUser("দ্বিতীয় বিজ্ঞাপনটি দেখাতে সমস্যা হয়েছে।");
-                    });
+        }
+
+        async function handleAdTask(monetagZoneId, gigapubId) {
+            updateProgressBar(1); // Start showing the progress bar
+
+            const monetagShowFunction = window['show_' + monetagZoneId];
+
+            try {
+                // Try to show the first ad (Monetag)
+                if (typeof monetagShowFunction === 'function') {
+                    await monetagShowFunction();
+                    updateProgressBar(50); // If successful, fill the bar to 50%
                 } else {
-                     rewardUser("দ্বিতীয় বিজ্ঞাপন নেটওয়ার্কটি পাওয়া যায়নি।");
+                    // If Monetag is not available, try to show Gigapub as the first ad
+                    if (typeof window.showGiga === 'function') {
+                        if (window.initGiga) { window.initGiga(gigapubId); }
+                        await window.showGiga();
+                        updateProgressBar(100); // Since only one ad could be shown, fill the bar to 100%
+                        rewardUser("বিজ্ঞাপনটি সফলভাবে সম্পন্ন হয়েছে।");
+                        setTimeout(() => updateProgressBar(0), 500); // Hide the bar after a short delay
+                        return; // Exit the function
+                    } else {
+                        // If no network is available, throw an error
+                        throw new Error("কোনো বিজ্ঞাপন নেটওয়ার্ক উপলব্ধ নেই।");
+                    }
                 }
+
+                // Try to show the second ad (Gigapub)
+                if (typeof window.showGiga === 'function') {
+                    if (window.initGiga) { window.initGiga(gigapubId); }
+                    await window.showGiga();
+                    updateProgressBar(100); // If successful, fill the bar to 100%
+                    rewardUser("দুটি বিজ্ঞাপনই সফলভাবে সম্পন্ন হয়েছে।");
+                } else {
+                    // If only the first ad was successful
+                    rewardUser("প্রথম বিজ্ঞাপনটি সম্পন্ন হয়েছে।");
+                }
+
+            } catch (error) {
+                console.error("Ad task failed:", error);
+                alert("দুঃখিত, কোনো বিজ্ঞাপন দেখানো সম্ভব হচ্ছে না।");
+            } finally {
+                // Finally, hide the bar after giving the user a moment to see it at 100%
+                setTimeout(() => {
+                    updateProgressBar(0);
+                }, 500);
             }
-            function rewardUser(message) {
-                alert(`ধন্যবাদ! ${message} আপনাকে পুরস্কৃত করা হয়েছে।`);
-            }
+        }
+
+        function rewardUser(message) {
+            alert(`ধন্যবাদ! ${message} আপনাকে পুরস্কৃত করা হয়েছে।`);
         }
     </script>
 </body>
