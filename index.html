@@ -12,7 +12,7 @@
     <style>
         :root {
             --primary-blue: #0d6efd;
-            --primary-green: #198754;
+            --secondary-blue: #0d6efd; /* New color for share button */
             --background-grey: #f0f2f5;
             --card-background: #ffffff;
             --text-dark: #212529;
@@ -42,7 +42,7 @@
         .button-group { display: flex; gap: 10px; margin-top: 20px; }
         .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 600; }
         .btn-primary { background-color: var(--primary-blue); color: white; }
-        .btn-secondary { background-color: var(--primary-green); color: white; }
+        .btn-secondary { background-color: var(--secondary-blue); color: white; }
         .icon-wrapper { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; background-color: var(--primary-blue); }
         .icon-wrapper svg { width: 28px; height: 28px; fill: white; }
         nav { display: flex; justify-content: space-around; padding: 8px 4px; border-top: 1px solid #f1f1f1; background-color: var(--card-background); position: sticky; bottom: 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
@@ -99,22 +99,19 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyAIXpawpQH3yRozPbTzP7Tzm6IFsNVpAzQ",
-            authDomain: "fake-earn-5d8bd.firebaseapp.com",
-            databaseURL: "https://fake-earn-5d8bd-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "fake-earn-5d8bd",
-            storageBucket: "fake-earn-5d8bd.firebasestorage.app",
-            messagingSenderId: "763892818801",
-            appId: "1:763892818801:web:ea1d0fe6a006616dbd8cd0"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        let currentUser;
-        let appConfig;
-        let userData = { balance: 0, referrals: 0, adsWatched: {} };
-
         document.addEventListener('DOMContentLoaded', function () {
+            const firebaseConfig = {
+                apiKey: "AIzaSyAIXpawpQH3yRozPbTzP7Tzm6IFsNVpAzQ",
+                authDomain: "fake-earn-5d8bd.firebaseapp.com",
+                databaseURL: "https://fake-earn-5d8bd-default-rtdb.asia-southeast1.firebasedatabase.app",
+                projectId: "fake-earn-5d8bd",
+            };
+            firebase.initializeApp(firebaseConfig);
+            const database = firebase.database();
+            let currentUser;
+            let appConfig;
+            let userData = { balance: 0, referrals: 0, adsWatched: {} };
+
             const tg = window.Telegram.WebApp;
             if (tg.platform === 'unknown') {
                 document.getElementById('app-root').innerHTML = `<div class="full-page-notice"><div class="card"><h4>⛔ Access Denied</h4><p>Please open this app inside Telegram.</p></div></div>`;
@@ -122,8 +119,7 @@
             }
             tg.ready();
             tg.expand();
-            tg.MainButton.hide();
-
+            
             currentUser = tg.initDataUnsafe.user;
             if (!currentUser) {
                  document.getElementById('app-root').innerHTML = `<div class="full-page-notice"><div class="card"><h4>User data not found. Please restart.</h4></div></div>`;
@@ -142,130 +138,135 @@
             });
             
             document.getElementById('main-content').addEventListener('click', handleMainContentClick);
-        });
 
-        function loadConfigAndUserData() {
-            database.ref('config').once('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    appConfig = snapshot.val();
-                    initializeUser();
-                } else {
-                    document.getElementById('main-content').innerHTML = `<div class="card"><h4>App configuration not found.</h4></div>`;
-                }
-            }).catch(error => console.error("Config load error:", error));
-        }
-        
-        function initializeUser() {
-            const userRef = database.ref(`users/${currentUser.id}`);
-            userRef.on('value', (snapshot) => {
-                userData = snapshot.val() || { balance: 0, referrals: 0, adsWatched: {} };
-                updateHeader();
-                const currentPage = document.querySelector('.nav-btn.active')?.dataset.page || 'home';
-                renderPage(currentPage);
-            }, error => console.error("User data read error:", error));
-            
-            userRef.once('value').then(snapshot => {
-                if (!snapshot.exists()) {
-                    userRef.set({ balance: 0, referrals: 0, adsWatched: {}, first_name: currentUser.first_name || '', lastSeen: firebase.database.ServerValue.TIMESTAMP })
-                        .then(() => handleReferral());
-                } else {
-                    userRef.child('lastSeen').set(firebase.database.ServerValue.TIMESTAMP);
-                    handleReferral();
-                }
-            });
-
-            const userNameEl = document.getElementById('user-name');
-            const userPhotoEl = document.getElementById('user-photo');
-            userNameEl.textContent = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'User';
-            userPhotoEl.src = currentUser.photo_url || `https://via.placeholder.com/50/eeeeee/cccccc?text=${(currentUser.first_name || 'U').charAt(0)}`;
-        }
-
-        function handleReferral() {
-            // Unchanged
-        }
-        
-        function updateHeader() {
-            document.getElementById('balance-display').textContent = `ব্যালেন্স: ${userData.balance || 0} টাকা 💰`;
-        }
-        
-        function renderPage(pageName) {
-            const mainContent = document.getElementById('main-content');
-            if (!appConfig) { 
-                mainContent.innerHTML = `<div class="card"><p>Loading...</p></div>`; return; 
+            function loadConfigAndUserData() {
+                database.ref('config').once('value', (snapshot) => {
+                    if (snapshot.exists()) {
+                        appConfig = snapshot.val();
+                        initializeUser();
+                    } else {
+                        document.getElementById('main-content').innerHTML = `<div class="card"><h4>App configuration not found.</h4></div>`;
+                    }
+                }).catch(error => console.error("Config load error:", error));
             }
-            let content = '';
             
-            if (pageName === 'home') {
-                const adTaskConfig = appConfig.adsTask || { dailyLimit: 10 };
-                const today = new Date().toISOString().slice(0, 10);
-                const adsWatchedToday = (userData.adsWatched && userData.adsWatched[today]) || 0;
-                const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}`;
-                content = `<div class="page active"><h3>Dashboard</h3>
-                    <div class="dashboard-stats">
-                        <div class="stat-card"><p>Daily Ads Watched</p><span>${adsWatchedToday} / ${adTaskConfig.dailyLimit}</span></div>
-                        <div class="stat-card"><p>Total Referrals</p><span>${userData.referrals || 0}</span></div>
-                    </div>
-                    <div class="card refer-card">
-                        <h4>Refer & Earn More!</h4>
-                        <p>আপনার বন্ধুদের রেফার করে আয় করুন। প্রতি সফল রেফারে পাবেন ${appConfig.referralBonus || 0} টাকা।</p>
-                        <div class="referral-link"><input id="referral-link-input" type="text" value="${referralLink}" readonly></div>
-                        <div class="button-group">
-                            <button class="btn btn-primary" data-action="copy-link">Copy Link</button>
-                            <button class="btn btn-secondary" data-action="share-link">Share Now</button>
+            function initializeUser() {
+                const userRef = database.ref(`users/${currentUser.id}`);
+                userRef.on('value', (snapshot) => {
+                    userData = snapshot.val() || { balance: 0, referrals: 0, adsWatched: {} };
+                    updateHeader();
+                    const currentPage = document.querySelector('.nav-btn.active')?.dataset.page || 'home';
+                    renderPage(currentPage);
+                });
+                
+                userRef.once('value').then(snapshot => {
+                    if (!snapshot.exists()) {
+                        userRef.set({ balance: 0, referrals: 0, adsWatched: {}, first_name: currentUser.first_name || '', lastSeen: firebase.database.ServerValue.TIMESTAMP })
+                            .then(() => handleReferral());
+                    } else {
+                        userRef.child('lastSeen').set(firebase.database.ServerValue.TIMESTAMP);
+                        handleReferral();
+                    }
+                });
+
+                const userNameEl = document.getElementById('user-name');
+                const userPhotoEl = document.getElementById('user-photo');
+                userNameEl.textContent = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'User';
+                userPhotoEl.src = currentUser.photo_url || `https://via.placeholder.com/50/eeeeee/cccccc?text=${(currentUser.first_name || 'U').charAt(0)}`;
+            }
+
+            function handleReferral() {
+                // Referral logic here
+            }
+            
+            function updateHeader() {
+                document.getElementById('balance-display').textContent = `ব্যালেন্স: ${userData.balance || 0} টাকা 💰`;
+            }
+            
+            function renderPage(pageName) {
+                const mainContent = document.getElementById('main-content');
+                if (!appConfig) { 
+                    mainContent.innerHTML = `<div class="card"><p>Loading...</p></div>`; return; 
+                }
+                let content = '';
+                
+                if (pageName === 'home') {
+                    const adTaskConfig = appConfig.adsTask || { dailyLimit: 10 };
+                    const today = new Date().toISOString().slice(0, 10);
+                    const adsWatchedToday = (userData.adsWatched && userData.adsWatched[today]) || 0;
+                    const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}`;
+                    content = `<div class="page active"><h3>Dashboard</h3>
+                        <div class="dashboard-stats">
+                            <div class="stat-card"><p>Daily Ads Watched</p><span>${adsWatchedToday} / ${adTaskConfig.dailyLimit}</span></div>
+                            <div class="stat-card"><p>Total Referrals</p><span>${userData.referrals || 0}</span></div>
                         </div>
-                    </div></div>`;
-            } else if (pageName === 'support' && appConfig.supportPage) {
-                const sp = appConfig.supportPage;
-                content = `<div class="page active"><h3>Support</h3>
-                    <div class="card">
-                        <div class="icon-wrapper"><svg><use href="#icon-play-circle"></use></svg></div>
-                        <h4>${sp.title}</h4>
-                        <p>${sp.description}</p>
-                        <button class="btn btn-primary" style="margin-top: 20px;" data-action="open-url" data-url="${sp.videoUrl || '#'}">${sp.buttonText}</button>
-                        <p class="task-info">${sp.notice || ''}</p>
-                    </div></div>`;
-            } else if (pageName === 'tasks') {
-                const allTasks = [];
-                if (appConfig.adsTask && appConfig.adsTask.enabled) {
-                    allTasks.push(appConfig.adsTask);
-                }
-                if (appConfig.socialTasks && Array.isArray(appConfig.socialTasks)) {
-                    allTasks.push(...appConfig.socialTasks.filter(task => task.enabled));
-                }
+                        <div class="card refer-card">
+                            <h4>Refer & Earn More!</h4>
+                            <p>আপনার বন্ধুদের রেফার করে আয় করুন। প্রতি সফল রেফারে পাবেন ${appConfig.referralBonus || 0} টাকা।</p>
+                            <div class="referral-link"><input id="referral-link-input" type="text" value="${referralLink}" readonly></div>
+                            <div class="button-group">
+                                <button class="btn btn-primary" data-action="copy-link">Copy Link</button>
+                                <button class="btn btn-secondary" data-action="share-link">Share Now</button>
+                            </div>
+                        </div></div>`;
+                } else if (pageName === 'support' && appConfig.supportPage) {
+                    const sp = appConfig.supportPage;
+                    content = `<div class="page active"><h3>Support</h3>
+                        <div class="card">
+                            <div class="icon-wrapper"><svg><use href="#icon-play-circle"></use></svg></div>
+                            <h4>${sp.title}</h4>
+                            <p>${sp.description}</p>
+                            <button class="btn btn-primary" style="margin-top: 20px;" data-action="open-url" data-url="${sp.videoUrl || '#'}">${sp.buttonText}</button>
+                            <p class="task-info">${sp.notice || ''}</p>
+                        </div></div>`;
+                } else if (pageName === 'tasks') {
+                    const allTasks = [];
+                    if (appConfig.adsTask && appConfig.adsTask.enabled) allTasks.push(appConfig.adsTask);
+                    if (appConfig.socialTasks && Array.isArray(appConfig.socialTasks)) {
+                        allTasks.push(...appConfig.socialTasks.filter(task => task.enabled));
+                    }
 
-                if (allTasks.length > 0) {
-                    const taskItems = allTasks.map(task => {
-                        const icon = task.icon;
-                        let buttonsHTML = (task.buttons || []).map(btn => {
-                            const action = btn.action === 'handleAd' ? 'handleAd' : 'open-url';
-                            return `<button class="btn btn-primary" data-action="${action}" data-reward="${task.reward || 0}" data-url="${btn.url || '#'}">${btn.text}</button>`;
+                    if (allTasks.length > 0) {
+                        const taskItems = allTasks.map(task => {
+                            const icon = task.icon;
+                            let buttonsHTML = (task.buttons || []).map(btn => {
+                                const action = btn.action === 'handleAd' ? 'handleAd' : 'open-url';
+                                return `<button class="btn btn-primary" data-action="${action}" data-reward="${task.reward || 0}" data-url="${btn.url || '#'}">${btn.text}</button>`;
+                            }).join(' ');
+
+                            return `<div class="card">
+                                <div class="icon-wrapper"><svg><use href="#icon-${icon}"></use></svg></div>
+                                <h4>${task.title}</h4>
+                                <p>${task.description}</p>
+                                <div class="button-group">${buttonsHTML}</div>
+                                <p class="task-info">${task.notice || ''}</p>
+                            </div>`;
                         }).join('');
-
-                        return `<div class="card">
-                            <div class="icon-wrapper"><svg><use href="#icon-${icon}"></use></svg></div>
-                            <h4>${task.title}</h4>
-                            <p>${task.description}</p>
-                            <div class="button-group">${buttonsHTML}</div>
-                            <p class="task-info">${task.notice || `পুরস্কার: ${task.reward} টাকা`}</p>
-                        </div>`;
-                    }).join('');
-                    content = `<div class="page active"><h3>Complete Tasks</h3>${taskItems}</div>`;
+                        content = `<div class="page active"><h3>Complete Tasks</h3>${taskItems}</div>`;
+                    } else {
+                        content = `<div class="page active"><div class="card"><p>No tasks available right now.</p></div></div>`;
+                    }
+                } else if (pageName === 'withdraw' && appConfig.withdrawPage) {
+                    const wp = appConfig.withdrawPage;
+                    const methods = (wp.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
+                    content = `<div class="page active"><h3>Withdraw (টাকা)</h3><div class="card">
+                        <p style="margin-bottom: 20px;">${wp.noticeText.replace('{minAmount}', wp.minAmount).replace('{minReferrals}', wp.minReferrals)}</p>
+                        <form class="withdraw-form" onsubmit="return false;">
+                            <div class="form-group"><label>Method:</label><select id="withdraw-method">${methods}</select></div>
+                            <div class="form-group"><label>Account Number:</label><input id="withdraw-account" type="text" placeholder="01XXXXXXXXX"></div>
+                            <div class="form-group"><label>Amount (টাকা):</label><input id="withdraw-amount" type="number" placeholder="${wp.minAmount}"></div>
+                            <button type="submit" class="btn btn-primary" data-action="submit-withdraw">Submit Request</button>
+                        </form></div></div>`;
                 } else {
-                    content = `<div class="page active"><div class="card"><p>No tasks available right now.</p></div></div>`;
+                     content = `<div class="page active"><div class="card"><p>Page not found.</p></div></div>`;
                 }
-            } else if (pageName === 'withdraw' && appConfig.withdrawPage) {
-                // ... withdraw page logic remains the same
-            } else {
-                 content = `<div class="page active"><div class="card"><p>Page not found.</p></div></div>`;
+                mainContent.innerHTML = content;
             }
-            mainContent.innerHTML = content;
-        }
 
-        function handleMainContentClick(event) {
-            // ... all click handling logic remains the same
-        }
-        
-        // ... all other functions remain the same
+            function handleMainContentClick(event) {
+                // Click handling logic
+            }
+        });
     </script>
 </body>
 </html>
