@@ -1,3 +1,89 @@
+{
+  "config": {
+    "supportPage": {
+      "title": "Support",
+      "items": [
+        {
+          "buttonText": "Open Tutorial",
+          "buttonUrl": "https://youtu.be/7GVWBpSIZDg?si=I3oSZ09MK2WgFCAh",
+          "description": "কিভাবে অ্যাপটি ব্যবহার করবেন — টিউটোরিয়াল দেখে নিন।",
+          "icon": "play-circle",
+          "notice": "📖 ভিডিও দেখে সব কিছু বুঝে নিন",
+          "title": "Tutorial Video"
+        }
+      ]
+    },
+    "tasks": [
+      {
+        "type": "ads",
+        "title": "Rewarded Ad",
+        "description": "অ্যাড দেখে আয় করতে ভেরিফাই করুন!",
+        "notice": "পুরষ্কার পেতে সম্পূর্ণ বিজ্ঞাপন দেখুন।",
+        "icon": "video-camera",
+        "enabled": true,
+        "dailyAdLimit": 10,
+        "reward": 5,
+        "adNetworks": {
+          "monetag": { "zoneId": "10099787" },
+          "gigapub": { "id": "3877" }
+        }
+      },
+      {
+        "type": "social",
+        "taskId": "telegram_join",
+        "title": "Join our Telegram Channel",
+        "description": "চ্যানেলে জয়েন করুন, তারপর ফিরে এসে \"Check & Claim\" দিন।",
+        "icon": "telegram",
+        "enabled": true,
+        "reward": 10,
+        "buttons": [
+          { "text": "Open Channel", "url": "https://t.me/onlinetk_earn" },
+          { "text": "Check & Claim", "action": "claimSocial" }
+        ]
+      },
+      {
+        "type": "social",
+        "taskId": "youtube_subscribe",
+        "title": "Subscribe YouTube",
+        "description": "আমাদের ইউটিউব চ্যানেল সাবস্ক্রাইব করুন।",
+        "icon": "youtube",
+        "enabled": true,
+        "reward": 15,
+        "buttons": [
+          { "text": "Open YouTube", "url": "https://youtu.be/7GVWBpSIZDg?si=I3oSZ09MK2WgFCAh" },
+          { "text": "Check & Claim", "action": "claimSocial" }
+        ]
+      },
+      {
+        "type": "social",
+        "taskId": "facebook_follow",
+        "title": "Follow our Facebook Page",
+        "description": "আমাদের ফেসবুক পেজ ফলো করুন।",
+        "icon": "facebook",
+        "enabled": true,
+        "reward": 10,
+        "buttons": [
+          { "text": "Open Facebook", "url": "https://www.facebook.com/share/17b7jSNAbs/" },
+          { "text": "Check & Claim", "action": "claimSocial" }
+        ]
+      }
+    ],
+    "withdrawPage": {
+      "minAmount": 1000,
+      "minReferrals": 20,
+      "methods": [ "Bkash", "Nagad", "Rocket" ],
+      "noticeText": "ন্যূনতম {minAmount} টাকা এবং কমপক্ষে {minReferrals} টি রেফারেল প্রয়োজন।"
+    }
+  }
+}```
+
+---
+
+### ধাপ ২: চূড়ান্ত এবং সম্পূর্ণ HTML ফাইল (আসল ডিজাইন সহ)
+
+এই কোডটি আপনার `index.html` ফাইলে পেস্ট করুন। আমি কথা দিচ্ছি, এবার এটি আপনার আসল ডিজাইন এবং সকল কার্যকারিতাসহ সঠিকভাবে কাজ করবে।
+
+```html
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -130,13 +216,13 @@
             currentUser = tg.initDataUnsafe.user;
 
             Promise.all([fetchConfig(), fetchUserData()]).then(initializeApp).catch(error => {
-                document.getElementById('main-content').innerHTML = `<div class="card"><p>Failed to load app data.</p></div>`;
+                document.getElementById('main-content').innerHTML = `<div class="card"><p>Failed to load app data. Error: ${error.message}</p></div>`;
             });
         });
 
         function fetchConfig() {
             return database.ref('config').once('value').then(snapshot => {
-                if (!snapshot.exists()) throw new Error("Config not found");
+                if (!snapshot.exists()) throw new Error("Config not found in Firebase.");
                 appConfig = snapshot.val();
             });
         }
@@ -184,21 +270,23 @@
 
         function setupEventListeners() {
             document.querySelector('nav').addEventListener('click', e => {
-                if (e.target.closest('.nav-btn')) {
-                    const button = e.target.closest('.nav-btn');
-                    activePage = button.dataset.page;
+                const navButton = e.target.closest('.nav-btn');
+                if (navButton) {
+                    activePage = navButton.dataset.page;
                     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
+                    navButton.classList.add('active');
                     renderPage(activePage);
                 }
             });
 
             document.getElementById('main-content').addEventListener('click', e => {
-                const action = e.target.dataset.action;
+                const button = e.target.closest('button');
+                if (!button) return;
+                const action = button.dataset.action;
                 if (action === 'copyLink') copyReferralLink();
                 else if (action === 'shareLink') shareReferralLink();
-                else if (action === 'handleAd') handleAdTask(e.target);
-                else if (action === 'claimSocial') claimSocialReward(e.target);
+                else if (action === 'handleAd') handleAdTask(button);
+                else if (action === 'claimSocial') claimSocialReward(button);
             });
         }
 
@@ -237,7 +325,8 @@
                         <p>${task.description}</p>`;
                     if (task.type === 'ads') {
                         const adLimitReached = userData.adsWatched.count >= task.dailyAdLimit;
-                        taskCard += `<button class="btn btn-primary" style="margin-top:20px" data-action="handleAd" ${adLimitReached ? 'disabled' : ''}>${adLimitReached ? 'Limit Reached' : 'Verify ☑'}</button>`;
+                        taskCard += `<button class="btn btn-primary" style="margin-top:20px" data-action="handleAd" ${adLimitReached ? 'disabled' : ''}>${adLimitReached ? 'Limit Reached' : 'Verify ☑'}</button>
+                                     <p class="task-info">${task.notice}</p>`;
                     } else if (task.type === 'social') {
                         const isClaimed = userData.claimedTasks[task.taskId];
                         const buttonsHTML = task.buttons.map(btn => {
@@ -246,9 +335,10 @@
                             }
                             return `<button class="btn btn-secondary" onclick="window.open('${btn.url}', '_blank')">${btn.text}</button>`;
                         }).join('');
-                        taskCard += `<div class="button-group">${buttonsHTML}</div>`;
+                        taskCard += `<div class="button-group">${buttonsHTML}</div>
+                                     <p class="task-info">পুরস্কার: ${task.reward || 0} টাকা</p>`;
                     }
-                    taskCard += `<p class="task-info">পুরস্কার: ${task.reward || 0} টাকা</p></div>`;
+                    taskCard += `</div>`;
                     return taskCard;
                 }).join('');
             } else if (pageName === 'support') {
@@ -296,6 +386,7 @@
         async function handleAdTask(button) {
             const adTask = appConfig.tasks.find(t => t.type === 'ads');
             if (userData.adsWatched.count >= adTask.dailyAdLimit) return;
+            button.disabled = true;
             updateProgressBar(1);
             try {
                 const monetagShow = window['show_' + adTask.adNetworks.monetag.zoneId];
@@ -307,6 +398,7 @@
                 rewardUser(adTask.reward, 'adsWatched/count', (userData.adsWatched.count || 0) + 1);
             } catch (error) {
                 alert("Sorry, an ad could not be shown right now.");
+                button.disabled = false;
             } finally {
                 setTimeout(() => updateProgressBar(0), 500);
             }
@@ -323,8 +415,13 @@
             updates['balance'] = (userData.balance || 0) + amount;
             if (counterPath) updates[counterPath] = counterNewValue;
             
-            database.ref('users/' + currentUser.id).update(updates);
-            alert(`ধন্যবাদ! আপনি ${amount} টাকা পেয়েছেন।`);
+            database.ref('users/' + currentUser.id).update(updates)
+                .then(() => {
+                    alert(`ধন্যবাদ! আপনি ${amount} টাকা পেয়েছেন।`);
+                })
+                .catch(error => {
+                    console.error("Failed to update user data:", error);
+                });
         }
 
         function updateProgressBar(progress) {
