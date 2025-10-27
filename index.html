@@ -43,12 +43,8 @@
         .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 600; }
         .btn-primary { background-color: var(--primary-blue); color: white; }
         .btn-secondary { background-color: var(--primary-green); color: white; }
-        .icon-wrapper { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+        .icon-wrapper { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; background-color: var(--primary-blue); }
         .icon-wrapper svg { width: 28px; height: 28px; fill: white; }
-        .icon-bg-telegram .icon-wrapper { background-color: #2AABEE; }
-        .icon-bg-youtube .icon-wrapper { background-color: #FF0000; }
-        .icon-bg-facebook .icon-wrapper { background-color: #1877F2; }
-        .icon-bg-video-camera .icon-wrapper { background-color: #5C6BC0; }
         nav { display: flex; justify-content: space-around; padding: 8px 4px; border-top: 1px solid #f1f1f1; background-color: var(--card-background); position: sticky; bottom: 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
         .nav-btn { background: none; border: none; font-size: 0.8em; color: var(--text-light); cursor: pointer; padding: 4px 12px; border-radius: 12px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-btn.active { background-color: #e7f1ff; color: var(--primary-blue); }
@@ -222,7 +218,7 @@
                 const sp = appConfig.supportPage;
                 content = `<div class="page active"><h3>Support</h3>
                     <div class="card">
-                        <div class="icon-wrapper icon-bg-youtube"><svg><use href="#icon-play-circle"></use></svg></div>
+                        <div class="icon-wrapper"><svg><use href="#icon-play-circle"></use></svg></div>
                         <h4>${sp.title}</h4>
                         <p>${sp.description}</p>
                         <button class="btn btn-primary" style="margin-top: 20px;" data-action="open-url" data-url="${sp.videoUrl || '#'}">${sp.buttonText}</button>
@@ -243,10 +239,10 @@
                         let buttonsHTML = (task.buttons || []).map(btn => {
                             const action = btn.action === 'handleAd' ? 'handleAd' : 'open-url';
                             return `<button class="btn btn-primary" data-action="${action}" data-reward="${task.reward || 0}" data-url="${btn.url || '#'}">${btn.text}</button>`;
-                        }).join(' ');
+                        }).join('');
 
                         return `<div class="card">
-                            <div class="icon-wrapper icon-bg-${icon}"><svg><use href="#icon-${icon}"></use></svg></div>
+                            <div class="icon-wrapper"><svg><use href="#icon-${icon}"></use></svg></div>
                             <h4>${task.title}</h4>
                             <p>${task.description}</p>
                             <div class="button-group">${buttonsHTML}</div>
