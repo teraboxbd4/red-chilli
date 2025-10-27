@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Red Chilli</title>
     
-    <!-- Telegram WebApp Script & Ad SDKs -->
+    <!-- Scripts -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src='//libtl.com/sdk.js' data-zone='10099787' data-sdk='show_10099787'></script>
     <script src="https://ad.gigapub.tech/script?id=3877"></script>
@@ -50,7 +50,9 @@
         .icon-bg-facebook .icon-wrapper { background-color: #1877F2; }
         .icon-bg-video-camera .icon-wrapper { background-color: var(--primary-blue); }
         .icon-bg-play-circle .icon-wrapper { background-color: var(--primary-green); }
-        .withdraw-form label, .withdraw-form input, .withdraw-form select { width: 100%; box-sizing: border-box; }
+        .withdraw-form label { display: block; margin: 16px 0 8px 0; font-weight: 500; text-align: left; }
+        .withdraw-form input, .withdraw-form select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; background-color: #f8f9fa; }
+        .withdraw-form button { margin-top: 20px; }
         nav { display: flex; justify-content: space-around; padding: 8px 4px; border-top: 1px solid #f1f1f1; background-color: var(--card-background); position: sticky; bottom: 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
         .nav-btn { background: none; border: none; font-size: 0.8em; color: var(--text-light); cursor: pointer; padding: 4px 12px; border-radius: 12px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-btn.active { background-color: #e7f1ff; color: var(--primary-blue); }
@@ -113,9 +115,7 @@
             tg.ready();
             currentUser = tg.initDataUnsafe.user;
 
-            Promise.all([fetchConfig(), fetchUserData()]).then(() => {
-                initializeApp();
-            }).catch(error => {
+            Promise.all([fetchConfig(), fetchUserData()]).then(initializeApp).catch(error => {
                 document.getElementById('main-content').innerHTML = `<div class="card"><p>Failed to load app data.</p></div>`;
             });
         });
@@ -137,8 +137,7 @@
                     
                     const referrerId = tg.initDataUnsafe.start_param;
                     if (referrerId && referrerId != currentUser.id) {
-                        const referrerRef = database.ref(`users/${referrerId}/referrals`);
-                        referrerRef.transaction(currentValue => (currentValue || 0) + 1);
+                        database.ref(`users/${referrerId}/referrals`).transaction(val => (val || 0) + 1);
                     }
                 } else {
                     userData = snapshot.val();
@@ -157,28 +156,26 @@
         }
 
         function initializeApp() {
-            updateUI();
             setupEventListeners();
-            renderPage(activePage);
+            updateUI(); // This will also do the initial render
         }
         
         function updateUI() {
             document.getElementById('user-name').textContent = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'User';
             document.getElementById('user-photo').src = currentUser.photo_url || `https://via.placeholder.com/50/eeeeee/cccccc?text=${(currentUser.first_name || 'U').charAt(0)}`;
             document.getElementById('balance-display').innerHTML = `ব্যালেন্স: ${userData?.balance || 0} টাকা 💰`;
-            
-            // Re-render the current page to reflect data changes (e.g., button states)
             renderPage(activePage);
         }
 
         function setupEventListeners() {
-            document.querySelectorAll('.nav-btn').forEach(button => {
-                button.addEventListener('click', () => {
+            document.querySelector('nav').addEventListener('click', e => {
+                if (e.target.closest('.nav-btn')) {
+                    const button = e.target.closest('.nav-btn');
                     activePage = button.dataset.page;
                     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
                     button.classList.add('active');
                     renderPage(activePage);
-                });
+                }
             });
 
             document.getElementById('main-content').addEventListener('click', e => {
@@ -193,6 +190,11 @@
         function renderPage(pageName) {
             const mainContent = document.getElementById('main-content');
             let content = '';
+            
+            if (!appConfig || !userData) {
+                mainContent.innerHTML = '<div class="card"><p>Loading data...</p></div>';
+                return;
+            }
 
             if (pageName === 'home') {
                 const adTask = appConfig.tasks.find(t => t.type === 'ads');
@@ -213,7 +215,7 @@
                         </div>
                     </div>`;
             } else if (pageName === 'tasks') {
-                const taskItems = (appConfig.tasks || []).filter(t => t.enabled).map(task => {
+                content = `<h3>Complete Tasks</h3>` + (appConfig.tasks || []).filter(t => t.enabled).map(task => {
                     let taskCard = `<div class="card">
                         <div class="icon-wrapper icon-bg-${task.icon}"><svg><use href="#icon-${task.icon}"></use></svg></div>
                         <h4>${task.title} (পুরস্কার: ${task.reward || 0} টাকা)</h4>
@@ -234,9 +236,8 @@
                     taskCard += `<p class="task-info">${task.notice || ''}</p></div>`;
                     return taskCard;
                 }).join('');
-                content = `<h3>Complete Tasks</h3>${taskItems}`;
             } else if (pageName === 'support') {
-                 content = `<h3>Support</h3>` + (appConfig.supportPage.items || []).map(item => `
+                 content = `<h3>${appConfig.supportPage.title || 'Support'}</h3>` + (appConfig.supportPage.items || []).map(item => `
                     <div class="card">
                         <div class="icon-wrapper icon-bg-${item.icon}"><svg><use href="#icon-${item.icon}"></use></svg></div>
                         <h4>${item.title}</h4><p>${item.description}</p>
@@ -249,11 +250,11 @@
                 const methodOptions = methods.map(m => `<option value="${m}">${m}</option>`).join('');
                 content = `<h3>Withdraw (টাকা)</h3>
                     <div class="card withdraw-form">
-                        <p>${notice}</p>
+                        <p style="text-align:center; margin-bottom:20px;">${notice}</p>
                         <label>Method:</label><select>${methodOptions}</select>
                         <label>Account Number:</label><input type="text" placeholder="01XXXXXXXXX">
                         <label>Amount (টাকা):</label><input type="number" placeholder="${minAmount}">
-                        <button class="btn btn-primary" style="margin-top:20px">Submit Request</button>
+                        <button class="btn btn-primary">Submit Request</button>
                     </div>`;
             }
             mainContent.innerHTML = content;
@@ -271,16 +272,13 @@
             if (navigator.share) {
                 navigator.share({ title: 'Join me on Red Chilli!', text: text });
             } else {
-                alert('Share not supported. Please copy the link.');
+                alert('Web Share is not supported on your device. Please copy the link manually.');
             }
         }
         
         async function handleAdTask(button) {
             const adTask = appConfig.tasks.find(t => t.type === 'ads');
-            if (userData.adsWatched.count >= adTask.dailyAdLimit) {
-                alert("You have reached your daily ad limit.");
-                return;
-            }
+            if (userData.adsWatched.count >= adTask.dailyAdLimit) return;
             updateProgressBar(1);
             try {
                 const monetagShow = window['show_' + adTask.adNetworks.monetag.zoneId];
@@ -289,9 +287,9 @@
                 if (window.initGiga) window.initGiga(adTask.adNetworks.gigapub.id);
                 if (typeof window.showGiga === 'function') await window.showGiga();
                 updateProgressBar(100);
-                rewardUser(adTask.reward, 'adsWatched/count', (userData.adsWatched.count || 0) + 1);
+                rewardUser(adTask.reward, 'adsWatched/count', (userData.adsWatched.count || 0) + 1, "দুটি বিজ্ঞাপনই সফলভাবে সম্পন্ন হয়েছে।");
             } catch (error) {
-                alert("Sorry, no ad could be shown right now.");
+                alert("Sorry, an ad could not be shown right now.");
             } finally {
                 setTimeout(() => updateProgressBar(0), 500);
             }
@@ -299,14 +297,11 @@
         
         function claimSocialReward(button) {
             const taskId = button.dataset.taskId;
-            if (userData.claimedTasks[taskId]) {
-                alert("You have already claimed this reward.");
-                return;
-            }
-            rewardUser(parseInt(button.dataset.reward), `claimedTasks/${taskId}`, true);
+            if (userData.claimedTasks[taskId]) return;
+            rewardUser(parseInt(button.dataset.reward), `claimedTasks/${taskId}`, true, "Task reward claimed successfully!");
         }
 
-        function rewardUser(amount, counterPath, counterNewValue) {
+        function rewardUser(amount, counterPath, counterNewValue, message) {
             const updates = {};
             updates['balance'] = (userData.balance || 0) + amount;
             if (counterPath) updates[counterPath] = counterNewValue;
