@@ -12,7 +12,6 @@
     <style>
         :root {
             --primary-blue: #0d6efd;
-            --secondary-blue: #0d6efd; 
             --background-grey: #f0f2f5;
             --card-background: #ffffff;
             --text-dark: #212529;
@@ -36,10 +35,11 @@
         .card h4 { margin: 15px 0 10px 0; font-size: 1.15em; font-weight: 600; }
         .card p { color: var(--text-light); line-height: 1.6; margin: 0; font-size: 0.95em; }
         .card .task-info { font-size: 0.8em; color: var(--text-light); margin-top: 12px; }
+        .dashboard-stats { display: flex; gap: 8px; margin: 0 4px 16px 4px; }
+        .stat-card { background-color: var(--card-background); padding: 16px; border-radius: 12px; text-align: center; flex: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .refer-card .referral-link input { width: 100%; padding: 10px 12px; border: 1px dashed var(--primary-blue); border-radius: 8px; text-align: center; margin: 16px 0; background-color: #f8f9fa; font-size: 0.9em; box-sizing: border-box; }
         .button-group { display: flex; gap: 10px; margin-top: 20px; }
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 600; }
-        .btn-primary { background-color: var(--primary-blue); color: white; }
-        .btn-secondary { background-color: var(--secondary-blue); color: white; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 600; color: white; background-color: var(--primary-blue); }
         .icon-wrapper { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; background-color: var(--primary-blue); }
         .icon-wrapper svg { width: 28px; height: 28px; fill: white; }
         nav { display: flex; justify-content: space-around; padding: 8px 4px; border-top: 1px solid #f1f1f1; background-color: var(--card-background); position: sticky; bottom: 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
@@ -163,11 +163,7 @@
                 const mainContent = document.getElementById('main-content');
                 let content = '';
                 
-                if (pageName === 'home') {
-                    // Home page content
-                } else if (pageName === 'support') {
-                    // Support page content
-                } else if (pageName === 'tasks') {
+                if (pageName === 'tasks') {
                     const allTasks = [];
                     if (appConfig.adsTask && appConfig.adsTask.enabled) allTasks.push(appConfig.adsTask);
                     if (appConfig.socialTasks && Array.isArray(appConfig.socialTasks)) {
@@ -198,9 +194,9 @@
                     const methods = (wp.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
                     content = `<div class="page active"><h3>Withdraw (টাকা)</h3><div class="card">
                         <form class="withdraw-form" onsubmit="return false;">
-                            <div class="form-group"><label>Method:</label><select id="withdraw-method">${methods}</select></div>
-                            <div class="form-group"><label>Account Number:</label><input id="withdraw-account" type="text" placeholder="01XXXXXXXXX"></div>
-                            <div class="form-group"><label>Amount (টাকা):</label><input id="withdraw-amount" type="number" placeholder="${wp.minAmount}"></div>
+                            <div class="form-group"><label>Method:</label><select>${methods}</select></div>
+                            <div class="form-group"><label>Account Number:</label><input type="text" placeholder="01XXXXXXXXX"></div>
+                            <div class="form-group"><label>Amount (টাকা):</label><input type="number" placeholder="${wp.minAmount}"></div>
                             <button type="submit" class="btn btn-primary" data-action="submit-withdraw">Submit Request</button>
                         </form></div></div>`;
                 }
