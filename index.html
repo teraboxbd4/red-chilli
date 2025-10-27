@@ -51,9 +51,7 @@
         .icon-bg-telegram .icon-wrapper { background-color: #2AABEE; }
         .icon-bg-youtube .icon-wrapper { background-color: #FF0000; }
         .icon-bg-facebook .icon-wrapper { background-color: #1877F2; }
-        .withdraw-form label { display: block; margin: 16px 0 8px 0; font-weight: 500; text-align: left; }
-        .withdraw-form input, .withdraw-form select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; background-color: #f8f9fa; }
-        .withdraw-form button { margin-top: 20px; }
+        .icon-bg-video-camera .icon-wrapper { background-color: #5C6BC0; }
         nav { display: flex; justify-content: space-around; padding: 8px 4px; border-top: 1px solid #f1f1f1; background-color: var(--card-background); position: sticky; bottom: 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
         .nav-btn { background: none; border: none; font-size: 0.8em; color: var(--text-light); cursor: pointer; padding: 4px 12px; border-radius: 12px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-btn.active { background-color: #e7f1ff; color: var(--primary-blue); }
@@ -62,7 +60,7 @@
     </style>
 </head>
 <body>
-    <!-- Progress bar that appears ON TOP OF full-screen ads -->
+    <!-- Progress bar -->
     <div id="ad-progress-container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 4px; background-color: #e0e0e0; z-index: 9999;">
         <div id="ad-progress-bar" style="width: 0%; height: 100%; background-color: var(--primary-blue); transition: width 0.5s linear;"></div>
     </div>
@@ -139,7 +137,6 @@
                 });
             });
 
-            // Using event delegation for dynamic content
             document.getElementById('main-content').addEventListener('click', handleMainContentClick);
         });
 
@@ -152,8 +149,6 @@
                 } else {
                     document.getElementById('main-content').innerHTML = `<div class="card"><h4>App configuration not found.</h4></div>`;
                 }
-            }, (error) => {
-                document.getElementById('main-content').innerHTML = `<div class="card"><h4>Database Read Error.</h4></div>`;
             });
         }
         
@@ -165,23 +160,11 @@
             
             const userRef = database.ref(`users/${currentUser.id}`);
             userRef.on('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    userData = snapshot.val();
-                } else {
-                    // Create a new user entry if it doesn't exist
-                    userRef.set({
-                        first_name: currentUser.first_name || '',
-                        last_name: currentUser.last_name || '',
-                        balance: 0,
-                        referrals: 0,
-                        adsWatched: {}
-                    });
-                }
+                userData = snapshot.exists() ? snapshot.val() : { balance: 0, referrals: 0, adsWatched: {} };
                 updateHeader();
                 renderPage(document.querySelector('.nav-btn.active').dataset.page);
             });
             
-            // Handle referral
             const startParam = window.Telegram.WebApp.initDataUnsafe.start_param;
             if (startParam) {
                 const referrerId = startParam;
@@ -189,16 +172,14 @@
                 newRef.once('value', snapshot => {
                     if (!snapshot.exists()) {
                         newRef.set(referrerId);
-                        const referrerRef = database.ref(`users/${referrerId}/referrals`);
-                        referrerRef.transaction(currentValue => (currentValue || 0) + 1);
+                        database.ref(`users/${referrerId}/referrals`).transaction(currentValue => (currentValue || 0) + 1);
                     }
                 });
             }
         }
         
         function updateHeader() {
-            const balanceEl = document.getElementById('balance-display');
-            balanceEl.textContent = `ব্যালেন্স: ${userData.balance || 0} টাকা 💰`;
+            document.getElementById('balance-display').textContent = `ব্যালেন্স: ${userData.balance || 0} টাকা 💰`;
         }
         
         // --- PAGE RENDERING ---
@@ -210,10 +191,10 @@
             }
 
             let content = '';
-            const today = new Date().toISOString().slice(0, 10);
             
             if (pageName === 'home') {
                 const adTaskConfig = appConfig.tasks.find(t => t.type === 'ads' && t.enabled) || { dailyLimit: 10 };
+                const today = new Date().toISOString().slice(0, 10);
                 const adsWatchedToday = (userData.adsWatched && userData.adsWatched[today]) || 0;
                 const totalReferrals = userData.referrals || 0;
                 const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}`;
@@ -234,15 +215,22 @@
                     </div>
                 </div>`;
             } else if (pageName === 'support' && appConfig.supportPage) {
-                const supportItems = (appConfig.supportPage.items || []).map(item => `<div class="card"><div class="icon-wrapper icon-bg-${item.icon || 'blue'}"><svg><use href="#icon-${item.icon || 'play-circle'}"></use></svg></div><h4>${item.title || ''}</h4><p>${item.description || ''}</p><button class="btn btn-primary" style="margin-top: 20px;" onclick="window.open('${item.buttonUrl || '#'}', '_blank')">${item.buttonText || ''}</button><p class="task-info">${item.notice || ''}</p></div>`).join('');
-                content = `<div class="page active"><h3>${appConfig.supportPage.title || 'Support'}</h3>${supportItems}</div>`;
+                const sp = appConfig.supportPage;
+                content = `<div class="page active"><h3>${sp.title || 'Support'}</h3>
+                    <div class="card">
+                        <div class="icon-wrapper icon-bg-youtube"><svg><use href="#icon-play-circle"></use></svg></div>
+                        <h4>Tutorial Video</h4>
+                        <p>${sp.description || 'অ্যাপটি কীভাবে ব্যবহার করবেন তা জানতে ভিডিওটি দেখুন।'}</p>
+                        <button class="btn btn-primary" style="margin-top: 20px;" onclick="window.open('${sp.videoUrl || '#'}', '_blank')">${sp.buttonText || 'Watch Now'}</button>
+                    </div>
+                </div>`;
             } else if (pageName === 'tasks' && appConfig.tasks) {
                 const taskItems = (appConfig.tasks || []).filter(task => task.enabled).map(task => {
                     let taskButton = '';
                     if (task.type === 'ads') {
                         taskButton = `<button class="btn btn-primary" style="margin-top: 20px;" data-action="handleAd" data-monetag="${task.adNetworks.monetag.zoneId}" data-gigapub="${task.adNetworks.gigapub.id}" data-reward="${task.reward || 0}">Verify ☑</button>`;
                     } else {
-                        const buttonsHTML = (task.buttons || []).map(btn => `<button class="btn btn-primary" onclick="${btn.url ? `window.open('${btn.url}', '_blank')` : `alert('Action: ${btn.action}')`}">${btn.text}</button>`).join('');
+                        const buttonsHTML = (task.buttons || []).map(btn => `<button class="btn btn-primary" onclick="${btn.url ? `window.open('${btn.url}', '_blank')` : `alert('Action: ${btn.action}')`}">${btn.text}</button>`).join(' ');
                         taskButton = `<div class="button-group">${buttonsHTML}</div>`;
                     }
                     return `<div class="card">
@@ -259,14 +247,14 @@
                 const methods = (appConfig.withdrawPage.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
                 content = `<div class="page active"><h3>Withdraw (টাকা)</h3><div class="card"><form class="withdraw-form" onsubmit="event.preventDefault()"><p style="text-align: center; margin-bottom: 20px;">${notice}</p><label>Method:</label><select>${methods}</select><label>Account Number:</label><input type="text" placeholder="01XXXXXXXXX"><label>Amount (টাকা):</label><input type="number" placeholder="${appConfig.withdrawPage.minAmount || 1000}"><button type="submit" class="btn btn-primary">Submit Request</button></form></div></div>`;
             } else {
-                 content = `<div class="page active"><div class="card"><p>Content for this page could not be loaded.</p></div></div>`;
+                 content = `<div class="page active"><div class="card"><p>Page not found or is disabled.</p></div></div>`;
             }
             mainContent.innerHTML = content;
         }
 
-        // --- EVENT HANDLING ---
+        // --- EVENT & ACTION HANDLING ---
         function handleMainContentClick(event) {
-            const button = event.target.closest('button');
+            const button = event.target.closest('button[data-action]');
             if (!button) return;
 
             const action = button.dataset.action;
@@ -274,29 +262,27 @@
                 const reward = parseFloat(button.dataset.reward) || 0;
                 handleAdTask(button.dataset.monetag, button.dataset.gigapub, reward);
             } else if (action === 'copy-link') {
-                const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}`;
-                navigator.clipboard.writeText(referralLink).then(() => {
-                    alert('রেফারেল লিঙ্ক কপি করা হয়েছে!');
-                });
+                const input = document.querySelector('.referral-link input');
+                if(input) {
+                    navigator.clipboard.writeText(input.value).then(() => alert('রেফারেল লিঙ্ক কপি করা হয়েছে!'));
+                }
             } else if (action === 'share-link') {
                 const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}`;
                 const shareText = "এই অ্যাপ থেকে বিজ্ঞাপন দেখে টাকা আয় করুন।\n১০০% পেমেন্ট করে—আমার লিঙ্কে যোগ দিন:";
                 const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(shareText)}`;
-                window.open(shareUrl, '_blank');
+                window.Telegram.WebApp.openTelegramLink(shareUrl);
             }
         }
 
-        // --- AD HANDLING LOGIC ---
         function updateProgressBar(progress) {
-            const progressBar = document.getElementById('ad-progress-bar');
-            const progressBarContainer = document.getElementById('ad-progress-container');
-
+            const bar = document.getElementById('ad-progress-bar');
+            const container = document.getElementById('ad-progress-container');
             if (progress > 0) {
-                progressBarContainer.style.display = 'block';
-                setTimeout(() => { progressBar.style.width = progress + '%'; }, 50);
+                container.style.display = 'block';
+                setTimeout(() => { bar.style.width = progress + '%'; }, 50);
             } else {
-                progressBar.style.width = '0%';
-                setTimeout(() => { progressBarContainer.style.display = 'none'; }, 500); 
+                bar.style.width = '0%';
+                setTimeout(() => { container.style.display = 'none'; }, 500); 
             }
         }
 
@@ -311,18 +297,16 @@
             }
 
             updateProgressBar(1);
-            const monetagShowFunction = window['show_' + monetagZoneId];
             let adShown = false;
-
             try {
+                const monetagShowFunction = window['show_' + monetagZoneId];
                 if (typeof monetagShowFunction === 'function') {
                     await monetagShowFunction();
                     adShown = true;
                     updateProgressBar(50);
                 }
-                
                 if (typeof window.showGiga === 'function') {
-                    if (window.initGiga) { window.initGiga(gigapubId); }
+                    if (window.initGiga) window.initGiga(gigapubId);
                     await window.showGiga();
                     adShown = true;
                     updateProgressBar(100); 
@@ -330,12 +314,10 @@
 
                 if(adShown) {
                     rewardUser("বিজ্ঞাপনটি সফলভাবে সম্পন্ন হয়েছে।", rewardAmount);
-                    const userAdRef = database.ref(`users/${currentUser.id}/adsWatched/${today}`);
-                    userAdRef.set(adsWatchedToday + 1);
+                    database.ref(`users/${currentUser.id}/adsWatched/${today}`).set(adsWatchedToday + 1);
                 } else {
                      throw new Error("কোনো বিজ্ঞাপন নেটওয়ার্ক উপলব্ধ নেই।");
                 }
-
             } catch (error) {
                 console.error("Ad task failed:", error);
                 alert("দুঃখিত, কোনো বিজ্ঞাপন দেখানো সম্ভব হচ্ছে না।");
@@ -346,8 +328,7 @@
         
         function rewardUser(message, rewardAmount) {
             if (rewardAmount > 0) {
-                const userBalanceRef = database.ref(`users/${currentUser.id}/balance`);
-                userBalanceRef.transaction((currentBalance) => (currentBalance || 0) + rewardAmount);
+                database.ref(`users/${currentUser.id}/balance`).transaction((bal) => (bal || 0) + rewardAmount);
                 alert(`ধন্যবাদ! ${message} আপনাকে ${rewardAmount} টাকা পুরস্কৃত করা হয়েছে।`);
             } else {
                  alert(`ধন্যবাদ! ${message}`);
