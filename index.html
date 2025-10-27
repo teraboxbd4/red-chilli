@@ -12,6 +12,7 @@
     <style>
         :root {
             --primary-blue: #0d6efd;
+            --secondary-blue: #0d6efd;
             --background-grey: #f0f2f5;
             --card-background: #ffffff;
             --text-dark: #212529;
@@ -40,6 +41,7 @@
         .refer-card .referral-link input { width: 100%; padding: 10px 12px; border: 1px dashed var(--primary-blue); border-radius: 8px; text-align: center; margin: 16px 0; background-color: #f8f9fa; font-size: 0.9em; box-sizing: border-box; }
         .button-group { display: flex; gap: 10px; margin-top: 20px; }
         .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 600; color: white; background-color: var(--primary-blue); }
+        .btn-secondary { background-color: var(--secondary-blue); }
         .icon-wrapper { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; background-color: var(--primary-blue); }
         .icon-wrapper svg { width: 28px; height: 28px; fill: white; }
         nav { display: flex; justify-content: space-around; padding: 8px 4px; border-top: 1px solid #f1f1f1; background-color: var(--card-background); position: sticky; bottom: 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
@@ -78,7 +80,7 @@
             </header>
             
             <main id="main-content">
-                <!-- Pages will be rendered here -->
+                <div class="page active"><div class="card"><p>Loading...</p></div></div>
             </main>
             
             <nav>
@@ -161,9 +163,33 @@
             
             function renderPage(pageName) {
                 const mainContent = document.getElementById('main-content');
+                if (!appConfig) { 
+                    mainContent.innerHTML = `<div class="page active"><div class="card"><p>Loading...</p></div></div>`; return; 
+                }
                 let content = '';
                 
-                if (pageName === 'tasks') {
+                if (pageName === 'home') {
+                    const adTaskConfig = appConfig.adsTask || { dailyLimit: 10 };
+                    const today = new Date().toISOString().slice(0, 10);
+                    const adsWatchedToday = (userData.adsWatched && userData.adsWatched[today]) || 0;
+                    content = `<div class="page active"><h3>Dashboard</h3>
+                        <div class="dashboard-stats">
+                            <div class="stat-card"><p>Daily Ads Watched</p><span>${adsWatchedToday} / ${adTaskConfig.dailyLimit}</span></div>
+                            <div class="stat-card"><p>Total Referrals</p><span>${userData.referrals || 0}</span></div>
+                        </div>
+                        <div class="card"><h4>Refer & Earn More!</h4>
+                            <p>আপনার বন্ধুদের রেফার করে আয় করুন। প্রতি সফল রেফারে পাবেন ${appConfig.referralBonus || 0} টাকা।</p>
+                        </div></div>`;
+                } else if (pageName === 'support') {
+                    const sp = appConfig.supportPage;
+                    content = `<div class="page active"><h3>Support</h3>
+                        <div class="card">
+                            <div class="icon-wrapper"><svg><use href="#icon-play-circle"></use></svg></div>
+                            <h4>${sp.title}</h4><p>${sp.description}</p>
+                            <button class="btn btn-primary" style="margin-top:20px" data-action="open-url" data-url="${sp.videoUrl || '#'}">${sp.buttonText}</button>
+                            <p class="task-info">${sp.notice || ''}</p>
+                        </div></div>`;
+                } else if (pageName === 'tasks') {
                     const allTasks = [];
                     if (appConfig.adsTask && appConfig.adsTask.enabled) allTasks.push(appConfig.adsTask);
                     if (appConfig.socialTasks && Array.isArray(appConfig.socialTasks)) {
@@ -174,13 +200,12 @@
                         const taskItems = allTasks.map(task => {
                             const icon = task.icon;
                             let buttonsHTML = (task.buttons || []).map(btn => {
-                                return `<button class="btn btn-primary" data-action="${btn.action}" data-reward="${task.reward || 0}" data-url="${btn.url || '#'}">${btn.text}</button>`;
+                                return `<button class="btn" data-action="${btn.action}" data-reward="${task.reward || 0}" data-url="${btn.url || '#'}">${btn.text}</button>`;
                             }).join('');
                             
                             return `<div class="card">
                                 <div class="icon-wrapper"><svg><use href="#icon-${icon}"></use></svg></div>
-                                <h4>${task.title}</h4>
-                                <p>${task.description}</p>
+                                <h4>${task.title}</h4><p>${task.description}</p>
                                 <div class="button-group">${buttonsHTML}</div>
                                 <p class="task-info">${task.notice || ''}</p>
                             </div>`;
