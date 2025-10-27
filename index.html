@@ -176,7 +176,24 @@
             }
 
             function handleReferral() {
-                // Referral logic here
+                 const startParam = window.Telegram.WebApp.initDataUnsafe.start_param;
+                if (!startParam || startParam === String(currentUser.id) || !appConfig) return;
+                
+                const referrerId = startParam;
+                const newUserRef = database.ref(`users/${currentUser.id}`);
+
+                newUserRef.child('referred_by').once('value', snapshot => {
+                    if (snapshot.exists()) return;
+
+                    newUserRef.child('referred_by').set(referrerId);
+                    const referrerRef = database.ref(`users/${referrerId}`);
+                    referrerRef.child('referrals').transaction(currentVal => (currentVal || 0) + 1);
+                    
+                    const referralBonus = appConfig.referralBonus || 0;
+                    if (referralBonus > 0) {
+                        referrerRef.child('balance').transaction(currentBal => (currentBal || 0) + referralBonus);
+                    }
+                }).catch(e => console.error("Referral check error:", e));
             }
             
             function updateHeader() {
@@ -232,8 +249,8 @@
                             let buttonsHTML = (task.buttons || []).map(btn => {
                                 const action = btn.action === 'handleAd' ? 'handleAd' : 'open-url';
                                 return `<button class="btn btn-primary" data-action="${action}" data-reward="${task.reward || 0}" data-url="${btn.url || '#'}">${btn.text}</button>`;
-                            }).join(' ');
-
+                            }).join('');
+                            
                             return `<div class="card">
                                 <div class="icon-wrapper"><svg><use href="#icon-${icon}"></use></svg></div>
                                 <h4>${task.title}</h4>
@@ -264,7 +281,7 @@
             }
 
             function handleMainContentClick(event) {
-                // Click handling logic
+                // Click handling logic...
             }
         });
     </script>
