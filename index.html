@@ -253,7 +253,7 @@
                         taskButton = `<div class="button-group">${buttonsHTML}</div>`;
                     }
                     return `<div class="card">
-                        <div class="icon-wrapper icon-bg-${icon}"><svg class="nav-icon"><use href="#icon-${icon}"></use></svg></div>
+                        <div class="icon-wrapper icon-bg-${icon}"><svg><use href="#icon-${icon}"></use></svg></div>
                         <h4>${task.title}</h4><p>${task.description}</p>${taskButton}
                         <p class="task-info">পুরস্কার: ${task.reward || 0} টাকা</p>
                     </div>`;
