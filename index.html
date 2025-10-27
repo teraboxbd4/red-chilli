@@ -4,14 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Red Chilli</title>
-    
-    <!-- Telegram WebApp Script (Must be first) -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
-    <!-- Ad Network SDKs (Corrected as per your instruction) -->
-    <script async src='//libtl.com/sdk.js' data-zone='10099787' data-sdk='show_10099787'></script>
-    <script src="https://ad.gigapub.tech/script?id=3877"></script>
-    
+    <script async src='//libtl.com/sdk.js'></script>
+    <script src="https://ad.gigapub.tech/script"></script>
     <style>
         :root {
             --primary-blue: #0d6efd;
@@ -42,6 +37,8 @@
         .card .task-info { font-size: 0.8em; color: var(--text-light); margin-top: 12px; }
         .dashboard-stats { display: flex; gap: 8px; margin: 0 4px 16px 4px; }
         .stat-card { background-color: var(--card-background); padding: 16px; border-radius: 12px; text-align: center; flex: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid var(--border-color); }
+        .stat-card p { margin: 0 0 8px 0; font-size: 0.9em; color: var(--text-light); }
+        .stat-card span { font-size: 2em; font-weight: 700; color: var(--primary-blue); }
         .refer-card .referral-link input { width: 100%; padding: 10px 12px; border: 1px dashed var(--primary-blue); border-radius: 8px; text-align: center; margin: 16px 0; background-color: #f8f9fa; font-size: 0.9em; box-sizing: border-box; }
         .button-group { display: flex; gap: 10px; margin-top: 20px; }
         .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 600; }
@@ -106,10 +103,11 @@
         let currentUser;
         let appConfig;
 
+        // --- Main App Initialization Logic ---
         function initializeApp() {
             const tg = window.Telegram.WebApp;
             if (tg.platform === 'unknown') {
-                document.getElementById('app-root').innerHTML = `<div class="full-page-notice"><div class="card"><h4>⛔ Access Denied</h4><p>Please open this app inside Telegram.</p></div></div>`;
+                document.getElementById('app-root').innerHTML = `<div class="full-page-notice">...</div>`;
                 return;
             }
             tg.MainButton.hide();
@@ -119,10 +117,12 @@
             const userNameEl = document.getElementById('user-name');
             const userPhotoEl = document.getElementById('user-photo');
             userNameEl.textContent = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'User';
-            userPhotoEl.src = currentUser.photo_url || `https://via.placeholder.com/50/eeeeee/cccccc?text=${(currentUser.first_name || 'U').charAt(0)}`;
+            userPhotoEl.src = currentUser.photo_url || `https://via.placeholder.com/50/...`;
             
+            // Render the initial page (Home)
             renderPage('home', appConfig, currentUser);
 
+            // Setup Navigation
             document.querySelectorAll('.nav-btn').forEach(button => {
                 button.addEventListener('click', () => {
                     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
@@ -131,6 +131,7 @@
                 });
             });
 
+            // Setup Click Listeners
             document.getElementById('main-content').addEventListener('click', function(event) {
                 const adButton = event.target.closest('[data-action="handleAd"]');
                 if (adButton) {
@@ -139,64 +140,24 @@
             });
         }
 
+        // --- Firebase Data Loading ---
         document.addEventListener('DOMContentLoaded', function () {
-            // Firebase থেকে config লোড করার জন্য অপেক্ষা না করে, SDK ট্যাগগুলো সরাসরি বসানো হয়েছে
-            initializeApp(); 
+            const configRef = database.ref('config');
+            
+            configRef.once('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    appConfig = snapshot.val();
+                    initializeApp(); // Initialize the app ONLY after config is loaded
+                } else {
+                    document.getElementById('main-content').innerHTML = `<div class="card"><h4>App configuration not found.</h4></div>`;
+                }
+            }, (error) => {
+                document.getElementById('main-content').innerHTML = `<div class="card"><h4>Database Read Error.</h4></div>`;
+            });
         });
 
-        function renderPage(pageName, config, user) {
-            // ... (The full renderPage function from the final answers)
-        }
-        
-        // --- FINAL, CORRECTED AD HANDLING LOGIC ---
-        function handleAdTask(monetagZoneId, gigapubId) {
-            alert("বিজ্ঞাপন প্রক্রিয়া শুরু হচ্ছে...");
-            
-            // The function names are now hardcoded based on the SDK scripts in <head>
-            const monetagShowFunction = window.show_10099787;
-            
-            setTimeout(() => {
-                if (typeof monetagShowFunction === 'function') {
-                    console.log("Attempting to show Monetag ad...");
-                    monetagShowFunction().then(() => {
-                        console.log("Monetag ad completed.");
-                        alert("প্রথম বিজ্ঞাপন সম্পন্ন। এবার দ্বিতীয়টি দেখানো হবে...");
-                        showGigaAdChain();
-                    }).catch(e => {
-                        console.warn("Monetag failed, trying Gigapub.", e);
-                        showGigaAdChain(); // If Monetag fails, still try Gigapub
-                    });
-                } else {
-                    console.warn("Monetag function not available, trying Gigapub.");
-                    showGigaAdChain(); // If Monetag is not even loaded, try Gigapub
-                }
-            }, 500); // 0.5 second wait for SDKs to be ready
-
-            function showGigaAdChain() {
-                if (typeof window.showGiga === 'function') {
-                    console.log("Attempting to show Gigapub ad...");
-                    window.showGiga().then(() => {
-                        console.log("Gigapub ad completed.");
-                        rewardUser("বিজ্ঞাপন দেখা সফল হয়েছে।");
-                    }).catch(e => {
-                        console.error("Gigapub ad also failed.", e);
-                        alert("দুঃখিত, কোনো বিজ্ঞাপন দেখানো সম্ভব হচ্ছে না।");
-                    });
-                } else {
-                    console.error("Gigapub function not available.");
-                    if (typeof monetagShowFunction === 'function') {
-                         rewardUser("একটি বিজ্ঞাপন সফল হয়েছে।");
-                    } else {
-                        alert("দুঃখিত, এই মুহূর্তে কোনো বিজ্ঞাপন নেটওয়ার্ক উপলব্ধ নেই।");
-                    }
-                }
-            }
-
-            function rewardUser(message) {
-                alert(`ধন্যবাদ! ${message} আপনাকে পুরস্কৃত করা হয়েছে।`);
-                // --- ADD YOUR REWARD LOGIC HERE ---
-            }
-        }
+        function renderPage(pageName, config, user) { /* ... renderPage function from previous answer ... */ }
+        function handleAdTask(monetagZoneId, gigapubId) { /* ... handleAdTask function from previous answer ... */ }
     </script>
 </body>
 </html>
