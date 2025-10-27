@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Red Chilli</title>
+    
+    <!-- Telegram WebApp Script (Must be first) -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- Ad Network SDKs -->
     <script async src='//libtl.com/sdk.js'></script>
     <script src="https://ad.gigapub.tech/script"></script>
+    
     <style>
         :root {
             --primary-blue: #0d6efd;
@@ -37,8 +42,6 @@
         .card .task-info { font-size: 0.8em; color: var(--text-light); margin-top: 12px; }
         .dashboard-stats { display: flex; gap: 8px; margin: 0 4px 16px 4px; }
         .stat-card { background-color: var(--card-background); padding: 16px; border-radius: 12px; text-align: center; flex: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid var(--border-color); }
-        .stat-card p { margin: 0 0 8px 0; font-size: 0.9em; color: var(--text-light); }
-        .stat-card span { font-size: 2em; font-weight: 700; color: var(--primary-blue); }
         .refer-card .referral-link input { width: 100%; padding: 10px 12px; border: 1px dashed var(--primary-blue); border-radius: 8px; text-align: center; margin: 16px 0; background-color: #f8f9fa; font-size: 0.9em; box-sizing: border-box; }
         .button-group { display: flex; gap: 10px; margin-top: 20px; }
         .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 600; }
@@ -141,6 +144,11 @@
             configRef.once('value', (snapshot) => {
                 if (snapshot.exists()) {
                     appConfig = snapshot.val();
+                    const adTask = (appConfig.tasks || []).find(t => t.type === 'ads' && t.enabled);
+                    if (adTask && adTask.adNetworks && adTask.adNetworks.monetag) {
+                        const monetagScript = document.querySelector('script[src="//libtl.com/sdk.js"]');
+                        monetagScript.setAttribute('data-zone', adTask.adNetworks.monetag.zoneId);
+                    }
                     initializeApp();
                 } else {
                     document.getElementById('main-content').innerHTML = `<div class="card"><h4>App configuration not found.</h4></div>`;
@@ -185,16 +193,14 @@
             alert("বিজ্ঞাপন প্রক্রিয়া শুরু হচ্ছে...");
             if (window.initGiga) { window.initGiga(gigapubId); }
             const monetagShowFunction = window['show_' + monetagZoneId];
-            const isMonetagAvailable = typeof monetagShowFunction === 'function';
-            const isGigapubAvailable = typeof window.showGiga === 'function';
-            if (isMonetagAvailable) {
+            if (typeof monetagShowFunction === 'function') {
                 monetagShowFunction().then(() => {
                     alert("প্রথম বিজ্ঞাপন সম্পন্ন। এবার দ্বিতীয়টি দেখানো হবে...");
                     showSecondAd('gigapub');
                 }).catch(e => {
                     showFirstAdAsGigaPub();
                 });
-            } else if (isGigapubAvailable) {
+            } else if (typeof window.showGiga === 'function') {
                 showFirstAdAsGigaPub();
             } else {
                 alert("দুঃখিত, এই মুহূর্তে কোনো বিজ্ঞাপন নেটওয়ার্ক উপলব্ধ নেই।");
