@@ -63,7 +63,7 @@
     </style>
 </head>
 <body>
-    <!-- Ad Progress Bar -->
+    <!-- Ad Progress Bar Container -->
     <div id="ad-progress-container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 4px; background-color: #e0e0e0; z-index: 9999;">
         <div id="ad-progress-bar" style="width: 0%; height: 100%; background-color: var(--primary-green); transition: width 0.5s linear;"></div>
     </div>
@@ -194,7 +194,7 @@
             mainContent.innerHTML = content;
         }
         
-        // --- NEW AND UPDATED AD HANDLING CODE STARTS HERE ---
+        // --- AD HANDLING LOGIC WITH PROGRESS BAR ---
 
         function updateProgressBar(progress) {
             const progressBar = document.getElementById('ad-progress-bar');
@@ -202,21 +202,19 @@
 
             if (progress > 0) {
                 progressBarContainer.style.display = 'block';
-                // A small delay is added so the transition works correctly after changing display
                 setTimeout(() => {
                     progressBar.style.width = progress + '%';
                 }, 50);
             } else {
-                // Set width to 0% before hiding the bar
                 progressBar.style.width = '0%';
                 setTimeout(() => {
                     progressBarContainer.style.display = 'none';
-                }, 500); // Wait 500ms for the transition to finish
+                }, 500); 
             }
         }
 
         async function handleAdTask(monetagZoneId, gigapubId) {
-            updateProgressBar(1); // Start showing the progress bar
+            updateProgressBar(1); 
 
             const monetagShowFunction = window['show_' + monetagZoneId];
 
@@ -224,18 +222,17 @@
                 // Try to show the first ad (Monetag)
                 if (typeof monetagShowFunction === 'function') {
                     await monetagShowFunction();
-                    updateProgressBar(50); // If successful, fill the bar to 50%
+                    updateProgressBar(50); 
                 } else {
-                    // If Monetag is not available, try to show Gigapub as the first ad
+                    // If Monetag is not available, try to show Gigapub as the first and only ad
                     if (typeof window.showGiga === 'function') {
                         if (window.initGiga) { window.initGiga(gigapubId); }
                         await window.showGiga();
-                        updateProgressBar(100); // Since only one ad could be shown, fill the bar to 100%
+                        updateProgressBar(100); 
                         rewardUser("বিজ্ঞাপনটি সফলভাবে সম্পন্ন হয়েছে।");
-                        setTimeout(() => updateProgressBar(0), 500); // Hide the bar after a short delay
-                        return; // Exit the function
+                        setTimeout(() => updateProgressBar(0), 500); 
+                        return; 
                     } else {
-                        // If no network is available, throw an error
                         throw new Error("কোনো বিজ্ঞাপন নেটওয়ার্ক উপলব্ধ নেই।");
                     }
                 }
@@ -244,10 +241,9 @@
                 if (typeof window.showGiga === 'function') {
                     if (window.initGiga) { window.initGiga(gigapubId); }
                     await window.showGiga();
-                    updateProgressBar(100); // If successful, fill the bar to 100%
+                    updateProgressBar(100); 
                     rewardUser("দুটি বিজ্ঞাপনই সফলভাবে সম্পন্ন হয়েছে।");
                 } else {
-                    // If only the first ad was successful
                     rewardUser("প্রথম বিজ্ঞাপনটি সম্পন্ন হয়েছে।");
                 }
 
@@ -255,7 +251,6 @@
                 console.error("Ad task failed:", error);
                 alert("দুঃখিত, কোনো বিজ্ঞাপন দেখানো সম্ভব হচ্ছে না।");
             } finally {
-                // Finally, hide the bar after giving the user a moment to see it at 100%
                 setTimeout(() => {
                     updateProgressBar(0);
                 }, 500);
