@@ -233,7 +233,7 @@
                 content = `<h3>Complete Tasks</h3>` + (appConfig.tasks || []).filter(t => t.enabled).map(task => {
                     let taskCard = `<div class="card">
                         <div class="icon-wrapper icon-bg-${task.icon}"><svg><use href="#icon-${task.icon}"></use></svg></div>
-                        <h4>${task.title} (পুরস্কার: ${task.reward || 0} টাকা)</h4>
+                        <h4>${task.title}</h4>
                         <p>${task.description}</p>`;
                     if (task.type === 'ads') {
                         const adLimitReached = userData.adsWatched.count >= task.dailyAdLimit;
@@ -248,7 +248,7 @@
                         }).join('');
                         taskCard += `<div class="button-group">${buttonsHTML}</div>`;
                     }
-                    taskCard += `<p class="task-info">${task.notice || ''}</p></div>`;
+                    taskCard += `<p class="task-info">পুরস্কার: ${task.reward || 0} টাকা</p></div>`;
                     return taskCard;
                 }).join('');
             } else if (pageName === 'support') {
