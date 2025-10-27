@@ -159,28 +159,32 @@
         }
         
         function initializeUser() {
-            const userNameEl = document.getElementById('user-name');
-            const userPhotoEl = document.getElementById('user-photo');
-            userNameEl.textContent = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'User';
-            userPhotoEl.src = currentUser.photo_url || `https://via.placeholder.com/50/eeeeee/cccccc?text=${(currentUser.first_name || 'U').charAt(0)}`;
-            
             const userRef = database.ref(`users/${currentUser.id}`);
             userRef.on('value', (snapshot) => {
-                if (!snapshot.exists()) {
-                     userRef.set({ balance: 0, referrals: 0, adsWatched: {}, first_name: currentUser.first_name || '' });
-                }
                 userData = snapshot.val() || { balance: 0, referrals: 0, adsWatched: {} };
                 updateHeader();
                 const currentPage = document.querySelector('.nav-btn.active')?.dataset.page || 'home';
                 renderPage(currentPage);
             }, error => console.error("User data read error:", error));
             
-            handleReferral();
+            userRef.once('value').then(snapshot => {
+                if (!snapshot.exists()) {
+                    userRef.set({ balance: 0, referrals: 0, adsWatched: {}, first_name: currentUser.first_name || '' })
+                        .then(() => handleReferral());
+                } else {
+                    handleReferral();
+                }
+            });
+
+            const userNameEl = document.getElementById('user-name');
+            const userPhotoEl = document.getElementById('user-photo');
+            userNameEl.textContent = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'User';
+            userPhotoEl.src = currentUser.photo_url || `https://via.placeholder.com/50/eeeeee/cccccc?text=${(currentUser.first_name || 'U').charAt(0)}`;
         }
 
         function handleReferral() {
             const startParam = window.Telegram.WebApp.initDataUnsafe.start_param;
-            if (!startParam || startParam === String(currentUser.id)) return;
+            if (!startParam || startParam === String(currentUser.id) || !appConfig) return;
             
             const referrerId = startParam;
             const newUserRef = database.ref(`users/${currentUser.id}`);
@@ -240,7 +244,7 @@
                     </div></div>`;
             } else if (pageName === 'tasks' && appConfig.tasks) {
                 const taskItems = (appConfig.tasks || []).filter(task => task.enabled).map(task => {
-                    const icon = task.icon; // Use 'icon' from JSON
+                    const icon = task.icon;
                     let taskButton = '';
                     if (task.type === 'ads') {
                         taskButton = `<button class="btn btn-primary" style="margin-top: 20px;" data-action="handleAd" data-reward="${task.reward || 0}">Verify ☑</button>`;
@@ -273,10 +277,8 @@
         }
 
         function handleMainContentClick(event) {
-            const target = event.target;
-            const button = target.closest('button[data-action]');
+            const button = event.target.closest('button[data-action]');
             if (!button) return;
-            
             event.preventDefault();
             const action = button.dataset.action;
 
@@ -335,18 +337,20 @@
                 if (typeof monetagShowFunction === 'function') {
                     await monetagShowFunction();
                     adShownSuccessfully = true;
-                    updateProgressBar(50);
                 }
             } catch (monetagError) { console.warn("Monetag ad failed:", monetagError); }
-
+            
+            updateProgressBar(50);
+            
             try {
                 if (typeof window.showGiga === 'function') {
                     if (window.initGiga) window.initGiga(gigapubId);
                     await window.showGiga();
                     adShownSuccessfully = true;
-                    updateProgressBar(100);
                 }
             } catch (gigapubError) { console.warn("Gigapub ad failed:", gigapubError); }
+
+            updateProgressBar(100);
 
             if (adShownSuccessfully) {
                 rewardUser("বিজ্ঞাপনটি সফলভাবে সম্পন্ন হয়েছে।", rewardAmount);
@@ -378,4 +382,4 @@
         }
     </script>
 </body>
-</html>```
+</html>
