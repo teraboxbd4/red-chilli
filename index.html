@@ -265,11 +265,13 @@
                 const methodOptions = methods.map(m => `<option value="${m}">${m}</option>`).join('');
                 content = `<h3>Withdraw (টাকা)</h3>
                     <div class="card withdraw-form">
-                        <p style="text-align:center; margin-bottom:20px;">${notice}</p>
-                        <label>Method:</label><select>${methodOptions}</select>
-                        <label>Account Number:</label><input type="text" placeholder="01XXXXXXXXX">
-                        <label>Amount (টাকা):</label><input type="number" placeholder="${minAmount}">
-                        <button class="btn btn-primary">Submit Request</button>
+                        <form onsubmit="event.preventDefault(); alert('Withdraw request submitted!');">
+                            <p style="text-align:center; margin-bottom:20px;">${notice}</p>
+                            <label>Method:</label><select>${methodOptions}</select>
+                            <label>Account Number:</label><input type="text" placeholder="01XXXXXXXXX" required>
+                            <label>Amount (টাকা):</label><input type="number" placeholder="${minAmount}" min="${minAmount}" required>
+                            <button type="submit" class="btn btn-primary">Submit Request</button>
+                        </form>
                     </div>`;
             }
             mainContent.innerHTML = content;
