@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Red Chilli</title>
+    
+    <!-- Telegram WebApp Script (Must be first) -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- Ad Network SDKs -->
     <script async src='//libtl.com/sdk.js'></script>
     <script src="https://ad.gigapub.tech/script"></script>
+    
     <style>
         :root {
             --primary-blue: #0d6efd;
@@ -37,8 +42,6 @@
         .card .task-info { font-size: 0.8em; color: var(--text-light); margin-top: 12px; }
         .dashboard-stats { display: flex; gap: 8px; margin: 0 4px 16px 4px; }
         .stat-card { background-color: var(--card-background); padding: 16px; border-radius: 12px; text-align: center; flex: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid var(--border-color); }
-        .stat-card p { margin: 0 0 8px 0; font-size: 0.9em; color: var(--text-light); }
-        .stat-card span { font-size: 2em; font-weight: 700; color: var(--primary-blue); }
         .refer-card .referral-link input { width: 100%; padding: 10px 12px; border: 1px dashed var(--primary-blue); border-radius: 8px; text-align: center; margin: 16px 0; background-color: #f8f9fa; font-size: 0.9em; box-sizing: border-box; }
         .button-group { display: flex; gap: 10px; margin-top: 20px; }
         .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 600; }
@@ -103,11 +106,10 @@
         let currentUser;
         let appConfig;
 
-        // --- Main App Initialization Logic ---
         function initializeApp() {
             const tg = window.Telegram.WebApp;
             if (tg.platform === 'unknown') {
-                document.getElementById('app-root').innerHTML = `<div class="full-page-notice">...</div>`;
+                document.getElementById('app-root').innerHTML = `<div class="full-page-notice"><div class="card"><h4>⛔ Access Denied</h4><p>Please open this app inside Telegram.</p></div></div>`;
                 return;
             }
             tg.MainButton.hide();
@@ -117,12 +119,10 @@
             const userNameEl = document.getElementById('user-name');
             const userPhotoEl = document.getElementById('user-photo');
             userNameEl.textContent = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'User';
-            userPhotoEl.src = currentUser.photo_url || `https://via.placeholder.com/50/...`;
+            userPhotoEl.src = currentUser.photo_url || `https://via.placeholder.com/50/eeeeee/cccccc?text=${(currentUser.first_name || 'U').charAt(0)}`;
             
-            // Render the initial page (Home)
             renderPage('home', appConfig, currentUser);
 
-            // Setup Navigation
             document.querySelectorAll('.nav-btn').forEach(button => {
                 button.addEventListener('click', () => {
                     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
@@ -131,7 +131,6 @@
                 });
             });
 
-            // Setup Click Listeners
             document.getElementById('main-content').addEventListener('click', function(event) {
                 const adButton = event.target.closest('[data-action="handleAd"]');
                 if (adButton) {
@@ -140,14 +139,17 @@
             });
         }
 
-        // --- Firebase Data Loading ---
         document.addEventListener('DOMContentLoaded', function () {
             const configRef = database.ref('config');
-            
             configRef.once('value', (snapshot) => {
                 if (snapshot.exists()) {
                     appConfig = snapshot.val();
-                    initializeApp(); // Initialize the app ONLY after config is loaded
+                    const adTask = (appConfig.tasks || []).find(t => t.type === 'ads' && t.enabled);
+                    if (adTask && adTask.adNetworks && adTask.adNetworks.monetag) {
+                        const monetagScript = document.querySelector('script[src="//libtl.com/sdk.js"]');
+                        monetagScript.setAttribute('data-zone', adTask.adNetworks.monetag.zoneId);
+                    }
+                    initializeApp();
                 } else {
                     document.getElementById('main-content').innerHTML = `<div class="card"><h4>App configuration not found.</h4></div>`;
                 }
@@ -156,8 +158,75 @@
             });
         });
 
-        function renderPage(pageName, config, user) { /* ... renderPage function from previous answer ... */ }
-        function handleAdTask(monetagZoneId, gigapubId) { /* ... handleAdTask function from previous answer ... */ }
+        function renderPage(pageName, config, user) {
+            const mainContent = document.getElementById('main-content');
+            let content = '';
+            if (!config) { mainContent.innerHTML = `<div class="card"><p>Content could not be loaded.</p></div>`; return; }
+
+            if (pageName === 'home') {
+                const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${user.id}`;
+                content = `<div class="page active"><h3>Dashboard</h3><div class="dashboard-stats"><div class="stat-card"><p>Daily Ads Watched</p><span>0 / 10</span></div><div class="stat-card"><p>Total Referrals</p><span>0</span></div></div><div class="card refer-card"><h4>Refer & Earn More!</h4><p>রেফার বোনাস পেতে লিঙ্কটি কপি করে আপনার বন্ধুদের কাছে শেয়ার করুন। প্রতি রেফারে আয় 40 টাকা।</p><div class="referral-link"><input type="text" value="${referralLink}" readonly></div><div class="button-group"><button class="btn btn-primary">Copy Referral Link</button><button class="btn btn-secondary">Share Now</button></div></div></div>`;
+            } else if (pageName === 'support' && config.supportPage) {
+                const supportItems = (config.supportPage.items || []).map(item => `<div class="card"><div class="icon-wrapper icon-bg-${item.icon || 'blue'}"><svg><use href="#icon-${item.icon || 'play-circle'}"></use></svg></div><h4>${item.title || ''}</h4><p>${item.description || ''}</p><button class="btn btn-primary" style="margin-top: 20px;" onclick="window.open('${item.buttonUrl || '#'}', '_blank')">${item.buttonText || ''}</button><p class="task-info">${item.notice || ''}</p></div>`).join('');
+                content = `<div class="page active"><h3>${config.supportPage.title || 'Support'}</h3>${supportItems}</div>`;
+            } else if (pageName === 'tasks' && config.tasks) {
+                const taskItems = (config.tasks || []).filter(task => task.enabled).map(task => {
+                    if (task.type === 'ads') {
+                        return `<div class="card"><div class="icon-wrapper icon-bg-${task.icon}"><svg><use href="#icon-${task.icon}"></use></svg></div><h4>${task.title}</h4><p>${task.description}</p><button class="btn btn-primary" style="margin-top: 20px;" data-action="handleAd" data-monetag="${task.adNetworks.monetag.zoneId}" data-gigapub="${task.adNetworks.gigapub.id}">Verify ☑</button><p class="task-info">${task.notice}</p></div>`;
+                    } else {
+                        const buttonsHTML = (task.buttons || []).map(btn => `<button class="btn btn-primary" onclick="${btn.url ? `window.open('${btn.url}', '_blank')` : `alert('Action: ${btn.action}')`}">${btn.text}</button>`).join('');
+                        return `<div class="card"><div class="icon-wrapper icon-bg-${task.icon}"><svg><use href="#icon-${task.icon}"></use></svg></div><h4>${task.title}</h4><p>${task.description}</p><div class="button-group">${buttonsHTML}</div><p class="task-info">পুরস্কার: ${task.reward || 0} টাকা</p></div>`;
+                    }
+                }).join('');
+                content = `<div class="page active"><h3>Complete Tasks</h3>${taskItems}</div>`;
+            } else if (pageName === 'withdraw' && config.withdrawPage) {
+                const notice = (config.withdrawPage.noticeText || "").replace('{minAmount}', config.withdrawPage.minAmount || 0).replace('{minReferrals}', config.withdrawPage.minReferrals || 0);
+                const methods = (config.withdrawPage.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
+                content = `<div class="page active"><h3>Withdraw (টাকা)</h3><div class="card"><form class="withdraw-form" onsubmit="event.preventDefault()"><p style="text-align: center; margin-bottom: 20px;">${notice}</p><label>Method:</label><select>${methods}</select><label>Account Number:</label><input type="text" placeholder="01XXXXXXXXX"><label>Amount (টাকা):</label><input type="number" placeholder="1000"><button type="submit" class="btn btn-primary">Submit Request</button></form></div></div>`;
+            } else {
+                 content = `<div class="page active"><div class="card"><p>Content for this page could not be loaded.</p></div></div>`;
+            }
+            mainContent.innerHTML = content;
+        }
+        
+        function handleAdTask(monetagZoneId, gigapubId) {
+            alert("বিজ্ঞাপন প্রক্রিয়া শুরু হচ্ছে...");
+            if (window.initGiga) { window.initGiga(gigapubId); }
+            const monetagShowFunction = window['show_' + monetagZoneId];
+            if (typeof monetagShowFunction === 'function') {
+                monetagShowFunction().then(() => {
+                    alert("প্রথম বিজ্ঞাপন সম্পন্ন। এবার দ্বিতীয়টি দেখানো হবে...");
+                    showSecondAd('gigapub');
+                }).catch(e => {
+                    showFirstAdAsGigaPub();
+                });
+            } else if (typeof window.showGiga === 'function') {
+                showFirstAdAsGigaPub();
+            } else {
+                alert("দুঃখিত, এই মুহূর্তে কোনো বিজ্ঞাপন নেটওয়ার্ক উপলব্ধ নেই।");
+            }
+            function showFirstAdAsGigaPub() {
+                window.showGiga().then(() => {
+                    rewardUser("প্রথম বিজ্ঞাপনটি সফল হয়েছে।");
+                }).catch(e => {
+                    alert("দুঃখিত, কোনো বিজ্ঞাপন দেখানো সম্ভব হচ্ছে না।");
+                });
+            }
+            function showSecondAd(network) {
+                if (network === 'gigapub' && typeof window.showGiga === 'function') {
+                    window.showGiga().then(() => {
+                        rewardUser("দুটি বিজ্ঞাপনই সফলভাবে সম্পন্ন হয়েছে।");
+                    }).catch(e => {
+                        rewardUser("দ্বিতীয় বিজ্ঞাপনটি দেখাতে সমস্যা হয়েছে।");
+                    });
+                } else {
+                     rewardUser("দ্বিতীয় বিজ্ঞাপন নেটওয়ার্কটি পাওয়া যায়নি।");
+                }
+            }
+            function rewardUser(message) {
+                alert(`ধন্যবাদ! ${message} আপনাকে পুরস্কৃত করা হয়েছে।`);
+            }
+        }
     </script>
 </body>
 </html>
