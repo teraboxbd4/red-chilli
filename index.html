@@ -35,9 +35,10 @@
             flex-direction: column; 
         }
         
+        /* পরিবর্তন: কার্ডের ডানে-বামে 4px স্পেস দেওয়ার জন্য প্যাডিং পরিবর্তন */
         main { 
             flex-grow: 1; 
-            padding: 16px 8px; 
+            padding: 16px 4px; /* উপরে-নিচে 16px, ডানে-বামে 4px */
             overflow-y: auto; 
         }
         
@@ -357,7 +358,6 @@
                         <p class="task-info">পুরস্কার: ${task.reward || 0} টাকা</p>
                     </div>`;
                 }).join('');
-                // ভুল সংশোধন করা হয়েছে
                 content = `<div class="page active"><h3>Complete Tasks</h3>${taskItems}</div>`;
             } else if (pageName === 'withdraw' && appConfig.withdrawPage) {
                 const wp = appConfig.withdrawPage;
@@ -388,7 +388,6 @@
             if (action === 'submit-withdraw') handleWithdrawRequest();
             else if (action === 'handleAd') {
                 const adTaskConfig = (appConfig.tasks || []).find(t => t.type === 'ads');
-                // ভুল সংশোধন করা হয়েছে
                 if (adTaskConfig && adTaskConfig.adNetworks) {
                      handleAdTask(adTaskConfig.adNetworks.monetag.zoneId, adTaskConfig.adNetworks.gigapub.id, parseFloat(button.dataset.reward) || 0);
                 }
