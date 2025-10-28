@@ -35,11 +35,12 @@
             flex-direction: column; 
         }
         
-        main { flex-grow: 1; padding: 16px 8px; overflow-y: auto; }
+        /* পরিবর্তন ১: কার্ডকে ফুল-স্ক্রিন করার জন্য ডানে-বামের প্যাডিং সরানো হয়েছে */
+        main { flex-grow: 1; padding: 16px 0; overflow-y: auto; }
         
-        h3 { font-size: 1.4em; font-weight: 600; margin: 0 0 16px 0; text-align: left; }
+        h3 { font-size: 1.4em; font-weight: 600; margin: 0 0 16px 0; text-align: left; padding: 0 16px; }
         
-        header { background-color: transparent; padding: 10px 15px; border-bottom: 1px solid #e0e0e0; }
+        header { background-color: transparent; padding: 10px 15px; border-bottom: 1px solid var(--border-color); }
         
         .header-content { display: flex; align-items: center; justify-content: space-between; }
         .header-left { display: flex; align-items: center; gap: 12px; }
@@ -50,12 +51,24 @@
         .page { animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        .card { background-color: var(--card-background); padding: 20px; border-radius: 16px; text-align: center; border: 1px solid var(--border-color); margin: 0 0 16px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.07); }
+        /* পরিবর্তন ২: কার্ডের ডিজাইন ফুল-স্ক্রিন করা হয়েছে */
+        .card { 
+            background-color: var(--card-background); 
+            padding: 20px; 
+            border-radius: 0; /* কোণাগুলো এখন বর্গাকার */
+            text-align: center; 
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            border-left: none;
+            border-right: none;
+            margin: 0 0 16px 0; 
+            box-shadow: none; /* শ্যাডো সরানো হয়েছে */
+        }
         
         .card h4 { margin: 15px 0 10px 0; font-size: 1.15em; font-weight: 600; }
         .card p { color: var(--text-light); line-height: 1.6; margin: 0; font-size: 0.95em; }
         .card .task-info { font-size: 0.8em; color: var(--text-light); margin-top: 12px; }
-        .dashboard-stats { display: flex; gap: 12px; margin: 0 0 16px 0; }
+        .dashboard-stats { display: flex; gap: 12px; margin: 16px; }
         .stat-card { background-color: var(--card-background); padding: 16px; border-radius: 16px; text-align: center; flex: 1; box-shadow: 0 4px 12px rgba(0,0,0,0.07); border: 1px solid var(--border-color); }
         .refer-card .referral-link input { width: 100%; padding: 10px 12px; border: 1px dashed var(--primary-blue); border-radius: 8px; text-align: center; margin: 16px 0; background-color: #f8f9fa; font-size: 0.9em; box-sizing: border-box; }
         .button-group { display: flex; gap: 10px; margin-top: 20px; }
@@ -65,7 +78,7 @@
         .icon-wrapper { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; background-color: var(--primary-blue); }
         .icon-wrapper svg { width: 28px; height: 28px; fill: white; }
         
-        /* === ছবির মতো সঠিক নেভিগেশন বার স্টাইল === */
+        /* পরিবর্তন ৩: ভিডিওর মতো নতুন "নরমাল" নেভিগেশন বার স্টাইল */
         .nav-container {
             position: fixed;
             bottom: 0;
@@ -83,29 +96,28 @@
             justify-content: space-around;
             align-items: center;
             height: 65px;
-            padding: 5px 10px;
+            padding: 5px 0;
         }
 
         .nav-btn {
             background-color: transparent;
             border: none;
-            border-radius: 16px;
-            color: var(--text-light);
+            color: var(--text-light); /* ডিফল্ট রঙ */
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            flex: 1;
-            gap: 3px;
+            flex: 1; /* সব বাটন সমান চওড়া */
+            gap: 4px;
             height: 100%;
-            transition: all 0.2s ease-in-out;
-            padding: 4px;
+            padding: 0;
+            border-radius: 0;
         }
 
         .nav-icon {
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
             fill: currentColor;
         }
 
@@ -115,11 +127,8 @@
         }
 
         .nav-btn.active {
-            background-color: #eaf3ff;
-            color: var(--primary-blue);
-            flex: 1.5; /* অন্যগুলোর চেয়ে সামান্য চওড়া করার জন্য */
-            height: 48px;
-            align-self: center;
+            color: var(--primary-blue); /* অ্যাক্টিভ বাটনের রঙ */
+            background-color: transparent; /* কোনো ব্যাকগ্রাউন্ড নেই */
         }
         /* === স্টাইল শেষ === */
 
@@ -135,7 +144,7 @@
         <div id="ad-progress-bar" style="width: 0%; height: 100%; background-color: var(--primary-blue); transition: width 0.5s linear;"></div>
     </div>
     <div id="app-root">
-        <!-- SVG আইকন (এগুলো ছবির সাথে মিলানো হয়েছে) -->
+        <!-- SVG আইকন -->
         <svg style="position: absolute; width: 0; height: 0; overflow: hidden;"><defs>
             <symbol id="icon-video-camera" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></symbol>
             <symbol id="icon-telegram" viewBox="0 0 24 24"><path d="m9.417 15.181-.397 5.584c.568 0 .814-.244 1.109-.537l2.663-2.545 5.518 4.041c1.012.564 1.725.267 1.998-.931L22.0 .931c.309-1.25-.5-1.841-1.559-1.434L.182 6.582c-1.274.482-1.241 1.169-.23 1.555l5.88 1.813L17.585 4.8c.702-.454 1.323-.212.799.278L8.38 13.331l.055.055Z"/></symbol>
@@ -162,7 +171,7 @@
             <main id="main-content">
                 <div class="card"><p>Loading App...</p></div>
             </main>
-            <!-- ছবির মতো সঠিক নেভিগেশন বার HTML -->
+            <!-- নতুন এবং সঠিক নেভিগেশন বার HTML -->
             <div class="nav-container">
                 <nav>
                     <button class="nav-btn active" data-page="home">
@@ -356,6 +365,7 @@
                 const methods = (wp.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
                 
                 content = `<div class="page active"><h3>Withdraw (টাকা)</h3>
+                    <div class="card">
                     <p style="margin-bottom: 20px; text-align: center;">${wp.noticeText.replace('{minAmount}', wp.minAmount).replace('{minReferrals}', wp.minReferrals)}</p>
                     <form class="withdraw-form" onsubmit="return false;">
                         <div class="form-group"><label>Method:</label><select id="withdraw-method">${methods}</select></div>
