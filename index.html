@@ -35,19 +35,19 @@
             flex-direction: column; 
         }
         
-        /* পরিবর্তন: কার্ডের ডানে-বামে 0px স্পেস */
+        /* পরিবর্তন ২: কার্ডের ডানে-বামে সামান্য (1px) স্পেস */
         main { 
             flex-grow: 1; 
-            padding: 10px 0; 
+            padding: 16px 1px;
             overflow-y: auto; 
         }
         
         h3 { 
             font-size: 1.4em; 
             font-weight: 600; 
-            margin: 0 0 10px 0; 
+            margin: 0 0 16px 0; 
             text-align: left; 
-            padding: 0 10px; 
+            padding: 0 16px;
         }
         
         header { background-color: transparent; padding: 10px 15px; border-bottom: 1px solid var(--border-color); }
@@ -61,14 +61,14 @@
         .page { animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* পরিবর্তন: সকল কার্ডের ডিজাইন এখন stat-card এর মতো */
+        /* পরিবর্তন ১: কার্ডের উপর-নিচের দূরত্ব 12px করা হয়েছে */
         .card { 
             background-color: var(--card-background); 
-            padding: 24px; 
+            padding: 20px; 
             border-radius: 16px; 
             text-align: center; 
             border: 1px solid var(--border-color);
-            margin: 0 8px 10px 8px; /* ডানে-বামে সামান্য মার্জিন */
+            margin: 0 0 12px 0; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.07); 
         }
         
@@ -76,10 +76,11 @@
         .card p { color: var(--text-light); line-height: 1.6; margin: 0; font-size: 0.95em; }
         .card .task-info { font-size: 0.8em; color: var(--text-light); margin-top: 12px; }
         
+        /* পরিবর্তন ১: কার্ডের উপর-নিচের দূরত্ব 12px করা হয়েছে */
         .dashboard-stats { 
             display: flex; 
-            gap: 10px; 
-            margin: 0 8px 10px 8px;
+            gap: 12px; 
+            margin-bottom: 12px; 
         }
         
         .stat-card { 
