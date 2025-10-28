@@ -35,14 +35,20 @@
             flex-direction: column; 
         }
         
-        /* পরিবর্তন: কার্ডের ডানে-বামে 1px স্পেস দেওয়ার জন্য প্যাডিং পরিবর্তন */
+        /* পরিবর্তন ২: কার্ডের ডানে-বামে সামান্য (4px) স্পেস */
         main { 
             flex-grow: 1; 
-            padding: 16px 1px; /* উপরে-নিচে 16px, ডানে-বামে 1px */
+            padding: 16px 4px;
             overflow-y: auto; 
         }
         
-        h3 { font-size: 1.4em; font-weight: 600; margin: 0 0 16px 0; text-align: left; }
+        h3 { 
+            font-size: 1.4em; 
+            font-weight: 600; 
+            margin: 0 0 16px 0; 
+            text-align: left; 
+            padding: 0 4px; /* main এর প্যাডিং এর সাথে মিল রেখে */
+        }
         
         header { background-color: transparent; padding: 10px 15px; border-bottom: 1px solid var(--border-color); }
         
@@ -61,7 +67,7 @@
             border-radius: 16px; 
             text-align: center; 
             border: 1px solid var(--border-color);
-            margin: 0 0 16px 0; 
+            margin: 0 0 12px 0; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.07); 
         }
         
@@ -71,8 +77,8 @@
         
         .dashboard-stats { 
             display: flex; 
-            gap: 16px; 
-            margin-bottom: 16px; 
+            gap: 12px; 
+            margin-bottom: 12px; 
         }
         
         .stat-card { background-color: var(--card-background); padding: 16px; border-radius: 16px; text-align: center; flex: 1; box-shadow: 0 4px 12px rgba(0,0,0,0.07); border: 1px solid var(--border-color); }
@@ -84,6 +90,7 @@
         .icon-wrapper { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; background-color: var(--primary-blue); }
         .icon-wrapper svg { width: 28px; height: 28px; fill: white; }
         
+        /* পরিবর্তন ১: নেভিগেশন বার নিচে যুক্ত এবং ফুল-স্ক্রিন */
         .nav-container {
             position: fixed;
             bottom: 0;
