@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
@@ -358,7 +358,7 @@
                         <p class="task-info">পুরস্কার: ${task.reward || 0} টাকা</p>
                     </div>`;
                 }).join('');
-                content = `<div class="page active"><h3>Complete Tasks</h3>${taskItems}</div>`;
+                content = `<div class="page active"><h3>Complete Tasks</h3>${${taskItems}</div>`;
             } else if (pageName === 'withdraw' && appConfig.withdrawPage) {
                 const wp = appConfig.withdrawPage;
                 const methods = (wp.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
