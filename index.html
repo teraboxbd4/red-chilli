@@ -35,10 +35,10 @@
             flex-direction: column; 
         }
         
-        /* পরিবর্তন ১: কার্ডকে ফুল-স্ক্রিন করার জন্য ডানে-বামের প্যাডিং সরানো হয়েছে */
-        main { flex-grow: 1; padding: 16px 0; overflow-y: auto; }
+        /* পরিবর্তন: ডানে-বামে প্যাডিং ফিরিয়ে আনা হয়েছে */
+        main { flex-grow: 1; padding: 16px; overflow-y: auto; }
         
-        h3 { font-size: 1.4em; font-weight: 600; margin: 0 0 16px 0; text-align: left; padding: 0 16px; }
+        h3 { font-size: 1.4em; font-weight: 600; margin: 0 0 16px 0; text-align: left; }
         
         header { background-color: transparent; padding: 10px 15px; border-bottom: 1px solid var(--border-color); }
         
@@ -51,24 +51,21 @@
         .page { animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* পরিবর্তন ২: কার্ডের ডিজাইন ফুল-স্ক্রিন করা হয়েছে */
+        /* পরিবর্তন: ভিডিওর মতো কার্ড ডিজাইন */
         .card { 
             background-color: var(--card-background); 
             padding: 20px; 
-            border-radius: 0; /* কোণাগুলো এখন বর্গাকার */
+            border-radius: 16px; /* গোলাকার কোণা */
             text-align: center; 
-            border-top: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
-            border-left: none;
-            border-right: none;
+            border: 1px solid var(--border-color);
             margin: 0 0 16px 0; 
-            box-shadow: none; /* শ্যাডো সরানো হয়েছে */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.07); /* হালকা শ্যাডো */
         }
         
         .card h4 { margin: 15px 0 10px 0; font-size: 1.15em; font-weight: 600; }
         .card p { color: var(--text-light); line-height: 1.6; margin: 0; font-size: 0.95em; }
         .card .task-info { font-size: 0.8em; color: var(--text-light); margin-top: 12px; }
-        .dashboard-stats { display: flex; gap: 12px; margin: 16px; }
+        .dashboard-stats { display: flex; gap: 12px; margin: 0 0 16px 0; } /* Home পেজের জন্য */
         .stat-card { background-color: var(--card-background); padding: 16px; border-radius: 16px; text-align: center; flex: 1; box-shadow: 0 4px 12px rgba(0,0,0,0.07); border: 1px solid var(--border-color); }
         .refer-card .referral-link input { width: 100%; padding: 10px 12px; border: 1px dashed var(--primary-blue); border-radius: 8px; text-align: center; margin: 16px 0; background-color: #f8f9fa; font-size: 0.9em; box-sizing: border-box; }
         .button-group { display: flex; gap: 10px; margin-top: 20px; }
@@ -78,7 +75,7 @@
         .icon-wrapper { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; background-color: var(--primary-blue); }
         .icon-wrapper svg { width: 28px; height: 28px; fill: white; }
         
-        /* পরিবর্তন ৩: ভিডিওর মতো নতুন "নরমাল" নেভিগেশন বার স্টাইল */
+        /* পরিবর্তন: ভিডিওর মতো নতুন নেভিগেশন বার স্টাইল */
         .nav-container {
             position: fixed;
             bottom: 0;
@@ -96,13 +93,12 @@
             justify-content: space-around;
             align-items: center;
             height: 65px;
-            padding: 5px 0;
         }
 
         .nav-btn {
             background-color: transparent;
             border: none;
-            color: var(--text-light); /* ডিফল্ট রঙ */
+            color: var(--text-light); /* ইনঅ্যাক্টিভ রঙ */
             cursor: pointer;
             display: flex;
             flex-direction: column;
@@ -111,8 +107,6 @@
             flex: 1; /* সব বাটন সমান চওড়া */
             gap: 4px;
             height: 100%;
-            padding: 0;
-            border-radius: 0;
         }
 
         .nav-icon {
@@ -127,8 +121,7 @@
         }
 
         .nav-btn.active {
-            color: var(--primary-blue); /* অ্যাক্টিভ বাটনের রঙ */
-            background-color: transparent; /* কোনো ব্যাকগ্রাউন্ড নেই */
+            color: var(--primary-blue); /* শুধু অ্যাক্টিভ রঙ পরিবর্তন হবে */
         }
         /* === স্টাইল শেষ === */
 
@@ -311,14 +304,14 @@
             let content = '';
             
             if (pageName === 'home') {
-                 const adTaskConfig = (appConfig.tasks || []).find(t => t.type === 'ads' && t.enabled) || { dailyLimit: 10 };
+                const adTaskConfig = (appConfig.tasks || []).find(t => t.type === 'ads' && t.enabled) || { dailyLimit: 10 };
                 const today = new Date().toISOString().slice(0, 10);
                 const adsWatchedToday = (userData.adsWatched && userData.adsWatched[today]) || 0;
                 const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}`;
                 content = `<div class="page active"><h3>Dashboard</h3>
                     <div class="dashboard-stats">
-                        <div class="stat-card"><p>Daily Ads Watched</p><span>${adsWatchedToday} / ${adTaskConfig.dailyLimit}</span></div>
-                        <div class="stat-card"><p>Total Referrals</p><span>${userData.referrals || 0}</span></div>
+                        <div class="stat-card"><p>Daily Ads Watched</p><h2>${adsWatchedToday} / ${adTaskConfig.dailyLimit}</h2></div>
+                        <div class="stat-card"><p>Total Referrals</p><h2>${userData.referrals || 0}</h2></div>
                     </div>
                     <div class="card refer-card">
                         <h4>Refer & Earn More!</h4>
@@ -343,7 +336,7 @@
                     const icon = task.icon;
                     let buttonsHTML = '';
                     if (task.type === 'ads') {
-                        buttonsHTML = `<button class="btn btn-primary" style="margin-top: 20px;" data-action="handleAd" data-reward="${task.reward || 0}">Verify ☑</button>`;
+                        buttonsHTML = `<button class="btn btn-primary" style="margin-top: 20px;" data-action="handleAd" data-reward="${task.reward || 0}">Watch Ad</button>`;
                     } else {
                         buttonsHTML = (task.buttons || []).map(btn => 
                             `<button class="btn btn-primary" data-action="open-url" data-url="${btn.url || '#'}">${btn.text}</button>`
@@ -364,15 +357,17 @@
                 const wp = appConfig.withdrawPage;
                 const methods = (wp.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
                 
+                // পরিবর্তন: উইথড্র পেজকে কার্ডের ভেতর রাখা হয়েছে
                 content = `<div class="page active"><h3>Withdraw (টাকা)</h3>
                     <div class="card">
-                    <p style="margin-bottom: 20px; text-align: center;">${wp.noticeText.replace('{minAmount}', wp.minAmount).replace('{minReferrals}', wp.minReferrals)}</p>
-                    <form class="withdraw-form" onsubmit="return false;">
-                        <div class="form-group"><label>Method:</label><select id="withdraw-method">${methods}</select></div>
-                        <div class="form-group"><label>Account Number:</label><input id="withdraw-account" type="text" placeholder="01XXXXXXXXX"></div>
-                        <div class="form-group"><label>Amount (টাকা):</label><input id="withdraw-amount" type="number" placeholder="${wp.minAmount}"></div>
-                        <button type="submit" class="btn btn-primary" data-action="submit-withdraw">Submit Request</button>
-                    </form></div>`;
+                        <p style="text-align: left; margin-bottom: 20px;">${wp.noticeText.replace('{minAmount}', wp.minAmount).replace('{minReferrals}', wp.minReferrals)}</p>
+                        <form class="withdraw-form" onsubmit="return false;">
+                            <div class="form-group"><label>Method:</label><select id="withdraw-method">${methods}</select></div>
+                            <div class="form-group"><label>Account Number:</label><input id="withdraw-account" type="text" placeholder="01XXXXXXXXX"></div>
+                            <div class="form-group"><label>Amount (টাকা):</label><input id="withdraw-amount" type="number" placeholder="${wp.minAmount}"></div>
+                            <button type="submit" class="btn btn-primary" data-action="submit-withdraw">Submit Request</button>
+                        </form>
+                    </div></div>`;
             } else {
                  content = `<div class="page active"><div class="card"><p>Page not found.</p></div></div>`;
             }
