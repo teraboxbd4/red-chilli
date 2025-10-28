@@ -18,14 +18,14 @@
             --text-light: #6c757d;
         }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: var(--background-grey); color: var(--text-dark); }
-        
-        /* পরিবর্তন ১: মূল কন্টেইনারের ব্যাকগ্রাউন্ড সাদা থেকে ধূসর করা হয়েছে */
         .app-container { max-width: 420px; margin: 0 auto; background-color: var(--background-grey); min-height: 100vh; display: flex; flex-direction: column; }
         
-        main { flex-grow: 1; padding: 16px 4px; overflow-y: auto; background-color: var(--background-grey); }
+        /* পরিবর্তন ১: কার্ড চওড়া করার জন্য ডানে ও বামের প্যাডিং কমানো হয়েছে */
+        main { flex-grow: 1; padding: 16px 8px; overflow-y: auto; background-color: var(--background-grey); }
+        
         h3 { font-size: 1.4em; font-weight: 600; margin: 0 4px 16px 4px; text-align: left; }
         
-        /* পরিবর্তন ২: হেডার থেকে সাদা ব্যাকগ্রাউন্ড তুলে দিয়ে স্বচ্ছ করা হয়েছে */
+        /* পরিবর্তন ২: ব্যবহারকারীর নাম ও ছবির হেডার থেকে সাদা ব্যাকগ্রাউন্ড সরানো হয়েছে */
         header { background-color: transparent; padding: 10px 15px; border-bottom: 1px solid #f1f1f1; }
         
         .header-content { display: flex; align-items: center; justify-content: space-between; }
@@ -38,7 +38,7 @@
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* পরিবর্তন ৩: কার্ডের ডানে ও বামের মার্জিন তুলে দেওয়া হয়েছে, ফলে এটি আরও চওড়া হয়েছে */
+        /* পরিবর্তন ৩: কার্ডের ডানে ও বামের মার্জিন তুলে দেওয়া হয়েছে, যেন এটি পুরো স্ক্রিন জুড়ে চওড়া হয় */
         .card { background-color: var(--card-background); padding: 20px; border-radius: 12px; text-align: center; margin: 0 0 16px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
         
         .card h4 { margin: 15px 0 10px 0; font-size: 1.15em; font-weight: 600; }
@@ -139,6 +139,9 @@
                     if (snapshot.exists()) {
                         appConfig = snapshot.val();
                         initializeUser();
+                    } else {
+                        // If config fails to load, still initialize user and show basic pages
+                        initializeUser();
                     }
                 });
             }
@@ -148,6 +151,7 @@
                 userRef.on('value', (snapshot) => {
                     userData = snapshot.val() || {};
                     updateHeader();
+                    // Render the current page again to update any user-specific data
                     const currentPage = document.querySelector('.nav-btn.active')?.dataset.page || 'home';
                     renderPage(currentPage);
                 });
@@ -172,10 +176,30 @@
                 const mainContent = document.getElementById('main-content');
                 let content = '';
                 
-                if (pageName === 'tasks') {
+                // Show loading message for pages that depend on appConfig
+                if (!appConfig && (pageName === 'tasks' || pageName === 'withdraw')) {
+                    mainContent.innerHTML = `<div class="page active"><div class="card"><p>Loading...</p></div></div>`;
+                    return;
+                }
+                
+                if (pageName === 'home') {
+                    content = `<div class="page active">
+                        <div class="card">
+                            <h4>Welcome!</h4>
+                            <p>Select a page from the navigation below.</p>
+                        </div>
+                    </div>`;
+                } else if (pageName === 'support') {
+                     content = `<div class="page active">
+                        <div class="card">
+                            <h4>Support</h4>
+                            <p>For any help, please contact our support team.</p>
+                        </div>
+                    </div>`;
+                } else if (pageName === 'tasks') {
                     const allTasks = [];
-                    if (appConfig && appConfig.adsTask && appConfig.adsTask.enabled) allTasks.push(appConfig.adsTask);
-                    if (appConfig && appConfig.socialTasks && Array.isArray(appConfig.socialTasks)) {
+                    if (appConfig.adsTask && appConfig.adsTask.enabled) allTasks.push(appConfig.adsTask);
+                    if (appConfig.socialTasks && Array.isArray(appConfig.socialTasks)) {
                         allTasks.push(...appConfig.socialTasks.filter(task => task.enabled));
                     }
                     
@@ -199,7 +223,7 @@
                         content = `<div class="page active"><div class="card"><p>No tasks available.</p></div></div>`;
                     }
                 } else if (pageName === 'withdraw') {
-                    const wp = appConfig ? appConfig.withdrawPage : { methods: [], minAmount: 0 };
+                    const wp = appConfig.withdrawPage;
                     const methods = (wp.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
                     content = `<div class="page active"><h3>Withdraw (টাকা)</h3><div class="card">
                         <form class="withdraw-form" onsubmit="return false;">
@@ -208,20 +232,6 @@
                             <div class="form-group"><label>Amount (টাকা):</label><input type="number" placeholder="${wp.minAmount}"></div>
                             <button type="submit" class="btn btn-primary" data-action="submit-withdraw">Submit Request</button>
                         </form></div></div>`;
-                } else if (pageName === 'home') {
-                    content = `<div class="page active">
-                        <div class="card">
-                            <h4>Welcome!</h4>
-                            <p>Select a page from the navigation below.</p>
-                        </div>
-                    </div>`;
-                } else if (pageName === 'support') {
-                     content = `<div class="page active">
-                        <div class="card">
-                            <h4>Support</h4>
-                            <p>For any help, please contact our support team.</p>
-                        </div>
-                    </div>`;
                 }
                 mainContent.innerHTML = content;
             }
@@ -237,8 +247,8 @@
                     // Withdraw logic
                 }
             }
-
-            // Initial render for the default active page
+            
+            // Initial render call for the Home page
             renderPage('home');
         });
     </script>
