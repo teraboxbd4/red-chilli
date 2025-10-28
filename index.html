@@ -35,10 +35,10 @@
             flex-direction: column; 
         }
         
-        /* পরিবর্তন ২: কার্ডের ডানে-বামে সামান্য (2px) স্পেস */
+        /* পরিবর্তন: কার্ডের ডানে-বামে 0px স্পেস */
         main { 
             flex-grow: 1; 
-            padding: 16px 2px; /* উপরে-নিচে 16px, ডানে-বামে 2px */
+            padding: 16px 0; /* উপরে-নিচে 16px, ডানে-বামে 0px */
             overflow-y: auto; 
         }
         
@@ -47,7 +47,7 @@
             font-weight: 600; 
             margin: 0 0 16px 0; 
             text-align: left; 
-            padding: 0 2px;
+            padding: 0 16px; /* হেডিং এর জন্য সামান্য প্যাডিং রাখা হয়েছে */
         }
         
         header { background-color: transparent; padding: 10px 15px; border-bottom: 1px solid var(--border-color); }
@@ -61,30 +61,41 @@
         .page { animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* পরিবর্তন ১: কার্ডের উপর-নিচের দূরত্ব 12px করা হয়েছে */
         .card { 
             background-color: var(--card-background); 
             padding: 20px; 
-            border-radius: 16px; 
+            border-radius: 0; /* কার্ড এখন ফুল-উইডথ, তাই রেডিয়াস ০ */
             text-align: center; 
-            border: 1px solid var(--border-color);
+            border-left: none;
+            border-right: none;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
             margin: 0 0 12px 0; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.07); 
+            box-shadow: none; 
         }
         
         .card h4 { margin: 15px 0 10px 0; font-size: 1.15em; font-weight: 600; }
         .card p { color: var(--text-light); line-height: 1.6; margin: 0; font-size: 0.95em; }
         .card .task-info { font-size: 0.8em; color: var(--text-light); margin-top: 12px; }
         
-        /* পরিবর্তন ১: কার্ডের উপর-নিচের দূরত্ব 12px করা হয়েছে */
+        /* ড্যাশবোর্ডের ছোট কার্ডগুলোর জন্য আলাদা স্টাইল */
         .dashboard-stats { 
             display: flex; 
             gap: 12px; 
-            margin-bottom: 12px; 
+            margin-bottom: 12px;
+            padding: 0 16px; /* এই কার্ডগুলোর জন্য ডানে-বামে প্যাডিং */
         }
-        
-        .stat-card { background-color: var(--card-background); padding: 16px; border-radius: 16px; text-align: center; flex: 1; box-shadow: 0 4px 12px rgba(0,0,0,0.07); border: 1px solid var(--border-color); }
+        .dashboard-stats .stat-card {
+             background-color: var(--card-background); 
+            padding: 16px; 
+            border-radius: 16px; 
+            text-align: center; 
+            flex: 1; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.07); 
+            border: 1px solid var(--border-color);
+        }
         .refer-card .referral-link input { width: 100%; padding: 10px 12px; border: 1px dashed var(--primary-blue); border-radius: 8px; text-align: center; margin: 16px 0; background-color: #f8f9fa; font-size: 0.9em; box-sizing: border-box; }
+        
         .button-group { display: flex; gap: 10px; margin-top: 20px; }
         .btn { width: 100%; padding: 12px; border: none; border-radius: 12px; font-size: 1em; cursor: pointer; font-weight: 600; }
         .btn-primary { background-color: var(--primary-blue); color: white; }
@@ -92,7 +103,6 @@
         .icon-wrapper { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; background-color: var(--primary-blue); }
         .icon-wrapper svg { width: 28px; height: 28px; fill: white; }
         
-        /* নেভিগেশন বার নিচে যুক্ত এবং ফুল-স্ক্রিন */
         .nav-container {
             position: fixed;
             bottom: 0;
@@ -142,6 +152,7 @@
         }
 
         .full-page-notice { display: flex; align-items: center; justify-content: center; min-height: 100vh; text-align: center; padding: 20px; box-sizing: border-box; }
+        .withdraw-form { padding: 0 16px; } /* উইথড্র ফর্মের জন্য প্যাডিং */
         .withdraw-form .form-group { text-align: left; margin-bottom: 16px; }
         .withdraw-form label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9em;}
         .withdraw-form input, .withdraw-form select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; background-color: var(--card-background); }
@@ -373,15 +384,13 @@
                 const methods = (wp.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
                 
                 content = `<div class="page active"><h3>Withdraw (টাকা)</h3>
-                    <div class="card">
-                        <p style="text-align: left; margin-bottom: 20px;">${wp.noticeText.replace('{minAmount}', wp.minAmount).replace('{minReferrals}', wp.minReferrals)}</p>
-                        <form class="withdraw-form" onsubmit="return false;">
-                            <div class="form-group"><label>Method:</label><select id="withdraw-method">${methods}</select></div>
-                            <div class="form-group"><label>Account Number:</label><input id="withdraw-account" type="text" placeholder="01XXXXXXXXX"></div>
-                            <div class="form-group"><label>Amount (টাকা):</label><input id="withdraw-amount" type="number" placeholder="${wp.minAmount}"></div>
-                            <button type="submit" class="btn btn-primary" data-action="submit-withdraw">Submit Request</button>
-                        </form>
-                    </div></div>`;
+                    <p style="text-align: left; margin-bottom: 20px;">${wp.noticeText.replace('{minAmount}', wp.minAmount).replace('{minReferrals}', wp.minReferrals)}</p>
+                    <form class="withdraw-form" onsubmit="return false;">
+                        <div class="form-group"><label>Method:</label><select id="withdraw-method">${methods}</select></div>
+                        <div class="form-group"><label>Account Number:</label><input id="withdraw-account" type="text" placeholder="01XXXXXXXXX"></div>
+                        <div class="form-group"><label>Amount (টাকা):</label><input id="withdraw-amount" type="number" placeholder="${wp.minAmount}"></div>
+                        <button type="submit" class="btn btn-primary" data-action="submit-withdraw">Submit Request</button>
+                    </form></div>`;
             } else {
                  content = `<div class="page active"><div class="card"><p>Page not found.</p></div></div>`;
             }
