@@ -19,8 +19,21 @@
             --text-light: #8A8A8E;
             --border-color: #e9ecef;
         }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: var(--background-grey); color: var(--text-dark); }
-        .app-container { max-width: 420px; margin: 0 auto; background-color: var(--background-grey); min-height: 100vh; display: flex; flex-direction: column; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            margin: 0; 
+            background-color: var(--background-grey); 
+            color: var(--text-dark); 
+            padding-bottom: 90px; /* Nav bar এর জন্য জায়গা */ 
+        }
+        .app-container { 
+            max-width: 420px; 
+            margin: 0 auto; 
+            background-color: var(--background-grey); 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+        }
         
         /* পরিবর্তন ১: কার্ড আরও চওড়া করতে ডানে-বামে শুধু সামান্য প্যাডিং রাখা হয়েছে */
         main { flex-grow: 1; padding: 16px 8px; overflow-y: auto; }
@@ -39,7 +52,7 @@
         .page { animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* পরিবর্তন ৩: কার্ডের মার্জিন তুলে দেওয়া হয়েছে এবং শ্যাডো পরিবর্তন করা হয়েছে */
+        /* পরিবর্তন ৩: কার্ডের ডিজাইন ছবির মতো করা হয়েছে */
         .card { background-color: var(--card-background); padding: 20px; border-radius: 16px; text-align: center; border: 1px solid var(--border-color); margin: 0 0 16px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.07); }
         
         .card h4 { margin: 15px 0 10px 0; font-size: 1.15em; font-weight: 600; }
@@ -55,26 +68,35 @@
         .icon-wrapper { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; background-color: var(--primary-blue); }
         .icon-wrapper svg { width: 28px; height: 28px; fill: white; }
         
-        /* পরিবর্তন ৪: নেভিগেশন বারের ডিজাইন পরিবর্তন করা হয়েছে */
+        /* পরিবর্তন ৪: নেভিগেশন বারের নতুন ভাসমান ডিজাইন */
+        .nav-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 0 10px 10px 10px;
+            max-width: 420px;
+            margin: 0 auto;
+            box-sizing: border-box;
+            z-index: 1000;
+        }
         nav { 
             display: flex; 
             justify-content: space-around; 
-            padding: 8px 0; /* ডানে-বামের প্যাডিং সরানো হয়েছে */
+            padding: 8px; 
             background-color: var(--card-background); 
-            position: sticky; 
-            bottom: 0; 
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-            border-top: 1px solid #f1f1f1;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-radius: 20px;
         }
         .nav-btn { 
             background: none; 
             border: none; 
-            font-size: 0.8em; 
+            font-size: 12px; 
             font-weight: 500;
             color: var(--text-light); 
             cursor: pointer; 
-            padding: 4px 10px; 
-            border-radius: 16px; 
+            padding: 6px 10px; 
+            border-radius: 14px; 
             flex: 1; 
             display: flex; 
             flex-direction: column; 
@@ -86,14 +108,13 @@
             background-color: #EBF5FF; 
             color: var(--primary-blue); 
         }
-        /* Active হলে আইকনের রঙও পরিবর্তন হবে */
         .nav-btn.active .nav-icon {
             color: var(--primary-blue);
         }
         .nav-btn .nav-icon { 
             width: 26px; 
             height: 26px; 
-            color: var(--text-light); /* ডিফল্ট রঙ */
+            color: var(--text-light);
         }
         
         .full-page-notice { display: flex; align-items: center; justify-content: center; min-height: 100vh; text-align: center; padding: 20px; box-sizing: border-box; }
@@ -135,12 +156,15 @@
             <main id="main-content">
                 <div class="card"><p>Loading App...</p></div>
             </main>
-            <nav>
-                <button class="nav-btn active" data-page="home"><svg class="nav-icon"><use href="#icon-home"></use></svg>Home</button>
-                <button class="nav-btn" data-page="support"><svg class="nav-icon"><use href="#icon-support"></use></svg>Support</button>
-                <button class="nav-btn" data-page="tasks"><svg class="nav-icon"><use href="#icon-tasks"></use></svg>Tasks</button>
-                <button class="nav-btn" data-page="withdraw"><svg class="nav-icon"><use href="#icon-withdraw"></use></svg>Withdraw</button>
-            </nav>
+            <!-- পরিবর্তন ৭: নেভিগেশন বারকে একটি কন্টেইনার দিয়ে মোড়ানো হয়েছে -->
+            <div class="nav-container">
+                <nav>
+                    <button class="nav-btn active" data-page="home"><svg class="nav-icon"><use href="#icon-home"></use></svg>Home</button>
+                    <button class="nav-btn" data-page="support"><svg class="nav-icon"><use href="#icon-support"></use></svg>Support</button>
+                    <button class="nav-btn" data-page="tasks"><svg class="nav-icon"><use href="#icon-tasks"></use></svg>Tasks</button>
+                    <button class="nav-btn" data-page="withdraw"><svg class="nav-icon"><use href="#icon-withdraw"></use></svg>Withdraw</button>
+                </nav>
+            </div>
         </div>
     </div>
     
@@ -274,7 +298,7 @@
                         <p>আপনার বন্ধুদের রেফার করে আয় করুন। প্রতি সফল রেফারে পাবেন ${appConfig.referralBonus || 0} টাকা।</p>
                         <div class="referral-link"><input id="referral-link-input" type="text" value="${referralLink}" readonly></div>
                         <div class="button-group">
-                            <button class="btn btn-primary" data-action="copy-link">Copy Link</button>
+                            <button class="btn btn-primary" data-action="copy-link">Copy Referral Link</button>
                             <button class="btn btn-secondary" data-action="share-link">Share Now</button>
                         </div>
                     </div></div>`;
@@ -303,7 +327,7 @@
                     return `<div class="card">
                         <div class="icon-wrapper"><svg><use href="#icon-${icon}"></use></svg></div>
                         <h4>${task.title}</h4>
-                        <p>${description}</p>
+                        <p>${task.description}</p>
                         ${buttonsHTML}
                         <p class="task-info">পুরস্কার: ${task.reward || 0} টাকা</p>
                     </div>`;
