@@ -35,10 +35,10 @@
             flex-direction: column; 
         }
         
-        /* পরিবর্তন: কার্ডের ডানে-বামে 24px স্পেস দেওয়ার জন্য প্যাডিং পরিবর্তন */
+        /* পরিবর্তন: কার্ডের ডানে-বামে 15px স্পেস দেওয়ার জন্য প্যাডিং পরিবর্তন */
         main { 
             flex-grow: 1; 
-            padding: 16px 24px; /* উপরে-নিচে 16px, ডানে-বামে 24px */
+            padding: 16px 15px; /* উপরে-নিচে 16px, ডানে-বামে 15px */
             overflow-y: auto; 
         }
         
@@ -72,7 +72,7 @@
         .dashboard-stats { 
             display: flex; 
             gap: 16px; 
-            margin-bottom: 24px; /* উপরের ও নিচের কার্ডের মধ্যবর্তী দূরত্ব */
+            margin-bottom: 16px; 
         }
         
         .stat-card { background-color: var(--card-background); padding: 16px; border-radius: 16px; text-align: center; flex: 1; box-shadow: 0 4px 12px rgba(0,0,0,0.07); border: 1px solid var(--border-color); }
@@ -388,7 +388,7 @@
             if (action === 'submit-withdraw') handleWithdrawRequest();
             else if (action === 'handleAd') {
                 const adTaskConfig = (appConfig.tasks || []).find(t => t.type === 'ads');
-                if (adTaskConfig && adTaskConfig.adNetworks) {
+                if (adTaskConfig && ad-parts) {
                      handleAdTask(adTaskConfig.adNetworks.monetag.zoneId, adTaskConfig.adNetworks.gigapub.id, parseFloat(button.dataset.reward) || 0);
                 }
             } else if (action === 'copy-link') {
