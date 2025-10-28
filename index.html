@@ -35,10 +35,10 @@
             flex-direction: column; 
         }
         
-        /* পরিবর্তন ২: কার্ডের ডানে-বামে সামান্য (4px) স্পেস */
+        /* পরিবর্তন ২: কার্ডের ডানে-বামে সামান্য (2px) স্পেস */
         main { 
             flex-grow: 1; 
-            padding: 16px 4px;
+            padding: 16px 2px; /* উপরে-নিচে 16px, ডানে-বামে 2px */
             overflow-y: auto; 
         }
         
@@ -47,7 +47,7 @@
             font-weight: 600; 
             margin: 0 0 16px 0; 
             text-align: left; 
-            padding: 0 4px; /* main এর প্যাডিং এর সাথে মিল রেখে */
+            padding: 0 2px;
         }
         
         header { background-color: transparent; padding: 10px 15px; border-bottom: 1px solid var(--border-color); }
@@ -61,6 +61,7 @@
         .page { animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
+        /* পরিবর্তন ১: কার্ডের উপর-নিচের দূরত্ব 12px করা হয়েছে */
         .card { 
             background-color: var(--card-background); 
             padding: 20px; 
@@ -75,6 +76,7 @@
         .card p { color: var(--text-light); line-height: 1.6; margin: 0; font-size: 0.95em; }
         .card .task-info { font-size: 0.8em; color: var(--text-light); margin-top: 12px; }
         
+        /* পরিবর্তন ১: কার্ডের উপর-নিচের দূরত্ব 12px করা হয়েছে */
         .dashboard-stats { 
             display: flex; 
             gap: 12px; 
@@ -90,7 +92,7 @@
         .icon-wrapper { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; background-color: var(--primary-blue); }
         .icon-wrapper svg { width: 28px; height: 28px; fill: white; }
         
-        /* পরিবর্তন ১: নেভিগেশন বার নিচে যুক্ত এবং ফুল-স্ক্রিন */
+        /* নেভিগেশন বার নিচে যুক্ত এবং ফুল-স্ক্রিন */
         .nav-container {
             position: fixed;
             bottom: 0;
