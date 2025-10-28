@@ -24,7 +24,7 @@
             margin: 0; 
             background-color: var(--background-grey); 
             color: var(--text-dark); 
-            padding-bottom: 80px; /* Nav bar এর জন্য জায়গা */ 
+            padding-bottom: 90px; /* Nav bar এর জন্য জায়গা */ 
         }
         .app-container { 
             max-width: 420px; 
@@ -35,8 +35,8 @@
             flex-direction: column; 
         }
         
-        /* পরিবর্তন: ডানে-বামে প্যাডিং ফিরিয়ে আনা হয়েছে */
-        main { flex-grow: 1; padding: 16px; overflow-y: auto; }
+        /* পরিবর্তন ১: কার্ড চওড়া করার জন্য ডানে-বামের প্যাডিং কমানো হয়েছে */
+        main { flex-grow: 1; padding: 16px 8px; overflow-y: auto; }
         
         h3 { font-size: 1.4em; font-weight: 600; margin: 0 0 16px 0; text-align: left; }
         
@@ -51,21 +51,20 @@
         .page { animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* পরিবর্তন: ভিডিওর মতো কার্ড ডিজাইন */
         .card { 
             background-color: var(--card-background); 
             padding: 20px; 
-            border-radius: 16px; /* গোলাকার কোণা */
+            border-radius: 16px; 
             text-align: center; 
             border: 1px solid var(--border-color);
             margin: 0 0 16px 0; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.07); /* হালকা শ্যাডো */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.07); 
         }
         
         .card h4 { margin: 15px 0 10px 0; font-size: 1.15em; font-weight: 600; }
         .card p { color: var(--text-light); line-height: 1.6; margin: 0; font-size: 0.95em; }
         .card .task-info { font-size: 0.8em; color: var(--text-light); margin-top: 12px; }
-        .dashboard-stats { display: flex; gap: 12px; margin: 0 0 16px 0; } /* Home পেজের জন্য */
+        .dashboard-stats { display: flex; gap: 12px; margin: 0 0 16px 0; }
         .stat-card { background-color: var(--card-background); padding: 16px; border-radius: 16px; text-align: center; flex: 1; box-shadow: 0 4px 12px rgba(0,0,0,0.07); border: 1px solid var(--border-color); }
         .refer-card .referral-link input { width: 100%; padding: 10px 12px; border: 1px dashed var(--primary-blue); border-radius: 8px; text-align: center; margin: 16px 0; background-color: #f8f9fa; font-size: 0.9em; box-sizing: border-box; }
         .button-group { display: flex; gap: 10px; margin-top: 20px; }
@@ -75,7 +74,7 @@
         .icon-wrapper { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; background-color: var(--primary-blue); }
         .icon-wrapper svg { width: 28px; height: 28px; fill: white; }
         
-        /* পরিবর্তন: ভিডিওর মতো নতুন নেভিগেশন বার স্টাইল */
+        /* পরিবর্তন ২: নেভিগেশন বারের নতুন ভাসমান কার্ড ডিজাইন */
         .nav-container {
             position: fixed;
             bottom: 0;
@@ -83,8 +82,8 @@
             right: 0;
             max-width: 420px;
             margin: 0 auto;
-            background-color: var(--card-background);
-            border-top: 1px solid var(--border-color);
+            padding: 0 10px 10px 10px; /* কন্টেইনারের চারপাশে জায়গা */
+            box-sizing: border-box;
             z-index: 1000;
         }
 
@@ -93,18 +92,22 @@
             justify-content: space-around;
             align-items: center;
             height: 65px;
+            padding: 8px;
+            background-color: var(--card-background);
+            border-radius: 20px; /* গোলাকার কোণা */
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1); /* শ্যাডো */
         }
 
         .nav-btn {
             background-color: transparent;
             border: none;
-            color: var(--text-light); /* ইনঅ্যাক্টিভ রঙ */
+            color: var(--text-light);
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            flex: 1; /* সব বাটন সমান চওড়া */
+            flex: 1;
             gap: 4px;
             height: 100%;
         }
@@ -121,14 +124,14 @@
         }
 
         .nav-btn.active {
-            color: var(--primary-blue); /* শুধু অ্যাক্টিভ রঙ পরিবর্তন হবে */
+            color: var(--primary-blue);
         }
         /* === স্টাইল শেষ === */
 
         .full-page-notice { display: flex; align-items: center; justify-content: center; min-height: 100vh; text-align: center; padding: 20px; box-sizing: border-box; }
         .withdraw-form .form-group { text-align: left; margin-bottom: 16px; }
         .withdraw-form label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9em;}
-        .withdraw-form input, .withdraw-form select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; background-color: #f8f9fa; }
+        .withdraw-form input, .withdraw-form select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; background-color: var(--card-background); }
         .withdraw-form button { margin-top: 10px; }
     </style>
 </head>
@@ -357,9 +360,8 @@
                 const wp = appConfig.withdrawPage;
                 const methods = (wp.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
                 
-                // পরিবর্তন: উইথড্র পেজকে কার্ডের ভেতর রাখা হয়েছে
+                // পরিবর্তন ৩: Withdraw পেজ থেকে কার্ড সরানো হয়েছে
                 content = `<div class="page active"><h3>Withdraw (টাকা)</h3>
-                    <div class="card">
                         <p style="text-align: left; margin-bottom: 20px;">${wp.noticeText.replace('{minAmount}', wp.minAmount).replace('{minReferrals}', wp.minReferrals)}</p>
                         <form class="withdraw-form" onsubmit="return false;">
                             <div class="form-group"><label>Method:</label><select id="withdraw-method">${methods}</select></div>
@@ -367,7 +369,7 @@
                             <div class="form-group"><label>Amount (টাকা):</label><input id="withdraw-amount" type="number" placeholder="${wp.minAmount}"></div>
                             <button type="submit" class="btn btn-primary" data-action="submit-withdraw">Submit Request</button>
                         </form>
-                    </div></div>`;
+                    </div>`;
             } else {
                  content = `<div class="page active"><div class="card"><p>Page not found.</p></div></div>`;
             }
