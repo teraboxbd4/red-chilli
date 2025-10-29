@@ -26,11 +26,10 @@
         
         h3 { font-size: 1.5em; font-weight: 600; margin: 0 12px 16px 12px; text-align: left; }
         
-        /* --- হেডার থেকে সাদা কার্ড সরানো হয়েছে, শুধু বর্ডার রাখা হয়েছে --- */
         header { 
             background-color: transparent; 
             padding: 10px 15px; 
-            margin-bottom: 10px; /* কন্টেন্ট থেকে দূরত্ব তৈরির জন্য */
+            margin-bottom: 10px;
             border-bottom: 1px solid var(--border-color); 
         }
         
@@ -43,6 +42,7 @@
         .page { animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
+        /* --- কার্ডে সুন্দর শ্যাডো যুক্ত করা হয়েছে --- */
         .card { 
             background-color: var(--card-background); 
             padding: 14px 20px;
@@ -50,7 +50,7 @@
             text-align: center; 
             border: 1px solid var(--border-color); 
             margin: 0 12px 16px 12px; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); 
         }
         
         .card h4 { margin: 10px 0; font-size: 1.1em; font-weight: 600; }
@@ -73,7 +73,7 @@
             border-radius: 12px; 
             text-align: center; 
             flex: 1; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); 
             border: 1px solid var(--border-color);
         }
         .stat-card p {
