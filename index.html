@@ -35,10 +35,10 @@
             flex-direction: column; 
         }
         
-        /* পরিবর্তন ২: কার্ডের ডানে-বামে সামান্য (2px) স্পেস */
+        /* পরিবর্তন: কার্ডের ডানে-বামের স্পেস কমানো হয়েছে যাতে কার্ড প্রশস্ত দেখায় */
         main { 
             flex-grow: 1; 
-            padding: 16px 2px;
+            padding: 16px 0; /* Horizontal padding 0 করা হয়েছে */
             overflow-y: auto; 
         }
         
@@ -61,10 +61,10 @@
         .page { animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* পরিবর্তন ১: কার্ডের Vertical সাইজ আরও কমানো হয়েছে */
+        /* পরিবর্তন: কার্ডের Vertical সাইজ কমানো হয়েছে */
         .card { 
             background-color: var(--card-background); 
-            padding: 4px 20px; 
+            padding: 8px 20px; /* Vertical padding কমানো হয়েছে */
             border-radius: 16px; 
             text-align: center; 
             border: 1px solid var(--border-color);
@@ -72,9 +72,10 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.07); 
         }
         
-        .card h4 { margin: 15px 0 10px 0; font-size: 1.15em; font-weight: 600; }
+        /* পরিবর্তন: içerideki elementlerin margin'i azaltıldı */
+        .card h4 { margin: 10px 0 8px 0; font-size: 1.15em; font-weight: 600; }
         .card p { color: var(--text-light); line-height: 1.6; margin: 0; font-size: 0.95em; }
-        .card .task-info { font-size: 0.8em; color: var(--text-light); margin-top: 12px; }
+        .card .task-info { font-size: 0.8em; color: var(--text-light); margin-top: 10px; }
         
         .dashboard-stats { 
             display: flex; 
@@ -82,25 +83,28 @@
             margin-bottom: 12px; 
         }
         
-        /* পরিবর্তন ১: কার্ডের Vertical সাইজ আরও কমানো হয়েছে */
+        /* পরিবর্তন: কার্ডের Vertical সাইজ কমানো হয়েছে */
         .stat-card { 
             background-color: var(--card-background); 
-            padding: 4px 16px;
+            padding: 8px 16px; /* Vertical padding কমানো হয়েছে */
             border-radius: 16px; 
             text-align: center; 
             flex: 1; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.07); 
             border: 1px solid var(--border-color);
         }
+        .stat-card p, .stat-card h2 {
+            margin-top: 6px;
+            margin-bottom: 6px;
+        }
         .refer-card .referral-link input { width: 100%; padding: 10px 12px; border: 1px dashed var(--primary-blue); border-radius: 8px; text-align: center; margin: 16px 0; background-color: #f8f9fa; font-size: 0.9em; box-sizing: border-box; }
-        .button-group { display: flex; gap: 10px; margin-top: 20px; }
+        .button-group { display: flex; gap: 10px; margin-top: 15px; } /* Margin কমানো হয়েছে */
         .btn { width: 100%; padding: 12px; border: none; border-radius: 12px; font-size: 1em; cursor: pointer; font-weight: 600; }
         .btn-primary { background-color: var(--primary-blue); color: white; }
         .btn-secondary { background-color: var(--primary-green); color: white; }
         .icon-wrapper { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; background-color: var(--primary-blue); }
         .icon-wrapper svg { width: 28px; height: 28px; fill: white; }
         
-        /* নেভিগেশন বার নিচে যুক্ত এবং ফুল-স্ক্রিন */
         .nav-container {
             position: fixed;
             bottom: 0;
