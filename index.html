@@ -37,13 +37,27 @@
         .page { animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        .card { background-color: var(--card-background); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--border-color); margin: 0 12px 16px 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+        /* --- কার্ডের উচ্চতা কমানো হয়েছে --- */
+        .card { 
+            background-color: var(--card-background); 
+            padding: 16px 20px; /* ভার্টিকাল প্যাডিং কমানো হয়েছে */
+            border-radius: 12px; 
+            text-align: center; 
+            border: 1px solid var(--border-color); 
+            margin: 0 12px 16px 12px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06); 
+        }
         
-        .card h4 { margin: 15px 0 10px 0; font-size: 1.15em; font-weight: 600; }
+        .card h4 { margin: 10px 0; font-size: 1.15em; font-weight: 600; }
         .card p { color: var(--text-light); line-height: 1.6; margin: 0 0 16px 0; font-size: 0.95em; }
         .card .task-info { font-size: 0.8em; color: var(--text-light); margin-top: 12px; }
         
-        .dashboard-stats { display: flex; gap: 12px; margin: 0 12px 16px 12px; }
+        /* --- কার্ডের মধ্যে দূরত্ব বাড়ানো হয়েছে --- */
+        .dashboard-stats { 
+            display: flex; 
+            gap: 12px; 
+            margin: 0 12px 24px 12px; /* নিচের মার্জিন বাড়ানো হয়েছে */
+        }
         
         .stat-card {
             display: flex;
@@ -51,7 +65,7 @@
             align-items: center;
             justify-content: center;
             background-color: var(--card-background); 
-            padding: 20px 10px; 
+            padding: 16px 10px; /* ভার্টিকাল প্যাডিং কমানো হয়েছে */
             border-radius: 12px; 
             text-align: center; 
             flex: 1; 
@@ -63,8 +77,9 @@
             font-size: 0.9em;
             color: var(--text-light);
         }
+        /* --- পয়েন্ট/নাম্বার ছোট করা হয়েছে --- */
         .stat-card .stat-value {
-            font-size: 1.8em; /* লেখা ছোট করা হয়েছে */
+            font-size: 1.8em; 
             font-weight: 600;
             color: var(--primary-blue);
         }
@@ -83,18 +98,17 @@
             font-weight: 500;
         }
 
-        /* --- বাটন ছোট করা হয়েছে --- */
         .button-group { 
             display: flex; 
             gap: 10px; 
-            margin-top: 20px; 
+            margin-top: 16px; /* মার্জিন ঠিক করা হয়েছে */
         }
         .btn { 
             flex: 1;
-            padding: 12px 10px; /* প্যাডিং কমানো হয়েছে */
+            padding: 12px 10px;
             border: none; 
             border-radius: 10px; 
-            font-size: 0.9em; /* লেখার আকার ছোট করা হয়েছে */
+            font-size: 0.9em;
             cursor: pointer; 
             font-weight: 600;
             display: flex;
@@ -111,7 +125,7 @@
             color: white; 
         }
         .btn-icon {
-            width: 16px; /* আইকন ছোট করা হয়েছে */
+            width: 16px;
             height: 16px;
             fill: white;
         }
