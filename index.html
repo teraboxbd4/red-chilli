@@ -36,9 +36,10 @@
             flex-direction: column; 
         }
         
+        /* পরিবর্তন: Horizontal padding প্রায় শূন্য করা হয়েছে */
         main { 
             flex-grow: 1; 
-            padding: 16px 4px;
+            padding: 16px 2px; /* Horizontal padding 2px করা হয়েছে */
             overflow-y: auto; 
         }
         
@@ -49,9 +50,10 @@
             text-align: left;
         }
         
+        /* পরিবর্তন: Header padding প্রায় শূন্য করা হয়েছে */
         header { 
             background-color: var(--background-grey); 
-            padding: 15px 4px;
+            padding: 15px 2px; /* Horizontal padding 2px করা হয়েছে */
             border-bottom: none;
         }
         .header-content { display: flex; align-items: center; justify-content: space-between; }
@@ -142,7 +144,7 @@
             max-width: 420px; margin: 0 auto;
             background-color: transparent;
             z-index: 1000;
-            padding: 0 4px 10px 4px;
+            padding: 0 2px 10px 2px; /* পরিবর্তন */
         }
         nav {
             display: flex; justify-content: space-around; align-items: center;
@@ -171,7 +173,7 @@
         .withdraw-form .form-group input, .withdraw-form .form-group select {
             width: 100%; padding: 14px; border: none;
             border-radius: 12px; box-sizing: border-box;
-            background-color: #ffffff; /* পরিবর্তন: ইনপুট ফিল্ড সাদা করা হয়েছে */
+            background-color: #ffffff;
             font-size: 1em; font-weight: 500;
         }
         .withdraw-form button { margin-top: 10px; }
@@ -237,6 +239,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
+        // Javascript code is unchanged from the previous correct version.
         const firebaseConfig = {
             apiKey: "AIzaSyAIXpawpQH3yRozPbTzP7Tzm6IFsNVpAzQ",
             authDomain: "fake-earn-5d8bd.firebaseapp.com",
@@ -366,7 +369,6 @@
                     </div>
                 `;
             } else if (pageName === 'withdraw') {
-                // পরিবর্তন: Withdraw পেইজ থেকে .card div সরিয়ে দেওয়া হয়েছে
                 content = `<div class="page active"><h3>Withdraw (টাকা)</h3>
                         <p class="notice-text">ন্যূনতম 1000 টাকা এবং কমপক্ষে 20 টি রেফারেল প্রয়োজন।</p>
                         <form class="withdraw-form" onsubmit="return false;">
@@ -397,7 +399,6 @@
             event.preventDefault();
             const action = button.dataset.action;
 
-            // পরিবর্তন: উইথড্র অনুরোধ হ্যান্ডলার ফিরিয়ে আনা হয়েছে
             if (action === 'submit-withdraw') handleWithdrawRequest();
             else if (action === 'handleAd') {
                 handleAdTask(parseFloat(button.dataset.reward) || 0);
@@ -417,7 +418,6 @@
             }
         }
         
-        // পরিবর্তন: handleWithdrawRequest ফাংশন ফিরিয়ে আনা হয়েছে
         function handleWithdrawRequest() {
             const minAmount = 1000;
             const minReferrals = 20;
