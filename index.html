@@ -64,16 +64,15 @@
             color: var(--text-light);
         }
         .stat-card .stat-value {
-            font-size: 2em; /* Correct font size */
+            font-size: 1.8em; /* লেখা ছোট করা হয়েছে */
             font-weight: 600;
             color: var(--primary-blue);
         }
 
-        /* --- রেফারেল কার্ডের সঠিক ডিজাইন --- */
         .refer-card .referral-link input { 
             width: 100%; 
             padding: 12px; 
-            border: 2px dashed #d0d9e6; /* Dashed border */
+            border: 2px dashed #d0d9e6;
             border-radius: 10px; 
             text-align: center; 
             margin: 16px 0; 
@@ -84,23 +83,24 @@
             font-weight: 500;
         }
 
+        /* --- বাটন ছোট করা হয়েছে --- */
         .button-group { 
             display: flex; 
             gap: 10px; 
             margin-top: 20px; 
         }
         .btn { 
-            flex: 1; /* Equal width buttons */
-            padding: 14px; 
+            flex: 1;
+            padding: 12px 10px; /* প্যাডিং কমানো হয়েছে */
             border: none; 
             border-radius: 10px; 
-            font-size: 1em; 
+            font-size: 0.9em; /* লেখার আকার ছোট করা হয়েছে */
             cursor: pointer; 
             font-weight: 600;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px; /* Space between icon and text */
+            gap: 8px;
         }
         .btn-primary { 
             background-color: var(--primary-blue); 
@@ -111,8 +111,8 @@
             color: white; 
         }
         .btn-icon {
-            width: 18px;
-            height: 18px;
+            width: 16px; /* আইকন ছোট করা হয়েছে */
+            height: 16px;
             fill: white;
         }
 
@@ -124,7 +124,6 @@
         .nav-btn .nav-icon { width: 22px; height: 22px; fill: currentColor; }
         .full-page-notice { display: flex; align-items: center; justify-content: center; min-height: 100vh; text-align: center; padding: 20px; box-sizing: border-box; }
         
-        /* --- Withdraw পেজের ডিজাইন --- */
         .withdraw-page-container {
             padding: 0 12px;
         }
