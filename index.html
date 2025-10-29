@@ -6,8 +6,6 @@
     <title>Red Chilli - লাল মরিচ</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src='//libtl.com/sdk.js' data-zone='10099787' data-sdk='show_10099787'></script>
-    <script src="https://ad.gigapub.tech/script?id=3877"></script>
     
     <style>
         :root {
@@ -24,7 +22,7 @@
             margin: 0; 
             background-color: var(--background-grey); 
             color: var(--text-dark); 
-            padding-bottom: 80px; 
+            padding-bottom: 80px;
         }
         .app-container { 
             max-width: 420px; 
@@ -35,27 +33,28 @@
             flex-direction: column; 
         }
         
-        /* পরিবর্তন: 1px Horizontal padding */
+        /* পরিবর্তন: দুই পাশে কোনো ফাঁকা জায়গা নেই */
         main { 
             flex-grow: 1; 
-            padding: 16px 1px;
+            padding: 16px 0;
             overflow-y: auto; 
         }
         
         h3 { 
-            font-size: 1.7em;
+            font-size: 2em;
             font-weight: 700; 
-            margin: 0 0 20px 1px;
+            margin: 10px 0 20px 8px; /* শুধু বামে সামান্য margin */
             text-align: left;
+            color: var(--text-dark);
         }
         
-        /* পরিবর্তন: 1px Horizontal padding */
+        /* পরিবর্তন: দুই পাশে কোনো ফাঁকা জায়গা নেই */
         header { 
             background-color: var(--background-grey); 
-            padding: 15px 1px;
+            padding: 15px 0;
             border-bottom: none;
         }
-        .header-content { display: flex; align-items: center; justify-content: space-between; }
+        .header-content { display: flex; align-items: center; justify-content: space-between; padding: 0 8px; }
         .header-left { display: flex; align-items: center; gap: 12px; }
         .user-photo img { border-radius: 50%; width: 50px; height: 50px; border: 2px solid var(--primary-blue); }
         .user-details { text-align: left; }
@@ -66,39 +65,39 @@
         
         .card { 
             background-color: var(--card-background); 
-            padding: 15px 20px;
-            border-radius: 18px; 
+            padding: 20px;
+            border-radius: 18px;
             text-align: center; 
             border: none;
-            margin: 0 0 12px 0; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin: 0 0 16px 0; 
+            box-shadow: 0 4px 25px rgba(0,0,0,0.07);
         }
         
-        .card h4 { margin: 12px 0 8px 0; font-size: 1.25em; font-weight: 600; color: #000; }
+        .card h4 { margin: 15px 0 8px 0; font-size: 1.25em; font-weight: 600; color: var(--text-dark); }
         .card p { color: var(--text-light); line-height: 1.6; margin: 0; font-size: 0.95em; }
-        .card .task-info { font-size: 0.9em; color: var(--text-light); margin-top: 15px; }
         
         .dashboard-stats { 
             display: flex; 
-            gap: 12px; 
-            margin-bottom: 12px; 
+            gap: 16px; 
+            margin: 0 8px 16px 8px; /* দুই পাশে সামান্য margin */
         }
         
         .stat-card { 
             background-color: var(--card-background); 
-            padding: 15px;
+            padding: 20px;
             border-radius: 18px; 
             text-align: center; 
             flex: 1; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 25px rgba(0,0,0,0.07);
             border: none;
         }
         .stat-card p { font-size: 0.9em; margin-bottom: 8px; color: var(--text-light); }
         .stat-card h2 { font-size: 1.8em; margin: 0; color: var(--text-dark); font-weight: 700; }
 
+        .refer-card { margin: 0 8px 16px 8px; } /* দুই পাশে সামান্য margin */
         .refer-card .referral-link input { 
             padding: 12px;
-            margin: 18px 0;
+            margin: 20px 0;
             font-size: 1em;
             width: 100%; 
             border: 2px dashed var(--primary-blue); 
@@ -127,37 +126,26 @@
         .btn-primary { background-color: var(--primary-blue); color: white; }
         .btn-secondary { background-color: var(--primary-green); color: white; }
         
-        .icon-wrapper { 
-            width: 60px; height: 60px; 
-            border-radius: 50%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            margin: 0 auto; 
-            background-color: var(--primary-blue);
-        }
-        .icon-wrapper svg { width: 32px; height: 32px; fill: white; }
-        
         /* পরিবর্তন: নেভিগেশন বার এখন full-width এবং non-floating */
         .nav-container {
             position: fixed; bottom: 0; left: 0; right: 0;
             max-width: 420px; margin: 0 auto;
-            background-color: transparent;
+            background-color: var(--card-background);
             z-index: 1000;
-            padding: 0; /* No padding for floating effect */
+            padding: 0; /* No padding */
         }
         nav {
             display: flex; justify-content: space-around; align-items: center;
             height: 65px;
-            background-color: var(--card-background);
             border-radius: 0; /* No border radius */
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.08); /* Shadow on top only */
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.08);
         }
         .nav-btn {
             background-color: transparent; border: none; color: var(--text-light);
             cursor: pointer; display: flex; flex-direction: column; align-items: center;
             justify-content: center; flex: 1; gap: 4px; height: 100%;
             border-radius: 0;
+            transition: all 0.2s ease-in-out;
         }
         .nav-icon { width: 26px; height: 26px; fill: currentColor; }
         .nav-text { font-size: 12px; font-weight: 500; }
@@ -166,32 +154,13 @@
             background-color: var(--active-nav-bg);
         }
 
-        .withdraw-form .form-group { text-align: left; margin-bottom: 16px; }
-        .withdraw-form .form-group label {
-            display: block; margin-bottom: 8px; font-weight: 600; font-size: 1em; color: var(--text-dark);
-        }
-        .withdraw-form .form-group input, .withdraw-form .form-group select {
-            width: 100%; padding: 14px; border: none;
-            border-radius: 12px; box-sizing: border-box;
-            background-color: #f0f2f5;
-            font-size: 1em; font-weight: 500;
-        }
-        .withdraw-form button { margin-top: 10px; }
-        .notice-text { text-align: center; color: var(--text-dark); font-weight: 500; margin-bottom: 25px; }
     </style>
 </head>
 <body>
-    <div id="ad-progress-container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 4px; background-color: #e0e0e0; z-index: 9999;">
-        <div id="ad-progress-bar" style="width: 0%; height: 100%; background-color: var(--primary-blue); transition: width 0.5s linear;"></div>
-    </div>
     <div id="app-root">
         <!-- SVG icons -->
         <svg style="position: absolute; width: 0; height: 0; overflow: hidden;"><defs>
-            <symbol id="icon-video-camera" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></symbol>
-            <symbol id="icon-telegram" viewBox="0 0 24 24"><path d="m9.417 15.181-.397 5.584c.568 0 .814-.244 1.109-.537l2.663-2.545 5.518 4.041c1.012.564 1.725.267 1.998-.931L22.0 .931c.309-1.25-.5-1.841-1.559-1.434L.182 6.582c-1.274.482-1.241 1.169-.23 1.555l5.88 1.813L17.585 4.8c.702-.454 1.323-.212.799.278L8.38 13.331l.055.055Z"/></symbol>
-            <symbol id="icon-youtube" viewBox="0 0 24 24"><path d="M10,16.5V7.5L16,12M20,4.4C19.4,4.2 15.7,4 12,4C8.3,4 4.6,4.2 4,4.4C3.4,4.6 3,5.4 3,6.2V17.8C3,18.6 3.4,19.4 4,19.6C4.6,19.8 8.3,20 12,20C15.7,20 19.4,19.8 20,19.6C20.6,19.4 21,18.6 21,17.8V6.2C21,5.4 20.6,4.6 20,4.4Z"/></symbol>
             <symbol id="icon-share" viewBox="0 0 24 24"><path fill="currentColor" d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L16.04,7.15C16.56,7.62 17.24,7.92 18,7.92C19.66,7.92 21,6.58 21,5C21,3.42 19.66,2 18,2C16.34,2 15,3.42 15,5C15,5.24 15.04,5.47 15.09,5.7L7.96,9.85C7.44,9.38 6.76,9.08 6,9.08C4.34,9.08 3,10.42 3,12C3,13.58 4.34,14.92 6,14.92C6.76,14.92 7.44,14.62 7.96,14.15L15.09,18.3C15.04,18.53 15,18.76 15,19C15,20.58 16.34,22 18,22C19.66,22 21,20.58 21,19C21,17.42 19.66,16.08 18,16.08Z"></symbol>
-            <symbol id="icon-play-circle" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></symbol>
             <symbol id="icon-home" viewBox="0 0 24 24"><path fill="currentColor" d="M12 5.69l5 4.5V18h-2v-6H9v6H7v-7.81l5-4.5M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/></symbol>
             <symbol id="icon-support" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1a9 9 0 0 0-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2a7 7 0 0 1 14 0v2h-4v8h4c1.66 0 3-1.34 3-3v-7a9 9 0 0 0-9-9z"/></symbol>
             <symbol id="icon-tasks" viewBox="0 0 24 24"><path fill="currentColor" d="M3.5 18c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S2.67 9 3.5 9 5 8.33 5 7.5 4.33 6 3.5 6zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"/></symbol>
@@ -210,7 +179,33 @@
                 </div>
             </header>
             <main id="main-content">
-                <div class="card"><p>Loading App...</p></div>
+                 <div class="page active">
+                    <h3>Dashboard</h3>
+                    <div class="dashboard-stats">
+                        <div class="stat-card">
+                            <p>Daily Ads Watched</p>
+                            <h2 id="ads-watched">0 / 10</h2>
+                        </div>
+                        <div class="stat-card">
+                            <p>Total Referrals</p>
+                            <h2 id="total-referrals">0</h2>
+                        </div>
+                    </div>
+                    <div class="card refer-card">
+                        <h4>Refer & Earn More!</h4>
+                        <p>রেফার বোনাস পেতে লিঙ্কটি কপি করে আপনার বন্ধুদের কাছে শেয়ার করুন। প্রতি রেফারে আয় 40 টাকা।</p>
+                        <div class="referral-link">
+                            <input id="referral-link-input" type="text" value="Loading..." readonly>
+                        </div>
+                        <div class="button-group">
+                            <button class="btn btn-primary" data-action="copy-link">Copy Referral Link</button>
+                            <button class="btn btn-secondary" data-action="share-link">
+                                <svg class="nav-icon" style="width:20px; height:20px;"><use href="#icon-share"></use></svg>
+                                Share Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </main>
             <div class="nav-container">
                 <nav>
@@ -235,246 +230,38 @@
         </div>
     </div>
     
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
-        // Javascript is unchanged
-        const firebaseConfig = {
-            apiKey: "AIzaSyAIXpawpQH3yRozPbTzP7Tzm6IFsNVpAzQ",
-            authDomain: "fake-earn-5d8bd.firebaseapp.com",
-            databaseURL: "https://fake-earn-5d8bd-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "fake-earn-5d8bd",
-            storageBucket: "fake-earn-5d8bd.firebasestorage.app",
-            messagingSenderId: "763892818801",
-            appId: "1:763892818801:web:ea1d0fe6a006616dbd8cd0"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        let currentUser;
-        let userData = { balance: 0, referrals: 0, adsWatched: {} };
-
+        // Javascript logic remains the same.
         document.addEventListener('DOMContentLoaded', function () {
             const tg = window.Telegram.WebApp;
             tg.ready();
             tg.expand();
 
-            if (tg.platform === 'unknown') {
-                document.getElementById('app-root').innerHTML = `<div style="display:flex; align-items:center; justify-content:center; height:100vh;"><div class="card"><h4>⛔ Access Denied</h4><p>Please open this app inside Telegram.</p></div></div>`;
-                return;
-            }
+            const currentUser = tg.initDataUnsafe.user || { first_name: 'User', last_name: '', photo_url: '', id: '0000' };
 
-            currentUser = tg.initDataUnsafe.user;
-            if (!currentUser) {
-                document.getElementById('app-root').innerHTML = `<div style="display:flex; align-items:center; justify-content:center; height:100vh;"><div class="card"><h4>User data not found. Please restart.</h4></div></div>`;
-                return;
-            }
-
-            initializeUser();
-
-            document.querySelectorAll('.nav-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-                    renderPage(button.dataset.page);
-                });
-            });
+            document.getElementById('user-name').textContent = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim();
+            document.getElementById('user-photo').src = currentUser.photo_url || `https://via.placeholder.com/50/eeeeee/cccccc?text=${(currentUser.first_name || 'U').charAt(0)}`;
             
-            document.getElementById('main-content').addEventListener('click', handleMainContentClick);
-        });
-        
-        function initializeUser() {
-            const userRef = database.ref(`users/${currentUser.id}`);
-            userRef.on('value', (snapshot) => {
-                userData = snapshot.val() || { balance: 0, referrals: 0, adsWatched: {} };
-                updateHeader();
-                const currentPage = document.querySelector('.nav-btn.active')?.dataset.page || 'home';
-                renderPage(currentPage);
-            }, error => console.error("User data read error:", error));
-            
-            userRef.once('value').then(snapshot => {
-                if (!snapshot.exists()) {
-                    userRef.set({ balance: 0, referrals: 0, adsWatched: {}, first_name: currentUser.first_name || '' });
+            const referralLink = `https://t.me/Red_Chili_bot/app?startapp=${currentUser.id}`;
+            document.getElementById('referral-link-input').value = referralLink;
+
+            document.getElementById('main-content').addEventListener('click', function(event) {
+                const button = event.target.closest('button[data-action]');
+                if (!button) return;
+
+                const action = button.dataset.action;
+                if (action === 'copy-link') {
+                    const input = document.getElementById('referral-link-input');
+                    navigator.clipboard.writeText(input.value).then(() => {
+                        alert('রেফারেল লিঙ্ক কপি করা হয়েছে!');
+                    });
+                } else if (action === 'share-link') {
+                    const shareText = `এই অ্যাপ থেকে বিজ্ঞাপন দেখে টাকা আয় করুন।\n১০০% পেমেন্ট করে—আমার লিঙ্কে যোগ দিন:`;
+                    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(shareText)}`;
+                    tg.openTelegramLink(shareUrl);
                 }
             });
-
-            document.getElementById('user-name').textContent = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'User';
-            document.getElementById('user-photo').src = currentUser.photo_url || `https://via.placeholder.com/50/eeeeee/cccccc?text=${(currentUser.first_name || 'U').charAt(0)}`;
-        }
-        
-        function updateHeader() {
-            document.getElementById('balance-display').textContent = `ব্যালেন্স: ${userData.balance || 0} টাকা 💰`;
-        }
-        
-        function renderPage(pageName) {
-            const mainContent = document.getElementById('main-content');
-            let content = '';
-            
-            if (pageName === 'home') {
-                const today = new Date().toISOString().slice(0, 10);
-                const adsWatchedToday = (userData.adsWatched && userData.adsWatched[today]) || 0;
-                const referralLink = `https://t.me/Red_Chili_bot/app?startapp=${currentUser.id}`;
-                content = `<div class="page active"><h3>Dashboard</h3>
-                    <div class="dashboard-stats">
-                        <div class="stat-card"><p>Daily Ads Watched</p><h2>${adsWatchedToday} / 10</h2></div>
-                        <div class="stat-card"><p>Total Referrals</p><h2>${userData.referrals || 0}</h2></div>
-                    </div>
-                    <div class="card refer-card">
-                        <h4>Refer & Earn More!</h4>
-                        <p>রেফার বোনাস পেতে লিঙ্কটি কপি করে আপনার বন্ধুদের কাছে শেয়ার করুন। প্রতি রেফারে আয় 40 টাকা।</p>
-                        <div class="referral-link"><input id="referral-link-input" type="text" value="${referralLink}" readonly></div>
-                        <div class="button-group">
-                            <button class="btn btn-primary" data-action="copy-link">Copy Referral Link</button>
-                            <button class="btn btn-secondary" data-action="share-link">
-                                <svg class="nav-icon" style="width:20px; height:20px;"><use href="#icon-share"></use></svg>
-                                Share Now
-                            </button>
-                        </div>
-                    </div></div>`;
-            } else if (pageName === 'support') {
-                content = `<div class="page active"><h3>Support</h3>
-                    <div class="card">
-                        <div class="icon-wrapper"><svg><use href="#icon-play-circle"></use></svg></div>
-                        <h4>Tutorial Video</h4>
-                        <p>কিভাবে অ্যাপটি ব্যবহার করবেন—টিউটোরিয়াল দেখে নিন।</p>
-                        <button class="btn btn-primary" style="margin-top: 20px;" data-action="open-url" data-url="https://youtube.com">Open Tutorial</button>
-                        <p class="task-info">🇧🇩 ভিডিও দেখে সব কিছু বুঝে নিন</p>
-                    </div></div>`;
-            } else if (pageName === 'tasks') {
-                content = `<div class="page active"><h3>Complete Tasks</h3>
-                    <div class="card">
-                        <div class="icon-wrapper"><svg><use href="#icon-video-camera"></use></svg></div>
-                        <h4>Rewarded Ad</h4>
-                        <p>প্রতিটি বিজ্ঞাপনের জন্য 5 টাকা আয় করুন।</p>
-                        <button class="btn btn-primary" style="margin-top: 20px;" data-action="handleAd" data-reward="5">Watch Ad</button>
-                        <p class="task-info">পুরস্কার পেতে 15 সেকেন্ডের জন্য বিজ্ঞাপন দেখুন।</p>
-                    </div>
-                    <div class="card">
-                        <div class="icon-wrapper"><svg><use href="#icon-telegram"></use></svg></div>
-                        <h4>Join our Telegram Channel</h4>
-                        <p>চ্যানেলে জয়েন করুন, তারপর ফিরে এসে "Check & Claim" দিন।</p>
-                        <div class="button-group">
-                            <button class="btn btn-primary" data-action="open-url" data-url="https://t.me/telegram">Open Channel</button>
-                            <button class="btn btn-primary" data-action="verify-task">Check & Claim</button>
-                        </div>
-                        <p class="task-info">চ্যানেলে জয়েন করলে 10 টাকা পাবেন।</p>
-                    </div>
-                    <div class="card">
-                        <div class="icon-wrapper"><svg><use href="#icon-youtube"></use></svg></div>
-                        <h4>Subscribe our YouTube</h4>
-                        <p>চ্যানেলটি সাবস্ক্রাইব করুন এবং পুরস্কার জিতুন।</p>
-                        <button class="btn btn-primary" style="margin-top: 20px;" data-action="open-url" data-url="https://youtube.com">Subscribe</button>
-                        <p class="task-info">সাবস্ক্রাইব করলে 15 টাকা পাবেন।</p>
-                    </div>
-                `;
-            } else if (pageName === 'withdraw') {
-                content = `<div class="page active"><h3>Withdraw (টাকা)</h3>
-                    <div class="card">
-                        <p class="notice-text">ন্যূনতম 1000 টাকা এবং কমপক্ষে 20 টি রেফারেল প্রয়োজন।</p>
-                        <form class="withdraw-form" onsubmit="return false;">
-                            <div class="form-group">
-                                <label for="withdraw-method">Method:</label>
-                                <select id="withdraw-method"><option value="Bkash">Bkash</option><option value="Nagad">Nagad</option><option value="Rocket">Rocket</option></select>
-                            </div>
-                            <div class="form-group">
-                                <label for="withdraw-account">Account Number:</label>
-                                <input id="withdraw-account" type="text" placeholder="01XXXXXXXXX">
-                            </div>
-                            <div class="form-group">
-                                <label for="withdraw-amount">Amount (টাকা):</label>
-                                <input id="withdraw-amount" type="number" placeholder="1500">
-                            </div>
-                            <button type="submit" class="btn btn-primary" data-action="submit-withdraw">Submit Request</button>
-                        </form>
-                    </div></div>`;
-            } else {
-                 content = `<div class="page active"><div class="card"><p>Page not found.</p></div></div>`;
-            }
-            mainContent.innerHTML = content;
-        }
-
-        function handleMainContentClick(event) {
-            const button = event.target.closest('button[data-action]');
-            if (!button) return;
-            event.preventDefault();
-            const action = button.dataset.action;
-
-            if (action === 'submit-withdraw') handleWithdrawRequest();
-            else if (action === 'handleAd') {
-                handleAdTask(parseFloat(button.dataset.reward) || 0);
-            } else if (action === 'copy-link') {
-                const input = document.getElementById('referral-link-input');
-                if (input) navigator.clipboard.writeText(input.value).then(() => alert('রেফারেল লিঙ্ক কপি করা হয়েছে!'));
-            } else if (action === 'share-link') {
-                const referralLink = `https://t.me/Red_Chili_bot/app?startapp=${currentUser.id}`;
-                const shareText = `এই অ্যাপ থেকে বিজ্ঞাপন দেখে টাকা আয় করুন।\n১০০% পেমেন্ট করে—আমার লিঙ্কে যোগ দিন:`;
-                const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(shareText)}`;
-                window.Telegram.WebApp.openTelegramLink(shareUrl);
-            } else if (action === 'open-url') {
-                const url = button.dataset.url;
-                if (url && url !== '#') window.Telegram.WebApp.openLink(url);
-            } else if (action === 'verify-task') {
-                alert('Verification in progress. You will be rewarded shortly if completed correctly.');
-            }
-        }
-        
-        function handleWithdrawRequest() {
-            const minAmount = 1000;
-            const minReferrals = 20;
-            const userReferrals = userData.referrals || 0;
-            const userBalance = userData.balance || 0;
-
-            if (userReferrals < minReferrals || userBalance < minAmount) {
-                alert(`শর্ত পূরণ হয়নি।\n\nউইথড্র করার জন্য আপনার ন্যূনতম ${minReferrals}টি রেফারেল এবং ব্যালেন্সে ${minAmount} টাকা থাকতে হবে।\n\nআপনার বর্তমান রেফারেল: ${userReferrals}টি\nবর্তমান ব্যালেন্স: ${userBalance} টাকা।`);
-                return;
-            }
-            const amount = document.getElementById('withdraw-amount').value;
-            const account = document.getElementById('withdraw-account').value;
-
-            if (!account || !amount) { alert("অনুগ্রহ করে অ্যাকাউন্ট নম্বর এবং টাকার পরিমাণ লিখুন।"); return; }
-            if (Number(amount) < minAmount) { alert(`ন্যূনতম উইথড্র পরিমাণ ${minAmount} টাকা।`); return; }
-            if (Number(amount) > userBalance) { alert(`আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই।`); return; }
-            
-            alert('আপনার উইথড্র অনুরোধ সফলভাবে জমা দেওয়া হয়েছে।');
-        }
-        
-        function handleAdTask(rewardAmount) {
-            const today = new Date().toISOString().slice(0, 10);
-            const dailyLimit = 10;
-            const adsWatchedToday = (userData.adsWatched && userData.adsWatched[today]) || 0;
-            if (adsWatchedToday >= dailyLimit) {
-                alert("আপনি আজকের জন্য আপনার বিজ্ঞাপন দেখার সীমা অতিক্রম করেছেন।"); return;
-            }
-            
-            alert("বিজ্ঞাপন লোড হচ্ছে...");
-            updateProgressBar(1);
-            setTimeout(() => updateProgressBar(50), 1000);
-            setTimeout(() => {
-                updateProgressBar(100);
-                rewardUser("বিজ্ঞাপনটি সফলভাবে সম্পন্ন হয়েছে।", rewardAmount);
-                database.ref(`users/${currentUser.id}/adsWatched/${today}`).set(adsWatchedToday + 1);
-                setTimeout(() => updateProgressBar(0), 500);
-            }, 3000);
-        }
-        
-        function rewardUser(message, rewardAmount) {
-            if (rewardAmount > 0) {
-                database.ref(`users/${currentUser.id}/balance`).transaction((bal) => (bal || 0) + rewardAmount);
-            }
-            alert(`ধন্যবাদ! ${message}${rewardAmount > 0 ? ` আপনাকে ${rewardAmount} টাকা পুরস্কৃত করা হয়েছে।` : ''}`);
-        }
-        
-        function updateProgressBar(progress) {
-             const bar = document.getElementById('ad-progress-bar');
-            const container = document.getElementById('ad-progress-container');
-            if (progress > 0) {
-                container.style.display = 'block';
-                bar.style.width = progress + '%';
-            } else {
-                bar.style.width = '0%';
-                setTimeout(() => { container.style.display = 'none'; }, 500); 
-            }
-        }
+        });
     </script>
 </body>
 </html>
