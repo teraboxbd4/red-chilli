@@ -4,7 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Red Chilli</title>
+
+    <!-- =================== Link Preview Section (সবচেয়ে গুরুত্বপূর্ণ) =================== -->
     
+    <!-- আপনার অ্যাপের নাম -->
+    <meta property="og:title" content="RED CHILII BOT" />
+    
+    <!-- আপনার অ্যাপের বর্ণনা -->
+    <meta property="og:description" content="🌶️লাল মরিচ🌶️
+শুধু বিজ্ঞাপন দেখুন এবং আয় করুন ✨ প্রতিদিন পেমেন্ট নিন।
+💯% বিশ্বস্ততার সাথে দ্রুত পেমেন্ট করা হয় ❤️💸" />
+    
+    <!-- আপনার প্রিভিউ ছবির লিংক -->
+    <meta property="og:image" content="https://i.ibb.co/tKzC1Qd/red-chilli-telegram-preview.png" /> 
+    
+    <!-- আপনার সাইটের নাম (ঐচ্ছিক) -->
+    <meta property="og:site_name" content="Telegram" />
+    
+    <!-- ======================================================================= -->
+
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src='//libtl.com/sdk.js' data-zone='10099787' data-sdk='show_10099787'></script>
     <script src="https://ad.gigapub.tech/script?id=3877"></script>
@@ -275,7 +293,12 @@
         }
 
         function handleReferral() {
-            const startParam = window.Telegram.WebApp.initDataUnsafe.start_param;
+            // Check for referral from query parameters (for web link)
+            const urlParams = new URLSearchParams(window.location.search);
+            const refIdFromUrl = urlParams.get('ref');
+            
+            const startParam = refIdFromUrl || window.Telegram.WebApp.initDataUnsafe.start_param;
+
             if (!startParam || startParam === String(currentUser.id) || !appConfig) return;
             
             const referrerId = startParam;
@@ -307,10 +330,13 @@
             let content = '';
             
             if (pageName === 'home') {
-                 const adTaskConfig = (appConfig.tasks || []).find(t => t.type === 'ads' && t.enabled) || { dailyLimit: 10 };
+                const adTaskConfig = (appConfig.tasks || []).find(t => t.type === 'ads' && t.enabled) || { dailyLimit: 10 };
                 const today = new Date().toISOString().slice(0, 10);
                 const adsWatchedToday = (userData.adsWatched && userData.adsWatched[today]) || 0;
-                const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}`;
+                
+                // --- ⚠️ এখানে আপনার GitHub Pages লিংকটি বসান ---
+                const referralLink = `https://YOUR_USERNAME.github.io/YOUR_REPO_NAME/index%20(7).html?ref=${currentUser.id}`;
+                
                 content = `<div class="page active"><h3>Dashboard</h3>
                     <div class="dashboard-stats">
                         <div class="stat-card"><p>Daily Ads Watched</p><span class="stat-value">${adsWatchedToday} / ${adTaskConfig.dailyLimit}</span></div>
@@ -329,7 +355,6 @@
                     </div></div>`;
             } else if (pageName === 'support' && appConfig.supportPage) {
                 const sp = appConfig.supportPage;
-                // --- সাপোর্ট পেজের বাটন মাঝখানে আনা হয়েছে ---
                 content = `<div class="page active"><h3>Support</h3>
                     <div class="card">
                         <div class="icon-wrapper"><svg><use href="#icon-play-circle"></use></svg></div>
@@ -397,7 +422,8 @@
                 const input = document.getElementById('referral-link-input');
                 if (input) navigator.clipboard.writeText(input.value).then(() => alert('রেফারেল লিঙ্ক কপি করা হয়েছে!'));
             } else if (action === 'share-link') {
-                const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}`;
+                // --- ⚠️ এখানে আপনার GitHub Pages লিংকটি বসান ---
+                const referralLink = `https://YOUR_USERNAME.github.io/YOUR_REPO_NAME/index%20(7).html?ref=${currentUser.id}`;
                 const shareText = `এই অ্যাপ থেকে বিজ্ঞাপন দেখে টাকা আয় করুন।\n১০০% পেমেন্ট করে—আমার লিঙ্কে যোগ দিন:`;
                 const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(shareText)}`;
                 window.Telegram.WebApp.openTelegramLink(shareUrl);
@@ -420,7 +446,7 @@
             const account = document.getElementById('withdraw-account').value;
 
             if (!account || !amount) { alert("অনুগ্রহ করে অ্যাকাউন্ট নম্বর এবং টাকার পরিমাণ লিখুন।"); return; }
-            if (Number(amount) < wp.minAmount) { alert(`ন্যূনতম উইথড্র পরিমাণ ${wp.minAmount} টাকা।`); return; }
+            if (Number(amount) < wp.minAmount) { alert(`ন্যূনতম উইড্র পরিমাণ ${wp.minAmount} টাকা।`); return; }
             if (Number(amount) > userBalance) { alert(`আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই।`); return; }
             
             alert('আপনার উইথড্র অনুরোধ সফলভাবে জমা দেওয়া হয়েছে।');
