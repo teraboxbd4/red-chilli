@@ -22,8 +22,9 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: var(--background-grey); color: var(--text-dark); }
         .app-container { max-width: 420px; margin: 0 auto; background-color: var(--background-grey); min-height: 100vh; display: flex; flex-direction: column; }
         
-        /* --- নতুন পরিবর্তন ১: main থেকে ডানে-বামের প্যাডিং সরানো হয়েছে --- */
-        main { flex-grow: 1; padding: 16px 0; overflow-y: auto; background-color: var(--background-grey); }
+        /* --- মূল পরিবর্তনটি এখানে করা হয়েছে --- */
+        /* main কন্টেইনারের ডানে ও বামের প্যাডিং কমিয়ে 4px করা হলো */
+        main { flex-grow: 1; padding: 16px 4px; overflow-y: auto; background-color: var(--background-grey); }
         
         h3 { font-size: 1.4em; font-weight: 600; margin: 0 4px 16px 4px; text-align: left; }
         
@@ -38,16 +39,12 @@
         .page { animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* --- নতুন পরিবর্তন ২: card-এ ডানে-বামে মার্জিন যোগ করা হয়েছে --- */
-        .card { background-color: var(--card-background); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--border-color); margin: 0 4px 16px 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .card { background-color: var(--card-background); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--border-color); margin: 0 0 16px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
         
         .card h4 { margin: 15px 0 10px 0; font-size: 1.15em; font-weight: 600; }
         .card p { color: var(--text-light); line-height: 1.6; margin: 0; font-size: 0.95em; }
         .card .task-info { font-size: 0.8em; color: var(--text-light); margin-top: 12px; }
-        
-        /* --- নতুন পরিবর্তন ৩: dashboard-stats-এ ডানে-বামে মার্জিন যোগ করা হয়েছে --- */
-        .dashboard-stats { display: flex; gap: 8px; margin: 0 4px 16px 4px; }
-        
+        .dashboard-stats { display: flex; gap: 8px; margin: 0 0 16px 0; }
         .stat-card { background-color: var(--card-background); padding: 16px; border-radius: 12px; text-align: center; flex: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid var(--border-color); }
         .refer-card .referral-link input { width: 100%; padding: 10px 12px; border: 1px dashed var(--primary-blue); border-radius: 8px; text-align: center; margin: 16px 0; background-color: #f8f9fa; font-size: 0.9em; box-sizing: border-box; }
         .button-group { display: flex; gap: 10px; margin-top: 20px; }
@@ -68,7 +65,7 @@
     </style>
 </head>
 <body>
-    <!-- HTML এবং JavaScript কোড অপরিবর্তিত আছে -->
+    <!-- বাকি HTML এবং JavaScript কোড একই থাকবে -->
     <div id="ad-progress-container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 4px; background-color: #e0e0e0; z-index: 9999;">
         <div id="ad-progress-bar" style="width: 0%; height: 100%; background-color: var(--primary-blue); transition: width 0.5s linear;"></div>
     </div>
@@ -111,7 +108,292 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
-        // --- JavaScript কোড অপরিবর্তিত আছে ---
+        // --- JavaScript কোড অপরিবর্তিত থাকবে ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyAIXpawpQH3yRozPbTzP7Tzm6IFsNVpAzQ",
+            authDomain: "fake-earn-5d8bd.firebaseapp.com",
+            databaseURL: "https://fake-earn-5d8bd-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "fake-earn-5d8bd",
+            storageBucket: "fake-earn-5d8bd.firebasestorage.app",
+            messagingSenderId: "763892818801",
+            appId: "1:763892818801:web:ea1d0fe6a006616dbd8cd0"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        let currentUser;
+        let appConfig;
+        let userData = { balance: 0, referrals: 0, adsWatched: {} };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const tg = window.Telegram.WebApp;
+            if (tg.platform === 'unknown') {
+                document.getElementById('app-root').innerHTML = `<div class="full-page-notice"><div class="card"><h4>⛔ Access Denied</h4><p>Please open this app inside Telegram.</p></div></div>`;
+                return;
+            }
+            tg.ready();
+            tg.expand();
+            tg.MainButton.hide();
+
+            currentUser = tg.initDataUnsafe.user;
+            if (!currentUser) {
+                 document.getElementById('app-root').innerHTML = `<div class="full-page-notice"><div class="card"><h4>User data not found. Please restart.</h4></div></div>`;
+                return;
+            }
+
+            loadConfigAndUserData();
+
+            document.querySelectorAll('.nav-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    renderPage(button.dataset.page);
+                });
+            });
+            
+            document.getElementById('main-content').addEventListener('click', handleMainContentClick);
+        });
+
+        function loadConfigAndUserData() {
+            database.ref('config').once('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    appConfig = snapshot.val();
+                    initializeUser();
+                } else {
+                    document.getElementById('main-content').innerHTML = `<div class="card"><h4>App configuration not found.</h4></div>`;
+                }
+            }).catch(error => console.error("Config load error:", error));
+        }
+        
+        function initializeUser() {
+            const userRef = database.ref(`users/${currentUser.id}`);
+            userRef.on('value', (snapshot) => {
+                userData = snapshot.val() || { balance: 0, referrals: 0, adsWatched: {} };
+                updateHeader();
+                const currentPage = document.querySelector('.nav-btn.active')?.dataset.page || 'home';
+                renderPage(currentPage);
+            }, error => console.error("User data read error:", error));
+            
+            userRef.once('value').then(snapshot => {
+                if (!snapshot.exists()) {
+                    userRef.set({ balance: 0, referrals: 0, adsWatched: {}, first_name: currentUser.first_name || '' })
+                        .then(() => handleReferral());
+                } else {
+                    handleReferral();
+                }
+            });
+
+            const userNameEl = document.getElementById('user-name');
+            const userPhotoEl = document.getElementById('user-photo');
+            userNameEl.textContent = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'User';
+            userPhotoEl.src = currentUser.photo_url || `https://via.placeholder.com/50/eeeeee/cccccc?text=${(currentUser.first_name || 'U').charAt(0)}`;
+        }
+
+        function handleReferral() {
+            const startParam = window.Telegram.WebApp.initDataUnsafe.start_param;
+            if (!startParam || startParam === String(currentUser.id) || !appConfig) return;
+            
+            const referrerId = startParam;
+            const newUserRef = database.ref(`users/${currentUser.id}`);
+
+            newUserRef.child('referred_by').once('value', snapshot => {
+                if (snapshot.exists()) return;
+
+                newUserRef.child('referred_by').set(referrerId);
+                const referrerRef = database.ref(`users/${referrerId}`);
+                referrerRef.child('referrals').transaction(currentVal => (currentVal || 0) + 1);
+                
+                const referralBonus = appConfig.referralBonus || 0;
+                if (referralBonus > 0) {
+                    referrerRef.child('balance').transaction(currentBal => (currentBal || 0) + referralBonus);
+                }
+            }).catch(e => console.error("Referral check error:", e));
+        }
+        
+        function updateHeader() {
+            document.getElementById('balance-display').textContent = `ব্যালেন্স: ${userData.balance || 0} টাকা 💰`;
+        }
+        
+        function renderPage(pageName) {
+            const mainContent = document.getElementById('main-content');
+            if (!appConfig) { 
+                mainContent.innerHTML = `<div class="card"><p>Loading...</p></div>`; return; 
+            }
+            let content = '';
+            
+            if (pageName === 'home') {
+                 const adTaskConfig = (appConfig.tasks || []).find(t => t.type === 'ads' && t.enabled) || { dailyLimit: 10 };
+                const today = new Date().toISOString().slice(0, 10);
+                const adsWatchedToday = (userData.adsWatched && userData.adsWatched[today]) || 0;
+                const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}`;
+                content = `<div class="page active"><h3>Dashboard</h3>
+                    <div class="dashboard-stats">
+                        <div class="stat-card"><p>Daily Ads Watched</p><span>${adsWatchedToday} / ${adTaskConfig.dailyLimit}</span></div>
+                        <div class="stat-card"><p>Total Referrals</p><span>${userData.referrals || 0}</span></div>
+                    </div>
+                    <div class="card refer-card">
+                        <h4>Refer & Earn More!</h4>
+                        <p>আপনার বন্ধুদের রেফার করে আয় করুন। প্রতি সফল রেফারে পাবেন ${appConfig.referralBonus || 0} টাকা।</p>
+                        <div class="referral-link"><input id="referral-link-input" type="text" value="${referralLink}" readonly></div>
+                        <div class="button-group">
+                            <button class="btn btn-primary" data-action="copy-link">Copy Link</button>
+                            <button class="btn btn-secondary" data-action="share-link">Share Now</button>
+                        </div>
+                    </div></div>`;
+            } else if (pageName === 'support' && appConfig.supportPage) {
+                const sp = appConfig.supportPage;
+                content = `<div class="page active"><h3>Support</h3>
+                    <div class="card">
+                        <div class="icon-wrapper"><svg><use href="#icon-play-circle"></use></svg></div>
+                        <h4>${sp.title}</h4>
+                        <p>${sp.description}</p>
+                        <button class="btn btn-primary" style="margin-top: 20px;" data-action="open-url" data-url="${sp.videoUrl || '#'}">${sp.buttonText}</button>
+                    </div></div>`;
+            } else if (pageName === 'tasks' && appConfig.tasks) {
+                const taskItems = (appConfig.tasks || []).filter(task => task.enabled).map(task => {
+                    const icon = task.icon;
+                    let buttonsHTML = '';
+                    if (task.type === 'ads') {
+                        buttonsHTML = `<button class="btn btn-primary" style="margin-top: 20px;" data-action="handleAd" data-reward="${task.reward || 0}">Verify ☑</button>`;
+                    } else {
+                        buttonsHTML = (task.buttons || []).map(btn => 
+                            `<button class="btn btn-primary" data-action="open-url" data-url="${btn.url || '#'}">${btn.text}</button>`
+                        ).join('');
+                        buttonsHTML = `<div class="button-group">${buttonsHTML}</div>`;
+                    }
+                    
+                    return `<div class="card">
+                        <div class="icon-wrapper"><svg><use href="#icon-${icon}"></use></svg></div>
+                        <h4>${task.title}</h4>
+                        <p>${task.description}</p>
+                        ${buttonsHTML}
+                        <p class="task-info">পুরস্কার: ${task.reward || 0} টাকা</p>
+                    </div>`;
+                }).join('');
+                content = `<div class="page active"><h3>Complete Tasks</h3>${taskItems}</div>`;
+            } else if (pageName === 'withdraw' && appConfig.withdrawPage) {
+                const wp = appConfig.withdrawPage;
+                const methods = (wp.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
+                content = `<div class="page active"><h3>Withdraw (টাকা)</h3><div class="card">
+                    <p style="margin-bottom: 20px;">${wp.noticeText.replace('{minAmount}', wp.minAmount).replace('{minReferrals}', wp.minReferrals)}</p>
+                    <form class="withdraw-form" onsubmit="return false;">
+                        <div class="form-group"><label>Method:</label><select id="withdraw-method">${methods}</select></div>
+                        <div class="form-group"><label>Account Number:</label><input id="withdraw-account" type="text" placeholder="01XXXXXXXXX"></div>
+                        <div class="form-group"><label>Amount (টাকা):</label><input id="withdraw-amount" type="number" placeholder="${wp.minAmount}"></div>
+                        <button type="submit" class="btn btn-primary" data-action="submit-withdraw">Submit Request</button>
+                    </form></div></div>`;
+            } else {
+                 content = `<div class="page active"><div class="card"><p>Page not found.</p></div></div>`;
+            }
+            mainContent.innerHTML = content;
+        }
+
+        function handleMainContentClick(event) {
+            const button = event.target.closest('button[data-action]');
+            if (!button) return;
+            event.preventDefault();
+            const action = button.dataset.action;
+
+            if (action === 'submit-withdraw') handleWithdrawRequest();
+            else if (action === 'handleAd') {
+                const adTaskConfig = (appConfig.tasks || []).find(t => t.type === 'ads');
+                if (adTaskConfig && adTaskConfig.adNetworks) {
+                     handleAdTask(adTaskConfig.adNetworks.monetag.zoneId, adTaskConfig.adNetworks.gigapub.id, parseFloat(button.dataset.reward) || 0);
+                }
+            } else if (action === 'copy-link') {
+                const input = document.getElementById('referral-link-input');
+                if (input) navigator.clipboard.writeText(input.value).then(() => alert('রেফারেল লিঙ্ক কপি করা হয়েছে!'));
+            } else if (action === 'share-link') {
+                const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}`;
+                const shareText = `এই অ্যাপ থেকে বিজ্ঞাপন দেখে টাকা আয় করুন।\n১০০% পেমেন্ট করে—আমার লিঙ্কে যোগ দিন:`;
+                const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(shareText)}`;
+                window.Telegram.WebApp.openTelegramLink(shareUrl);
+            } else if (action === 'open-url') {
+                const url = button.dataset.url;
+                if (url && url !== '#') window.open(url, '_blank');
+            } else if (action === 'verify-task') {
+                alert('Verification in progress. You will be rewarded shortly if completed correctly.');
+            }
+        }
+
+        function handleWithdrawRequest() {
+            const wp = appConfig.withdrawPage;
+            const userReferrals = userData.referrals || 0;
+            const userBalance = userData.balance || 0;
+
+            if (userReferrals < wp.minReferrals || userBalance < wp.minAmount) {
+                alert(`শর্ত পূরণ হয়নি।\n\nউইথড্র করার জন্য আপনার ন্যূনতম ${wp.minReferrals}টি রেফারেল এবং ব্যালেন্সে ${wp.minAmount} টাকা থাকতে হবে।\n\nআপনার বর্তমান রেফারেল: ${userReferrals}টি\nবর্তমান ব্যালেন্স: ${userBalance} টাকা।`);
+                return;
+            }
+            const amount = document.getElementById('withdraw-amount').value;
+            const account = document.getElementById('withdraw-account').value;
+
+            if (!account || !amount) { alert("অনুগ্রহ করে অ্যাকাউন্ট নম্বর এবং টাকার পরিমাণ লিখুন।"); return; }
+            if (Number(amount) < wp.minAmount) { alert(`ন্যূনতম উইথড্র পরিমাণ ${wp.minAmount} টাকা।`); return; }
+            if (Number(amount) > userBalance) { alert(`আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই।`); return; }
+            
+            alert('আপনার উইথড্র অনুরোধ সফলভাবে জমা দেওয়া হয়েছে।');
+        }
+        
+        async function handleAdTask(monetagZoneId, gigapubId, rewardAmount) {
+            const today = new Date().toISOString().slice(0, 10);
+            const adTaskConfig = (appConfig.tasks || []).find(t => t.type === 'ads' && t.enabled) || { dailyLimit: 10 };
+            const adsWatchedToday = (userData.adsWatched && userData.adsWatched[today]) || 0;
+            if (adsWatchedToday >= adTaskConfig.dailyLimit) {
+                alert("আপনি আজকের জন্য আপনার বিজ্ঞাপন দেখার সীমা অতিক্রম করেছেন।"); return;
+            }
+            
+            updateProgressBar(1);
+            let adShownSuccessfully = false;
+
+            try {
+                const monetagShowFunction = window['show_' + monetagZoneId];
+                if (typeof monetagShowFunction === 'function') {
+                    await monetagShowFunction();
+                    adShownSuccessfully = true;
+                }
+            } catch (monetagError) { console.warn("Monetag ad failed:", monetagError); }
+            
+            updateProgressBar(50);
+            
+            try {
+                if (typeof window.showGiga === 'function') {
+                    if (window.initGiga) window.initGiga(gigapubId);
+                    await window.showGiga();
+                    adShownSuccessfully = true;
+                }
+            } catch (gigapubError) { console.warn("Gigapub ad failed:", gigapubError); }
+
+            updateProgressBar(100);
+
+            if (adShownSuccessfully) {
+                rewardUser("বিজ্ঞাপনটি সফলভাবে সম্পন্ন হয়েছে।", rewardAmount);
+                database.ref(`users/${currentUser.id}/adsWatched/${today}`).set(adsWatchedToday + 1);
+            } else {
+                alert("দুঃখিত, কোনো বিজ্ঞাপন দেখানো সম্ভব হচ্ছে না।");
+            }
+            
+            setTimeout(() => updateProgressBar(0), 500);
+        }
+        
+        function rewardUser(message, rewardAmount) {
+            if (rewardAmount > 0) {
+                database.ref(`users/${currentUser.id}/balance`).transaction((bal) => (bal || 0) + rewardAmount);
+            }
+            alert(`ধন্যবাদ! ${message}${rewardAmount > 0 ? ` আপনাকে ${rewardAmount} টাকা পুরস্কৃত করা হয়েছে।` : ''}`);
+        }
+        
+        function updateProgressBar(progress) {
+             const bar = document.getElementById('ad-progress-bar');
+            const container = document.getElementById('ad-progress-container');
+            if (progress > 0) {
+                container.style.display = 'block';
+                bar.style.width = progress + '%';
+            } else {
+                bar.style.width = '0%';
+                setTimeout(() => { container.style.display = 'none'; }, 500); 
+            }
+        }
     </script>
 </body>
 </html>
