@@ -42,7 +42,6 @@
         .page { animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* --- কার্ডে সুন্দর শ্যাডো যুক্ত করা হয়েছে --- */
         .card { 
             background-color: var(--card-background); 
             padding: 14px 20px;
@@ -107,7 +106,6 @@
             margin-top: 14px;
         }
         .btn { 
-            flex: 1;
             padding: 12px 10px;
             border: none; 
             border-radius: 10px; 
@@ -118,7 +116,12 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+            width: 100%; /* Default width */
         }
+        .button-group .btn {
+             flex: 1;
+        }
+
         .btn-primary { 
             background-color: var(--primary-blue); 
             color: white; 
@@ -133,7 +136,7 @@
             fill: white;
         }
 
-        .icon-wrapper { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; background-color: var(--primary-blue); }
+        .icon-wrapper { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px auto; background-color: var(--primary-blue); }
         .icon-wrapper svg { width: 24px; height: 24px; fill: white; }
         nav { display: flex; justify-content: space-around; padding: 8px 4px; border-top: 1px solid #f1f1f1; background-color: var(--card-background); position: sticky; bottom: 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
         .nav-btn { background: none; border: none; font-size: 0.8em; color: var(--text-light); cursor: pointer; padding: 4px 12px; border-radius: 12px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
@@ -326,12 +329,13 @@
                     </div></div>`;
             } else if (pageName === 'support' && appConfig.supportPage) {
                 const sp = appConfig.supportPage;
+                // --- সাপোর্ট পেজের বাটন মাঝখানে আনা হয়েছে ---
                 content = `<div class="page active"><h3>Support</h3>
                     <div class="card">
                         <div class="icon-wrapper"><svg><use href="#icon-play-circle"></use></svg></div>
                         <h4>${sp.title}</h4>
                         <p>${sp.description}</p>
-                        <button class="btn btn-primary" style="margin-top: 20px;" data-action="open-url" data-url="${sp.videoUrl || '#'}">${sp.buttonText}</button>
+                        <button class="btn btn-primary" style="width: auto; display: inline-flex; padding: 12px 24px; margin-top: 10px;" data-action="open-url" data-url="${sp.videoUrl || '#'}">${sp.buttonText}</button>
                         <p style="margin-top: 15px; color: #6c757d; font-size: 0.9em;">🎞️ ভিডিও দেখে সব কিছু বুঝে নিন</p>
                     </div></div>`;
             } else if (pageName === 'tasks' && appConfig.tasks) {
@@ -343,7 +347,7 @@
                     }
                     let buttonsHTML = '';
                     if (task.type === 'ads') {
-                        buttonsHTML = `<button class="btn btn-primary" style="margin-top: 20px; width: 100%;" data-action="handleAd" data-reward="${task.reward || 0}">Verify ☑</button>`;
+                        buttonsHTML = `<button class="btn btn-primary" style="margin-top: 20px;" data-action="handleAd" data-reward="${task.reward || 0}">Verify ☑</button>`;
                     } else {
                         const btnGroup = (task.buttons || []).map(btn => 
                             `<button class="btn btn-primary" data-action="open-url" data-url="${btn.url || '#'}">${btn.text}</button>`
