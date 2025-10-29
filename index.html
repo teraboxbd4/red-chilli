@@ -26,10 +26,11 @@
         
         h3 { font-size: 1.5em; font-weight: 600; margin: 0 12px 16px 12px; text-align: left; }
         
+        /* --- হেডার-এ সাদা কার্ড এবং বর্ডার যুক্ত করা হয়েছে --- */
         header { 
-            background-color: transparent; 
+            background-color: var(--card-background); 
             padding: 10px 15px; 
-            border-bottom: none; 
+            border-bottom: 1px solid var(--border-color); 
         }
         
         .header-content { display: flex; align-items: center; justify-content: space-between; }
@@ -55,10 +56,11 @@
         .card p { color: var(--text-light); line-height: 1.5; margin: 0 0 14px 0; font-size: 0.9em; }
         .card .task-info { font-size: 0.8em; color: var(--text-light); margin-top: 12px; }
         
+        /* --- কার্ডের মধ্যে দূরত্ব বাড়ানো হয়েছে --- */
         .dashboard-stats { 
             display: flex; 
             gap: 12px; 
-            margin: 0 12px 20px 12px; 
+            margin: 0 12px 24px 12px; 
         }
         
         .stat-card {
@@ -79,7 +81,6 @@
             font-size: 0.85em;
             color: var(--text-light);
         }
-        /* --- শুধু সংখ্যাগুলো ছোট করা হয়েছে --- */
         .stat-card .stat-value {
             font-size: 1.5em; 
             font-weight: 600;
