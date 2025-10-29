@@ -36,27 +36,27 @@
             flex-direction: column; 
         }
         
-        /* পরিবর্তন: Horizontal padding প্রায় শূন্য করা হয়েছে */
+        /* পরিবর্তন: Horizontal padding সম্পূর্ণ মুছে ফেলা হয়েছে */
         main { 
             flex-grow: 1; 
-            padding: 16px 2px; /* Horizontal padding 2px করা হয়েছে */
+            padding: 12px 0; /* Horizontal padding 0 করা হয়েছে */
             overflow-y: auto; 
         }
         
         h3 { 
             font-size: 1.7em;
             font-weight: 700; 
-            margin: 0 0 20px 4px;
+            margin: 0 0 16px 4px;
             text-align: left;
         }
         
-        /* পরিবর্তন: Header padding প্রায় শূন্য করা হয়েছে */
+        /* পরিবর্তন: Header padding সম্পূর্ণ মুছে ফেলা হয়েছে */
         header { 
             background-color: var(--background-grey); 
-            padding: 15px 2px; /* Horizontal padding 2px করা হয়েছে */
+            padding: 15px 0; /* Horizontal padding 0 করা হয়েছে */
             border-bottom: none;
         }
-        .header-content { display: flex; align-items: center; justify-content: space-between; }
+        .header-content { display: flex; align-items: center; justify-content: space-between; padding: 0 4px;}
         .header-left { display: flex; align-items: center; gap: 12px; }
         .user-photo img { border-radius: 50%; width: 50px; height: 50px; border: 2px solid var(--primary-blue); }
         .user-details { text-align: left; }
@@ -65,119 +65,90 @@
         .page { animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
+        /* পরিবর্তন: Vertical padding কমানো এবং radius কমানো */
         .card { 
             background-color: var(--card-background); 
-            padding: 20px; 
-            border-radius: 18px; 
+            padding: 10px 20px; /* Vertical padding কমানো হয়েছে */
+            border-radius: 12px; /* Radius কমানো হয়েছে */
             text-align: center; 
             border: none;
-            margin: 0 0 16px 0; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin: 0 0 10px 0; /* Margin কমানো হয়েছে */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
         }
         
-        .card h4 { margin: 15px 0 8px 0; font-size: 1.25em; font-weight: 600; color: #000; }
-        .card p { color: var(--text-light); line-height: 1.6; margin: 0; font-size: 0.95em; }
-        .card .task-info { font-size: 0.9em; color: var(--text-light); margin-top: 15px; }
+        .card h4 { margin: 8px 0 5px 0; font-size: 1.2em; font-weight: 600; color: #000; }
+        .card p { color: var(--text-light); line-height: 1.5; margin: 0; font-size: 0.9em; }
+        .card .task-info { font-size: 0.85em; color: var(--text-light); margin-top: 10px; }
         
         .dashboard-stats { 
             display: flex; 
-            gap: 12px; 
-            margin-bottom: 16px; 
+            gap: 8px; 
+            margin-bottom: 10px; 
         }
         
+        /* পরিবর্তন: Stat-card আরও ছোট করা হয়েছে */
         .stat-card { 
             background-color: var(--card-background); 
-            padding: 15px;
-            border-radius: 18px; 
+            padding: 10px;
+            border-radius: 12px; 
             text-align: center; 
             flex: 1; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
             border: none;
         }
-        .stat-card p { font-size: 0.9em; margin-bottom: 8px; color: var(--text-light); }
-        .stat-card h2 { font-size: 1.8em; margin: 0; color: var(--text-dark); font-weight: 700; }
+        .stat-card p { font-size: 0.85em; margin-bottom: 5px; color: var(--text-light); }
+        .stat-card h2 { font-size: 1.6em; margin: 0; color: var(--text-dark); font-weight: 700; }
 
         .refer-card .referral-link input { 
-            width: 100%; 
-            padding: 12px; 
-            border: 2px dashed var(--primary-blue); 
-            border-radius: 12px; 
-            text-align: center; 
-            margin: 20px 0; 
-            background-color: #f8f9fa; 
-            font-size: 1em; 
-            box-sizing: border-box; 
-            color: var(--text-dark);
-            font-weight: 500;
+            padding: 10px; 
+            margin: 15px 0;
+            font-size: 0.95em;
         }
-        .button-group { display: flex; gap: 12px; margin-top: 20px; }
+        .button-group { display: flex; gap: 10px; margin-top: 15px; }
         
+        /* পরিবর্তন: বাটন আরও ছোট করা হয়েছে */
         .btn { 
-            width: 100%; 
-            padding: 14px; 
-            border: none; 
-            border-radius: 12px; 
-            font-size: 1.05em; 
-            cursor: pointer; 
-            font-weight: 600; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            padding: 12px; 
+            border-radius: 10px; 
+            font-size: 1em;
         }
         .btn-primary { background-color: var(--primary-blue); color: white; }
         .btn-secondary { background-color: var(--primary-green); color: white; }
         
+        /* পরিবর্তন: আইকন ছোট করা হয়েছে */
         .icon-wrapper { 
-            width: 60px; height: 60px; 
-            border-radius: 50%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            margin: 0 auto; 
-            background-color: var(--primary-blue);
+            width: 50px; height: 50px;
         }
-        .icon-wrapper svg { width: 32px; height: 32px; fill: white; }
+        .icon-wrapper svg { width: 28px; height: 28px; fill: white; }
         
+        /* পরিবর্তন: Nav container padding 0 করা হয়েছে */
         .nav-container {
             position: fixed; bottom: 0; left: 0; right: 0;
             max-width: 420px; margin: 0 auto;
             background-color: transparent;
             z-index: 1000;
-            padding: 0 2px 10px 2px; /* পরিবর্তন */
+            padding: 0 0 0 0; 
         }
         nav {
-            display: flex; justify-content: space-around; align-items: center;
             height: 65px;
             background-color: var(--card-background);
-            border-radius: 18px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-radius: 0; /* Radius 0 করা হয়েছে */
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.08);
         }
-        .nav-btn {
-            background-color: transparent; border: none; color: var(--text-light);
-            cursor: pointer; display: flex; flex-direction: column; align-items: center;
-            justify-content: center; flex: 1; gap: 4px; height: 100%;
-            border-radius: 12px; transition: all 0.2s ease-in-out;
-        }
-        .nav-icon { width: 26px; height: 26px; fill: currentColor; }
-        .nav-text { font-size: 12px; font-weight: 500; }
         .nav-btn.active {
-            color: var(--primary-blue);
-            background-color: var(--active-nav-bg);
+            border-radius: 0;
         }
 
-        .withdraw-form .form-group { text-align: left; margin-bottom: 16px; }
-        .withdraw-form .form-group label {
-            display: block; margin-bottom: 8px; font-weight: 600; font-size: 1em; color: var(--text-dark);
-        }
+        /* পরিবর্তন: Withdraw form আরও compressed করা হয়েছে */
+        .withdraw-form .form-group { margin-bottom: 12px; }
+        .withdraw-form .form-group label { margin-bottom: 6px; font-size: 0.95em; }
         .withdraw-form .form-group input, .withdraw-form .form-group select {
-            width: 100%; padding: 14px; border: none;
-            border-radius: 12px; box-sizing: border-box;
-            background-color: #ffffff;
-            font-size: 1em; font-weight: 500;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.95em;
         }
-        .withdraw-form button { margin-top: 10px; }
-        .notice-text { text-align: center; color: var(--text-dark); font-weight: 500; margin-bottom: 25px; }
+        .withdraw-form button { margin-top: 8px; }
+        .notice-text { margin-bottom: 20px; }
 
     </style>
 </head>
@@ -239,7 +210,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
-        // Javascript code is unchanged from the previous correct version.
+        // Javascript is unchanged
         const firebaseConfig = {
             apiKey: "AIzaSyAIXpawpQH3yRozPbTzP7Tzm6IFsNVpAzQ",
             authDomain: "fake-earn-5d8bd.firebaseapp.com",
@@ -369,7 +340,7 @@
                     </div>
                 `;
             } else if (pageName === 'withdraw') {
-                content = `<div class="page active"><h3>Withdraw (টাকা)</h3>
+                content = `<div class="page active" style="padding: 0 4px;"><h3>Withdraw (টাকা)</h3>
                         <p class="notice-text">ন্যূনতম 1000 টাকা এবং কমপক্ষে 20 টি রেফারেল প্রয়োজন।</p>
                         <form class="withdraw-form" onsubmit="return false;">
                             <div class="form-group">
