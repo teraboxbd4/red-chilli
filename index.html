@@ -11,46 +11,24 @@
     
     <style>
         :root {
-            --primary-blue: #007AFF;
-            --primary-green: #34C759;
+            --primary-blue: #0d6efd;
+            --primary-green: #198754;
             --background-grey: #f0f2f5;
             --card-background: #ffffff;
             --text-dark: #212529;
-            --text-light: #8A8A8E;
+            --text-light: #6c757d;
             --border-color: #e9ecef;
         }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            margin: 0; 
-            background-color: var(--background-grey); 
-            color: var(--text-dark); 
-            padding-bottom: 80px; 
-        }
-        .app-container { 
-            max-width: 420px; 
-            margin: 0 auto; 
-            background-color: var(--background-grey); 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: var(--background-grey); color: var(--text-dark); }
+        .app-container { max-width: 420px; margin: 0 auto; background-color: var(--background-grey); min-height: 100vh; display: flex; flex-direction: column; }
         
-        /* পরিবর্তন ২: কার্ডের ডানে-বামে সামান্য (2px) স্পেস */
-        main { 
-            flex-grow: 1; 
-            padding: 16px 2px;
-            overflow-y: auto; 
-        }
+        /* পরিবর্তন ১: কার্ড চওড়া করার জন্য ডানে ও বামের প্যাডিং কমানো হয়েছে */
+        main { flex-grow: 1; padding: 16px 8px; overflow-y: auto; background-color: var(--background-grey); }
         
-        h3 { 
-            font-size: 1.4em; 
-            font-weight: 600; 
-            margin: 0 0 16px 0; 
-            text-align: left; 
-            padding: 0 2px;
-        }
+        h3 { font-size: 1.4em; font-weight: 600; margin: 0 4px 16px 4px; text-align: left; }
         
-        header { background-color: transparent; padding: 10px 15px; border-bottom: 1px solid var(--border-color); }
+        /* পরিবর্তন ২: ব্যবহারকারীর নাম ও ছবির হেডার থেকে সাদা ব্যাকগ্রাউন্ড সরানো হয়েছে */
+        header { background-color: transparent; padding: 10px 15px; border-bottom: 1px solid #f1f1f1; }
         
         .header-content { display: flex; align-items: center; justify-content: space-between; }
         .header-left { display: flex; align-items: center; gap: 12px; }
@@ -61,98 +39,29 @@
         .page { animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* পরিবর্তন ১: কার্ডের Vertical সাইজ আরও কমানো হয়েছে */
-        .card { 
-            background-color: var(--card-background); 
-            padding: 4px 20px; 
-            border-radius: 16px; 
-            text-align: center; 
-            border: 1px solid var(--border-color);
-            margin: 0 0 12px 0; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.07); 
-        }
+        /* পরিবর্তন ৩: কার্ডের ডানে ও বামের মার্জিন তুলে দেওয়া হয়েছে, যেন এটি পুরো স্ক্রিন জুড়ে চওড়া হয় */
+        .card { background-color: var(--card-background); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--border-color); margin: 0 0 16px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
         
         .card h4 { margin: 15px 0 10px 0; font-size: 1.15em; font-weight: 600; }
         .card p { color: var(--text-light); line-height: 1.6; margin: 0; font-size: 0.95em; }
         .card .task-info { font-size: 0.8em; color: var(--text-light); margin-top: 12px; }
-        
-        .dashboard-stats { 
-            display: flex; 
-            gap: 12px; 
-            margin-bottom: 12px; 
-        }
-        
-        /* পরিবর্তন ১: কার্ডের Vertical সাইজ আরও কমানো হয়েছে */
-        .stat-card { 
-            background-color: var(--card-background); 
-            padding: 4px 16px;
-            border-radius: 16px; 
-            text-align: center; 
-            flex: 1; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.07); 
-            border: 1px solid var(--border-color);
-        }
+        .dashboard-stats { display: flex; gap: 8px; margin: 0 0 16px 0; } /* ড্যাশবোর্ডের মার্জিনও ঠিক করা হয়েছে */
+        .stat-card { background-color: var(--card-background); padding: 16px; border-radius: 12px; text-align: center; flex: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid var(--border-color); }
         .refer-card .referral-link input { width: 100%; padding: 10px 12px; border: 1px dashed var(--primary-blue); border-radius: 8px; text-align: center; margin: 16px 0; background-color: #f8f9fa; font-size: 0.9em; box-sizing: border-box; }
         .button-group { display: flex; gap: 10px; margin-top: 20px; }
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 12px; font-size: 1em; cursor: pointer; font-weight: 600; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 600; }
         .btn-primary { background-color: var(--primary-blue); color: white; }
         .btn-secondary { background-color: var(--primary-green); color: white; }
         .icon-wrapper { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; background-color: var(--primary-blue); }
         .icon-wrapper svg { width: 28px; height: 28px; fill: white; }
-        
-        /* নেভিগেশন বার নিচে যুক্ত এবং ফুল-স্ক্রিন */
-        .nav-container {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            max-width: 420px;
-            margin: 0 auto;
-            background-color: var(--card-background);
-            border-top: 1px solid var(--border-color);
-            z-index: 1000;
-        }
-
-        nav {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            height: 65px;
-        }
-
-        .nav-btn {
-            background-color: transparent;
-            border: none;
-            color: var(--text-light);
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            flex: 1;
-            gap: 4px;
-            height: 100%;
-        }
-
-        .nav-icon {
-            width: 26px;
-            height: 26px;
-            fill: currentColor;
-        }
-
-        .nav-text {
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .nav-btn.active {
-            color: var(--primary-blue);
-        }
-
+        nav { display: flex; justify-content: space-around; padding: 8px 4px; border-top: 1px solid #f1f1f1; background-color: var(--card-background); position: sticky; bottom: 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
+        .nav-btn { background: none; border: none; font-size: 0.8em; color: var(--text-light); cursor: pointer; padding: 4px 12px; border-radius: 12px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-btn.active { background-color: #e7f1ff; color: var(--primary-blue); }
+        .nav-btn .nav-icon { width: 22px; height: 22px; }
         .full-page-notice { display: flex; align-items: center; justify-content: center; min-height: 100vh; text-align: center; padding: 20px; box-sizing: border-box; }
         .withdraw-form .form-group { text-align: left; margin-bottom: 16px; }
         .withdraw-form label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9em;}
-        .withdraw-form input, .withdraw-form select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; background-color: var(--card-background); }
+        .withdraw-form input, .withdraw-form select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; background-color: #f8f9fa; }
         .withdraw-form button { margin-top: 10px; }
     </style>
 </head>
@@ -161,17 +70,16 @@
         <div id="ad-progress-bar" style="width: 0%; height: 100%; background-color: var(--primary-blue); transition: width 0.5s linear;"></div>
     </div>
     <div id="app-root">
-        <!-- SVG আইকন -->
         <svg style="position: absolute; width: 0; height: 0; overflow: hidden;"><defs>
             <symbol id="icon-video-camera" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></symbol>
             <symbol id="icon-telegram" viewBox="0 0 24 24"><path d="m9.417 15.181-.397 5.584c.568 0 .814-.244 1.109-.537l2.663-2.545 5.518 4.041c1.012.564 1.725.267 1.998-.931L22.0 .931c.309-1.25-.5-1.841-1.559-1.434L.182 6.582c-1.274.482-1.241 1.169-.23 1.555l5.88 1.813L17.585 4.8c.702-.454 1.323-.212.799.278L8.38 13.331l.055.055Z"/></symbol>
             <symbol id="icon-youtube" viewBox="0 0 24 24"><path d="M10,16.5V7.5L16,12M20,4.4C19.4,4.2 15.7,4 12,4C8.3,4 4.6,4.2 4,4.4C3.4,4.6 3,5.4 3,6.2V17.8C3,18.6 3.4,19.4 4,19.6C4.6,19.8 8.3,20 12,20C15.7,20 19.4,19.8 20,19.6C20.6,19.4 21,18.6 21,17.8V6.2C21,5.4 20.6,4.6 20,4.4Z"/></symbol>
             <symbol id="icon-facebook" viewBox="0 0 24 24"><path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3V22h4v-8.5z"/></symbol>
             <symbol id="icon-play-circle" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></symbol>
-            <symbol id="icon-home" viewBox="0 0 24 24"><path fill="currentColor" d="M12 5.69l5 4.5V18h-2v-6H9v6H7v-7.81l5-4.5M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/></symbol>
-            <symbol id="icon-support" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1a9 9 0 0 0-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2a7 7 0 0 1 14 0v2h-4v8h4c1.66 0 3-1.34 3-3v-7a9 9 0 0 0-9-9z"/></symbol>
-            <symbol id="icon-tasks" viewBox="0 0 24 24"><path fill="currentColor" d="M3.5 18c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S2.67 9 3.5 9 5 8.33 5 7.5 4.33 6 3.5 6zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"/></symbol>
-            <symbol id="icon-withdraw" viewBox="0 0 24 24"><path fill="currentColor" d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zM4 6h16v2H4V6zm16 12H4v-6h16v6zm-8-4c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/></symbol>
+            <symbol id="icon-home" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></symbol>
+            <symbol id="icon-support" viewBox="0 0 24 24"><path d="M12 1a9 9 0 0 0-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2a7 7 0 0 1 14 0v2h-4v8h4c1.66 0 3-1.34 3-3v-7a9 9 0 0 0-9-9z"/></symbol>
+            <symbol id="icon-tasks" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></symbol>
+            <symbol id="icon-withdraw" viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></symbol>
         </defs></svg>
         <div class="app-container">
             <header>
@@ -188,26 +96,12 @@
             <main id="main-content">
                 <div class="card"><p>Loading App...</p></div>
             </main>
-            <div class="nav-container">
-                <nav>
-                    <button class="nav-btn active" data-page="home">
-                        <svg class="nav-icon"><use href="#icon-home"></use></svg>
-                        <span class="nav-text">Home</span>
-                    </button>
-                    <button class="nav-btn" data-page="support">
-                        <svg class="nav-icon"><use href="#icon-support"></use></svg>
-                        <span class="nav-text">Support</span>
-                    </button>
-                    <button class="nav-btn" data-page="tasks">
-                        <svg class="nav-icon"><use href="#icon-tasks"></use></svg>
-                        <span class="nav-text">Tasks</span>
-                    </button>
-                    <button class="nav-btn" data-page="withdraw">
-                        <svg class="nav-icon"><use href="#icon-withdraw"></use></svg>
-                        <span class="nav-text">Withdraw</span>
-                    </button>
-                </nav>
-            </div>
+            <nav>
+                <button class="nav-btn active" data-page="home"><svg class="nav-icon"><use href="#icon-home"></use></svg>Home</button>
+                <button class="nav-btn" data-page="support"><svg class="nav-icon"><use href="#icon-support"></use></svg>Support</button>
+                <button class="nav-btn" data-page="tasks"><svg class="nav-icon"><use href="#icon-tasks"></use></svg>Tasks</button>
+                <button class="nav-btn" data-page="withdraw"><svg class="nav-icon"><use href="#icon-withdraw"></use></svg>Withdraw</button>
+            </nav>
         </div>
     </div>
     
@@ -327,21 +221,21 @@
             let content = '';
             
             if (pageName === 'home') {
-                const adTaskConfig = (appConfig.tasks || []).find(t => t.type === 'ads' && t.enabled) || { dailyLimit: 10 };
+                 const adTaskConfig = (appConfig.tasks || []).find(t => t.type === 'ads' && t.enabled) || { dailyLimit: 10 };
                 const today = new Date().toISOString().slice(0, 10);
                 const adsWatchedToday = (userData.adsWatched && userData.adsWatched[today]) || 0;
                 const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}`;
                 content = `<div class="page active"><h3>Dashboard</h3>
                     <div class="dashboard-stats">
-                        <div class="stat-card"><p>Daily Ads Watched</p><h2>${adsWatchedToday} / ${adTaskConfig.dailyLimit}</h2></div>
-                        <div class="stat-card"><p>Total Referrals</p><h2>${userData.referrals || 0}</h2></div>
+                        <div class="stat-card"><p>Daily Ads Watched</p><span>${adsWatchedToday} / ${adTaskConfig.dailyLimit}</span></div>
+                        <div class="stat-card"><p>Total Referrals</p><span>${userData.referrals || 0}</span></div>
                     </div>
                     <div class="card refer-card">
                         <h4>Refer & Earn More!</h4>
                         <p>আপনার বন্ধুদের রেফার করে আয় করুন। প্রতি সফল রেফারে পাবেন ${appConfig.referralBonus || 0} টাকা।</p>
                         <div class="referral-link"><input id="referral-link-input" type="text" value="${referralLink}" readonly></div>
                         <div class="button-group">
-                            <button class="btn btn-primary" data-action="copy-link">Copy Referral Link</button>
+                            <button class="btn btn-primary" data-action="copy-link">Copy Link</button>
                             <button class="btn btn-secondary" data-action="share-link">Share Now</button>
                         </div>
                     </div></div>`;
@@ -359,7 +253,7 @@
                     const icon = task.icon;
                     let buttonsHTML = '';
                     if (task.type === 'ads') {
-                        buttonsHTML = `<button class="btn btn-primary" style="margin-top: 20px;" data-action="handleAd" data-reward="${task.reward || 0}">Watch Ad</button>`;
+                        buttonsHTML = `<button class="btn btn-primary" style="margin-top: 20px;" data-action="handleAd" data-reward="${task.reward || 0}">Verify ☑</button>`;
                     } else {
                         buttonsHTML = (task.buttons || []).map(btn => 
                             `<button class="btn btn-primary" data-action="open-url" data-url="${btn.url || '#'}">${btn.text}</button>`
@@ -379,17 +273,14 @@
             } else if (pageName === 'withdraw' && appConfig.withdrawPage) {
                 const wp = appConfig.withdrawPage;
                 const methods = (wp.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
-                
-                content = `<div class="page active"><h3>Withdraw (টাকা)</h3>
-                    <div class="card">
-                        <p style="text-align: left; margin-bottom: 20px;">${wp.noticeText.replace('{minAmount}', wp.minAmount).replace('{minReferrals}', wp.minReferrals)}</p>
-                        <form class="withdraw-form" onsubmit="return false;">
-                            <div class="form-group"><label>Method:</label><select id="withdraw-method">${methods}</select></div>
-                            <div class="form-group"><label>Account Number:</label><input id="withdraw-account" type="text" placeholder="01XXXXXXXXX"></div>
-                            <div class="form-group"><label>Amount (টাকা):</label><input id="withdraw-amount" type="number" placeholder="${wp.minAmount}"></div>
-                            <button type="submit" class="btn btn-primary" data-action="submit-withdraw">Submit Request</button>
-                        </form>
-                    </div></div>`;
+                content = `<div class="page active"><h3>Withdraw (টাকা)</h3><div class="card">
+                    <p style="margin-bottom: 20px;">${wp.noticeText.replace('{minAmount}', wp.minAmount).replace('{minReferrals}', wp.minReferrals)}</p>
+                    <form class="withdraw-form" onsubmit="return false;">
+                        <div class="form-group"><label>Method:</label><select id="withdraw-method">${methods}</select></div>
+                        <div class="form-group"><label>Account Number:</label><input id="withdraw-account" type="text" placeholder="01XXXXXXXXX"></div>
+                        <div class="form-group"><label>Amount (টাকা):</label><input id="withdraw-amount" type="number" placeholder="${wp.minAmount}"></div>
+                        <button type="submit" class="btn btn-primary" data-action="submit-withdraw">Submit Request</button>
+                    </form></div></div>`;
             } else {
                  content = `<div class="page active"><div class="card"><p>Page not found.</p></div></div>`;
             }
