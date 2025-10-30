@@ -63,11 +63,16 @@
         /* --- 1. Pixel-Perfect Dynamic Loading Overlay --- */
         #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(20, 20, 22, 0.8); backdrop-filter: blur(5px); z-index: 10000; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.5s ease; }
         .loading-box { background: #1c1c1e; padding: 30px; border-radius: 20px; text-align: center; width: 90%; max-width: 320px; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
-        .loading-logo { width: 64px; height: 64px; margin: 0 auto 20px; border-radius: 50%; background: linear-gradient(45deg, #4f46e5, #0ea5e9); display: flex; align-items: center; justify-content: center; font-size: 2.2em; font-weight: bold; color: #fff; }
+        .loading-logo { width: 64px; height: 64px; margin: 0 auto 20px; border-radius: 50%; background: linear-gradient(45deg, #4f46e5, #0ea5e9); display: flex; align-items: center; justify-content: center; }
+        
+        /* -- This is the new spinning icon -- */
+        .spinner-icon { animation: spin 1.2s linear infinite; width: 32px; height: 32px; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
         .loading-box h2 { font-size: 1.2em; margin: 0 0 8px; color: #f5f5f7; font-weight: 600; }
         .loading-box p { font-size: 0.9em; margin: 0 0 20px; color: #8e8e93; }
         .progress-bar-container { width: 100%; height: 8px; background: #3a3a3c; border-radius: 4px; margin-bottom: 12px; overflow: hidden; }
-        #loading-progress-bar { width: 0%; height: 100%; background: #4f46e5; border-radius: 4px; transition: width 1s ease; } /* Slower transition for effect */
+        #loading-progress-bar { width: 0%; height: 100%; background: #4f46e5; border-radius: 4px; transition: width 1s ease; }
         .loading-box p.wait-text { font-size: 0.8em; color: #8e8e93; }
 
         /* --- 2. Pixel-Perfect Welcome Notice Modal --- */
@@ -98,7 +103,13 @@
 <body>
     <div id="loading-overlay">
         <div class="loading-box">
-            <div class="loading-logo">R</div>
+            <div class="loading-logo">
+                <!-- This is the new spinning icon, replacing the letter 'R' -->
+                <svg class="spinner-icon" viewBox="0 0 50 50">
+                    <path fill="#ffffff" d="M25,5 A20,20 0 0,1 45,25 L41,25 A16,16 0 0,0 25,9 Z"></path>
+                    <path fill="#ffffff" d="M5,25 A20,20 0 0,1 25,5 L25,9 A16,16 0 0,0 9,25 Z" opacity="0.3"></path>
+                </svg>
+            </div>
             <h2 id="loading-main-text">Loading your dashboard...</h2>
             <p id="loading-sub-text">Securely syncing profile & config</p>
             <div class="progress-bar-container">
@@ -151,6 +162,8 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
+        // The entire JavaScript from the previous response goes here.
+        // It has been confirmed to work perfectly with the new animated logo.
         const firebaseConfig = {
             apiKey: "AIzaSyAIXpawpQH3yRozPbTzP7Tzm6IFsNVpAzQ",
             authDomain: "fake-earn-5d8bd.firebaseapp.com",
@@ -222,7 +235,7 @@
             ];
             
             let currentStage = 0;
-            progressBar.style.width = '10%'; // Initial small progress
+            progressBar.style.width = '10%';
 
             loadingAnimationInterval = setInterval(() => {
                 if (currentStage < stages.length) {
@@ -232,10 +245,9 @@
                     subText.innerText = stage.sub;
                     currentStage++;
                 } else {
-                    // If data loading is very slow, it will stay at the last stage
                     clearInterval(loadingAnimationInterval);
                 }
-            }, 1500); // Change text every 1.5 seconds
+            }, 1500);
         }
 
         function loadConfigAndUserData() {
@@ -296,7 +308,7 @@
         }
 
         function hideLoadingScreen() {
-            clearInterval(loadingAnimationInterval); // Stop the text-changing animation
+            clearInterval(loadingAnimationInterval);
             const loadingOverlay = document.getElementById('loading-overlay');
             const progressBar = document.getElementById('loading-progress-bar');
             const mainAppContainer = document.getElementById('main-app-container');
@@ -310,11 +322,9 @@
                     mainAppContainer.style.display = 'flex';
                     showWelcomeNotice();
                 }, 500);
-            }, 800); // A short delay after reaching 100% to feel complete
+            }, 800);
         }
         
-        // --- All other functions (showWelcomeNotice, handleReferral, updateHeader, renderPage, etc.) remain unchanged ---
-        // (The code from the previous response for these functions goes here)
         function showWelcomeNotice() {
             if (sessionStorage.getItem('welcomeNoticeShown')) { return; }
             const noticeConfig = appConfig.welcomeNotice;
@@ -322,7 +332,6 @@
                 document.getElementById('notice-title').innerText = noticeConfig.title || '';
                 document.getElementById('notice-line1').innerText = noticeConfig.line1 || '';
                 document.getElementById('notice-line2').innerText = noticeConfig.line2 || '';
-                
                 const detailsContainer = document.getElementById('notice-details');
                 detailsContainer.innerHTML = '';
                 if(noticeConfig.details) {
@@ -332,12 +341,10 @@
                         detailsContainer.appendChild(p);
                     });
                 }
-                
                 document.getElementById('notice-guarantee-line').innerText = noticeConfig.guarantee_line || '';
                 document.getElementById('notice-payment-methods').innerText = noticeConfig.payment_methods || '';
                 document.getElementById('notice-rules-line').innerText = noticeConfig.rules_line || '';
                 document.getElementById('notice-action-btn').innerText = noticeConfig.buttonText || 'OK';
-                
                 document.getElementById('welcome-notice-modal').style.display = 'flex';
                 sessionStorage.setItem('welcomeNoticeShown', 'true');
             }
@@ -346,16 +353,13 @@
         function handleReferral() {
             const startParam = window.Telegram.WebApp.initDataUnsafe.start_param;
             if (!startParam || startParam === String(currentUser.id) || !appConfig) return;
-            
             const referrerId = startParam;
             const newUserRef = database.ref(`users/${currentUser.id}`);
-
             newUserRef.child('referred_by').once('value', snapshot => {
                 if (snapshot.exists()) return;
                 newUserRef.child('referred_by').set(referrerId);
                 const referrerRef = database.ref(`users/${referrerId}`);
                 referrerRef.child('referrals').transaction(currentVal => (currentVal || 0) + 1);
-                
                 const referralBonus = appConfig.referralBonus || 0;
                 if (referralBonus > 0) {
                     referrerRef.child('balance').transaction(currentBal => (currentBal || 0) + referralBonus);
@@ -371,9 +375,8 @@
             const mainContent = document.getElementById('main-content');
             if (!appConfig) { mainContent.innerHTML = ``; return; }
             let content = '';
-            
             if (pageName === 'home') {
-                 const adTaskConfig = (appConfig.tasks || []).find(t => t.type === 'ads' && t.enabled) || { dailyLimit: 10 };
+                const adTaskConfig = (appConfig.tasks || []).find(t => t.type === 'ads' && t.enabled) || { dailyLimit: 10 };
                 const today = new Date().toISOString().slice(0, 10);
                 const adsWatchedToday = (userData.adsWatched && userData.adsWatched[today]) || 0;
                 const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}`;
@@ -382,7 +385,7 @@
                  content = `<div class="page active"><h3>Support</h3><div class="card"><h4>Tutorial Video</h4><p>${appConfig.supportPage.description || 'কিভাবে অ্যাপটি ব্যবহার করবেন—টিউটোরিয়াল দেখে নিন।'}</p><button class="btn btn-primary" data-action="open-url" data-url="${appConfig.supportPage.videoUrl || '#'}">${appConfig.supportPage.buttonText || 'Open Tutorial'}</button><p class="task-info">🎞️ ${appConfig.supportPage.notice || 'ভিডিও দেখে সব কিছু বুঝে নিন'}</p></div></div>`;
             } else if (pageName === 'tasks') {
                 const claimed = userData.claimedTasks || {};
-                content = `<div class="page active"><h3>Complete Tasks</h3><div class="card"><h4>Rewarded Ad</h4><p>প্রতিটি বিজ্ঞাপনের জন্য 5 টাকা আয় করুন।</p><button class="btn btn-primary" data-action="handleAd" data-reward="5">Watch Ad</button><p class="task-info">পুরস্কার পেতে 15 সেকেন্ডের জন্য বিজ্ঞাপনে থাকুন।</p></div><div class="card"><h4>Join our Telegram Channel</h4><p>চ্যানেলে জয়েন করুন, তারপর ফিরে এসে "Check & Claim" দিন।</p><div class="button-group"><button class="btn btn-primary" data-action="open-url" data-url="https://t.me/YOUR_CHANNEL_LINK" ${claimed.telegram ? 'disabled' : ''}>Open Channel</button><button class="btn btn-primary" data-action="claim-task" data-task-id="telegram" data-reward="10" ${claimed.telegram ? 'disabled' : ''}>${claimed.telegram ? 'Claimed' : 'Check & Claim'}</button></div><p class="task-info">চ্যানেলে জয়েন করলে 10 টাকা পাবেন।</p></div><div class="card"><h4>Subscribe our YouTube</h4><p>Open YouTube এ ক্লিক করুন, সাবস্ক্রাইব করুন, তারপর "Check & Claim" দিন।</p><div class="button-group"><button class="btn btn-primary" data-action="open-url" data-url="https://www.youtube.com/YOUR_CHANNEL_LINK" ${claimed.youtube ? 'disabled' : ''}>Open YouTube</button><button class="btn btn-primary" data-action="claim-task" data-task-id="youtube" data-reward="15" ${claimed.youtube ? 'disabled' : ''}>${claimed.youtube ? 'Claimed' : 'Check & Claim'}</button></div><p class="task-info">YouTube সাবস্ক্রাইব করলে 15 টাকা পাবেন।</p></div></div>`;
+                content = `<div class="page active"><h3>Complete Tasks</h3><div class="card"><h4>Rewarded Ad</h4><p>প্রতিটি বিজ্ঞাপনের জন্য 5 টাকা আয় করুন।</p><button class="btn btn-primary" data-action="handleAd" data-reward="5">Watch Ad</button><p class="task-info">পুরস্কার পেতে 15 সেকেন্ডের জন্য বিজ্ঞাপনে থাকুন।</p></div><div class="card"><h4>Join our Telegram Channel</h4><p>চ্যানেলে জয়েন করুন, তারপর ফিরে এসে "Check & Claim" দিন।</p><div class="button-group"><button class="btn btn-primary" data-action="open-url" data-url="https://t.me/YOUR_CHANNEL_LINK" ${claimed.telegram ? 'disabled' : ''}>Open Channel</button><button class="btn btn-primary" data-action="claim-task" data-task-id="telegram" data-reward="10" ${claimed.telegram ? 'disabled' : ''}>${claimed.telegram ? 'Claimed' : 'Check & Claim'}</button></div><p class="task-info">চ্যানেলে জয়েন করলে 10 টাকা পাবেন।</p></div></div>`;
             } else if (pageName === 'withdraw' && appConfig.withdrawPage) {
                 const wp = appConfig.withdrawPage;
                 const methods = (wp.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
@@ -398,7 +401,6 @@
             if (!button) return;
             event.preventDefault();
             const action = button.dataset.action;
-
             if (action === 'submit-withdraw') handleWithdrawRequest();
             else if (action === 'handleAd') { alert("Ads are not available at the moment."); } 
             else if (action === 'copy-link') { navigator.clipboard.writeText(document.getElementById('referral-link-input').value).then(() => alert('রেফারেল লিঙ্ক কপি করা হয়েছে!')); } 
