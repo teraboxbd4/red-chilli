@@ -23,7 +23,7 @@
             --card-background: #ffffff;
             --text-dark: #212529;
             --text-light: #6c757d;
-            --border-color: #f0f2f5; /* Updated border color to match background */
+            --border-color: #f0f2f5;
         }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: var(--background-grey); color: var(--text-dark); -webkit-font-smoothing: antialiased; }
         .app-container { max-width: 420px; margin: 0 auto; background-color: var(--background-grey); min-height: 100vh; display: none; flex-direction: column; }
@@ -60,10 +60,13 @@
         .stat-card p { margin: 0 0 8px 0; font-size: 0.85em; color: var(--text-light); }
         .stat-card .stat-value { font-size: 1.5em; font-weight: 600; color: var(--text-dark); }
         
+        .refer-card .referral-link input { width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; text-align: center; margin: 20px 0; background-color: #f8f9fa; font-size: 0.9em; box-sizing: border-box; color: var(--text-dark); font-weight: 400; }
+
         .button-group { display: flex; gap: 10px; margin-top: 14px; }
         .btn { padding: 14px 10px; border: none; border-radius: 12px; font-size: 1em; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; transition: transform 0.2s; }
         .btn:active { transform: scale(0.98); }
         .btn.btn-primary { background-color: var(--primary-blue); color: white; }
+        .btn.btn-secondary { background-color: var(--primary-green); color: white; }
         .btn:disabled { background-color: #b0b0b0; color: white !important; cursor: not-allowed; }
         .button-group .btn { flex: 1; }
         
@@ -95,17 +98,14 @@
         .notice-details-list, .notice-guarantee-list { list-style: none; padding: 0; margin: 0 0 25px 0; }
         .notice-details-list li, .notice-guarantee-list li { display: flex; align-items: center; gap: 10px; font-size: 0.95em; margin-bottom: 12px; color: #3c3c43; }
         .notice-rules { text-align: center; font-size: 0.9em; color: #3c3c43; line-height: 1.6; margin-bottom: 25px; }
-        #notice-action-btn { width: 100%; padding: 15px; font-size: 1.1em; border-radius: 16px; background-color: #007bff; }
+        #notice-action-btn { width: 100%; padding: 15px; font-size: 1.1em; border-radius: 16px; background-color: var(--primary-blue); }
     </style>
 </head>
 <body>
     <div id="loading-overlay">
         <div class="loading-box">
             <div class="loading-logo">
-                <svg viewBox="0 0 64 64">
-                    <defs><linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#4338ca; stop-opacity:1" /><stop offset="100%" style="stop-color:#34d399; stop-opacity:1" /></linearGradient></defs>
-                    <circle cx="32" cy="32" r="32" fill="url(#logo-gradient)"/><path d="M38 22 L24 36 L32 36 L26 48 L40 32 L32 32 Z" fill="#fff"/>
-                </svg>
+                <svg viewBox="0 0 64 64"><defs><linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#4338ca; stop-opacity:1" /><stop offset="100%" style="stop-color:#34d399; stop-opacity:1" /></linearGradient></defs><circle cx="32" cy="32" r="32" fill="url(#logo-gradient)"/><path d="M38 22 L24 36 L32 36 L26 48 L40 32 L32 32 Z" fill="#fff"/></svg>
             </div>
             <h2 id="loading-main-text">Loading...</h2><p id="loading-sub-text">Please wait</p>
             <div class="progress-bar-track"><div class="progress-bar-value"></div></div>
@@ -372,27 +372,30 @@
             let content = '';
 
             if (pageName === 'home') {
-                const adTaskConfig = (appConfig.tasks || []).find(t => t.type === 'ads' && t.enabled) || { dailyLimit: 10 };
+                const adTaskConfig = (appConfig.tasks || []).find(t => t.type === 'ads' && t.enabled) || {};
+                const dailyLimit = adTaskConfig.dailyLimit || 10;
                 const today = new Date().toISOString().slice(0, 10);
                 const adsWatchedToday = (userData.adsWatched && userData.adsWatched[today]) || 0;
-                const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}`;
+                const referralLink = currentUser ? `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}` : 'https://t.me/Red_Chiliii_bot/app';
+                
                 content = `
                     <div class="page active">
                         <h3>Dashboard</h3>
                         <div class="dashboard-stats">
-                            <div class="stat-card"><p>Daily Ads Watched</p><span class="stat-value">${adsWatchedToday} / ${adTaskConfig.dailyLimit}</span></div>
+                            <div class="stat-card"><p>Daily Ads Watched</p><span class="stat-value">${adsWatchedToday} / ${dailyLimit}</span></div>
                             <div class="stat-card"><p>Total Referrals</p><span class="stat-value">${userData.referrals || 0}</span></div>
                         </div>
                         <div class="card refer-card">
                             <h4>Refer & Earn More!</h4>
-                            <p style="font-size: 0.95em;">আপনার বন্ধুদের রেফার করে আয় করুন। প্রতি সফল রেফারে পাবেন ${appConfig.referralBonus || 0} টাকা।</p>
-                            <div class="referral-link" style="margin: 20px 0;"><input id="referral-link-input" type="text" value="${referralLink}" readonly></div>
+                            <p>আপনার বন্ধুদের রেফার করে আয় করুন। প্রতি সফল রেফারে পাবেন ${appConfig.referralBonus || 0} টাকা।</p>
+                            <div class="referral-link"><input id="referral-link-input" type="text" value="${referralLink}" readonly></div>
                             <div class="button-group">
                                 <button class="btn btn-primary" data-action="copy-link">Copy Link</button>
-                                <button class="btn btn-primary" data-action="share-link" style="background-color: #28a745;">Share Now</button>
+                                <button class="btn btn-secondary" data-action="share-link">Share Now</button>
                             </div>
                         </div>
                     </div>`;
+
             } else if (pageName === 'tasks') {
                 const claimed = userData.claimedTasks || {};
                 let tasksHtml = (appConfig.tasks || [])
@@ -401,7 +404,7 @@
                         const isClaimed = claimed[task.type];
                         const buttonsHtml = (task.buttons || []).map(button => `
                             <button class="btn btn-primary" data-action="${button.action}" data-url="${button.url || ''}" data-task-id="${task.type}" data-reward="${task.reward}" ${isClaimed ? 'disabled' : ''}>
-                                ${isClaimed && button.action === 'claim-task' ? 'Claimed' : button.text}
+                                ${isClaimed && (button.action === 'claim-task' || button.action === 'handleAd') ? 'Completed' : button.text}
                             </button>
                         `).join('');
                         const buttonWrapperClass = (task.buttons || []).length > 1 ? 'button-group' : '';
@@ -454,13 +457,13 @@
                 navigator.clipboard.writeText(document.getElementById('referral-link-input').value)
                     .then(() => alert('রেফারেল লিঙ্ক কপি করা হয়েছে!')); 
             } else if (action === 'share-link') {
-                const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}`;
+                const referralLink = document.getElementById('referral-link-input').value;
                 const shareText = `এই অ্যাপ থেকে বিজ্ঞাপন দেখে টাকা আয় করুন।\n১০০% পেমেন্ট করে—আমার লিঙ্কে যোগ দিন:\n\n${referralLink}`;
                 window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(shareText)}`);
             } else if (action === 'open-url') {
                 const url = button.dataset.url;
                 if(url && url !== '#'){ window.Telegram.WebApp.openLink(url); }
-            } else if (action === 'claim-task') {
+            } else if (action === 'claim-task' || action === 'handleAd') {
                  handleClaimTask(button.dataset.taskId, parseFloat(button.dataset.reward), button);
             }
         }
@@ -476,11 +479,14 @@
                     database.ref(`users/${currentUser.id}/balance`).transaction((currentBalance) => (currentBalance || 0) + reward);
                     claimedTasksRef.set(true);
                     alert(`অভিনন্দন! আপনি ${reward} টাকা পুরস্কার পেয়েছেন।`);
-                    // Visually update the button
-                    claimButton.textContent = 'Claimed';
+                    
+                    claimButton.textContent = 'Completed';
                     claimButton.disabled = true;
-                    const openButton = claimButton.closest('.button-group').querySelector('[data-action="open-url"]');
-                    if (openButton) openButton.disabled = true;
+                    const buttonGroup = claimButton.closest('.button-group');
+                    if (buttonGroup) {
+                        const openButton = buttonGroup.querySelector('[data-action="open-url"]');
+                        if (openButton) openButton.disabled = true;
+                    }
                 }
             });
         }
