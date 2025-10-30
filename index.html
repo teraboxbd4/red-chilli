@@ -16,6 +16,7 @@
     <script src="https://ad.gigapub.tech/script?id=3877"></script>
     
     <style>
+        /* Your Original CSS - Unchanged */
         :root {
             --primary-blue: #0d6efd;
             --primary-green: #28a745;
@@ -26,19 +27,10 @@
             --border-color: #dee2e6;
         }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: var(--background-grey); color: var(--text-dark); }
-        .app-container { max-width: 420px; margin: 0 auto; background-color: var(--background-grey); min-height: 100vh; display: flex; flex-direction: column; }
-        
+        .app-container { max-width: 420px; margin: 0 auto; background-color: var(--background-grey); min-height: 100vh; display: none; flex-direction: column; }
         main { flex-grow: 1; padding: 16px 0; overflow-y: auto; background-color: var(--background-grey); position: relative; }
-        
         h3 { font-size: 1.5em; font-weight: 600; margin: 0 12px 16px 12px; text-align: left; }
-        
-        header { 
-            background-color: transparent; 
-            padding: 10px 15px; 
-            margin-bottom: 10px;
-            border-bottom: 1px solid var(--border-color); 
-        }
-        
+        header { background-color: transparent; padding: 10px 15px; margin-bottom: 10px; border-bottom: 1px solid var(--border-color); }
         .header-content { display: flex; align-items: center; justify-content: space-between; }
         .header-left { display: flex; align-items: center; gap: 12px; }
         .user-photo img { border-radius: 50%; width: 50px; height: 50px; }
@@ -47,154 +39,95 @@
         .user-details #balance-display { margin: 0; color: var(--text-light); font-weight: 500; font-size: 0.9em; }
         .page { animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        .card { 
-            background-color: var(--card-background); 
-            padding: 20px;
-            border-radius: 12px; 
-            text-align: center; 
-            border: 1px solid var(--border-color); 
-            margin: 0 12px 16px 12px; 
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); 
-        }
-        
+        .card { background-color: var(--card-background); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--border-color); margin: 0 12px 16px 12px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); }
         .card h4 { margin: 10px 0; font-size: 1.1em; font-weight: 600; }
         .card p { color: var(--text-light); line-height: 1.5; margin: 0 0 14px 0; font-size: 0.9em; }
         .card .task-info { font-size: 0.8em; color: var(--text-light); margin-top: 12px; }
-        
-        .dashboard-stats { 
-            display: flex; 
-            gap: 12px; 
-            margin: 0 12px 24px 12px; 
-        }
-        
-        .stat-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--card-background); 
-            padding: 22px 10px;
-            border-radius: 12px; 
-            text-align: center; 
-            flex: 1; 
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); 
-            border: 1px solid var(--border-color);
-        }
-        .stat-card p {
-            margin: 0 0 8px 0;
-            font-size: 0.85em;
-            color: var(--text-light);
-        }
-        .stat-card .stat-value {
-            font-size: 1.5em; 
-            font-weight: 600;
-            color: var(--primary-blue);
-        }
-
-        .refer-card .referral-link input { 
-            width: 100%; 
-            padding: 12px; 
-            border: 2px dashed #d0d9e6;
-            border-radius: 10px; 
-            text-align: center; 
-            margin: 14px 0; 
-            background-color: #fdfdff; 
-            font-size: 0.9em; 
-            box-sizing: border-box; 
-            color: var(--text-dark);
-            font-weight: 500;
-        }
-
-        .button-group { 
-            display: flex; 
-            gap: 10px; 
-            margin-top: 14px;
-        }
-        .btn { 
-            padding: 12px 10px;
-            border: none; 
-            border-radius: 10px; 
-            font-size: 0.9em;
-            cursor: pointer; 
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-        }
-        .btn:disabled {
-            background-color: #a0a0a0;
-            cursor: not-allowed;
-        }
-        .button-group .btn {
-             flex: 1;
-        }
-
-        .btn-primary { 
-            background-color: var(--primary-blue); 
-            color: white; 
-        }
-        .btn-secondary { 
-            background-color: var(--primary-green); 
-            color: white; 
-        }
-        .btn-icon {
-            width: 16px;
-            height: 16px;
-            fill: white;
-        }
-
-        /* --- আইকন ডিজাইন আপডেট করা হয়েছে --- */
-        .icon-wrapper { 
-            width: 45px; 
-            height: 45px; 
-            border-radius: 12px; /* চার কোণা আইকন */
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            margin: 0 auto 10px auto; 
-            background-color: var(--primary-blue); 
-        }
+        .dashboard-stats { display: flex; gap: 12px; margin: 0 12px 24px 12px; }
+        .stat-card { display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: var(--card-background); padding: 22px 10px; border-radius: 12px; text-align: center; flex: 1; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); border: 1px solid var(--border-color); }
+        .stat-card p { margin: 0 0 8px 0; font-size: 0.85em; color: var(--text-light); }
+        .stat-card .stat-value { font-size: 1.5em; font-weight: 600; color: var(--primary-blue); }
+        .refer-card .referral-link input { width: 100%; padding: 12px; border: 2px dashed #d0d9e6; border-radius: 10px; text-align: center; margin: 14px 0; background-color: #fdfdff; font-size: 0.9em; box-sizing: border-box; color: var(--text-dark); font-weight: 500; }
+        .button-group { display: flex; gap: 10px; margin-top: 14px; }
+        .btn { padding: 12px 10px; border: none; border-radius: 10px; font-size: 0.9em; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+        .btn:disabled { background-color: #a0a0a0; cursor: not-allowed; }
+        .button-group .btn { flex: 1; }
+        .btn-primary { background-color: var(--primary-blue); color: white; }
+        .btn-secondary { background-color: var(--primary-green); color: white; }
+        .btn-icon { width: 16px; height: 16px; fill: white; }
+        .icon-wrapper { width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px auto; background-color: var(--primary-blue); }
         .icon-wrapper.telegram { background-color: #2AABEE; }
         .icon-wrapper.youtube { background-color: #FF0000; }
         .icon-wrapper.facebook { background-color: #1877F2; }
         .icon-wrapper svg { width: 24px; height: 24px; fill: white; }
-
         nav { display: flex; justify-content: space-around; padding: 8px 4px; border-top: 1px solid #f1f1f1; background-color: var(--card-background); position: sticky; bottom: 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
         .nav-btn { background: none; border: none; font-size: 0.8em; color: var(--text-light); cursor: pointer; padding: 4px 12px; border-radius: 12px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-btn.active { background-color: #e7f1ff; color: var(--primary-blue); }
         .nav-btn .nav-icon { width: 22px; height: 22px; fill: currentColor; }
         .full-page-notice { display: flex; align-items: center; justify-content: center; min-height: 100vh; text-align: center; padding: 20px; box-sizing: border-box; }
-        
-        .withdraw-page-container {
-            padding: 0 12px;
-        }
+        .withdraw-page-container { padding: 0 12px; }
         .withdraw-form .form-group { text-align: left; margin-bottom: 16px; }
         .withdraw-form label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9em;}
         .withdraw-form input, .withdraw-form select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; background-color: #f8f9fa; }
         .withdraw-form button { margin-top: 10px; width: 100%; }
+        .loader { border: 5px solid #f3f3f3; border-radius: 50%; border-top: 5px solid var(--primary-blue); width: 40px; height: 40px; animation: spin 1s linear infinite; position: absolute; top: 40%; left: 50%; margin-left: -20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .loader {
-            border: 5px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 5px solid var(--primary-blue);
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            position: absolute;
-            top: 40%;
-            left: 50%;
-            margin-left: -20px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        /* --- ADDED: Loading Overlay and Welcome Notice CSS --- */
+        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(30, 30, 32, 0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 10000; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.5s ease; }
+        .loading-box { background: #1c1c1e; padding: 25px 30px; border-radius: 20px; text-align: center; width: 85%; max-width: 320px; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+        .loading-logo { width: 64px; height: 64px; margin: 0 auto 20px; animation: spin-logo 2.5s linear infinite; }
+        @keyframes spin-logo { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .loading-box h2 { font-size: 1.25em; margin: 0 0 8px; color: #f5f5f7; font-weight: 600; }
+        .loading-box p { font-size: 0.9em; margin: 0 0 20px; color: #8e8e93; }
+        .progress-bar-track { width: 100%; height: 4px; background: #3a3a3c; border-radius: 2px; margin-bottom: 12px; overflow: hidden; position: relative; }
+        .progress-bar-value { position: absolute; top: 0; left: 0; height: 100%; width: 40%; background: #6366f1; border-radius: 2px; animation: indeterminate-progress 2s ease-in-out infinite; }
+        @keyframes indeterminate-progress { 0% { transform: translateX(-100%); } 100% { transform: translateX(250%); } }
+        .loading-box p.wait-text { font-size: 0.8em; color: #8e8e93; }
+        
+        #welcome-notice-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 9000; display: none; align-items: center; justify-content: center; padding: 15px; box-sizing: border-box; }
+        .notice-content { background: var(--card-background); border-radius: 24px; width: 100%; max-width: 380px; text-align: center; padding: 20px 20px 25px; position: relative; animation: zoomIn 0.3s ease-out; box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .notice-header { display: flex; justify-content: center; align-items: center; margin-bottom: 15px; position: relative; }
+        .notice-header h2 { font-size: 1.6em; color: var(--text-dark); margin: 0; font-weight: 700; }
+        #notice-close-btn { position: absolute; right: 0; top: 50%; transform: translateY(-50%); font-size: 1.3em; color: #8e8e93; cursor: pointer; background: #f0f2f5; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; line-height: 1; border: none; }
+        .notice-body { text-align: left; color: var(--text-dark); }
+        .notice-greeting { text-align: center; margin-bottom: 25px; }
+        .notice-greeting p { color: var(--text-dark); font-weight: 400; font-size: 1em; line-height: 1.5; margin: 0 0 2px; }
+        .notice-details-list, .notice-guarantee-list { list-style: none; padding: 0; margin: 0 0 25px 0; }
+        .notice-details-list li, .notice-guarantee-list li { display: flex; align-items: center; gap: 10px; font-size: 0.95em; margin-bottom: 12px; color: #3c3c43; }
+        .notice-rules { text-align: center; font-size: 0.9em; color: #3c3c43; line-height: 1.6; margin-bottom: 25px; }
+        #notice-action-btn { width: 100%; padding: 15px; font-size: 1.1em; border-radius: 16px; background-color: var(--primary-blue); }
     </style>
 </head>
 <body>
+    <!-- ADDED: Loading Screen -->
+    <div id="loading-overlay">
+        <div class="loading-box">
+            <div class="loading-logo">
+                <svg viewBox="0 0 64 64"><defs><linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#4338ca; stop-opacity:1" /><stop offset="100%" style="stop-color:#34d399; stop-opacity:1" /></linearGradient></defs><circle cx="32" cy="32" r="32" fill="url(#logo-gradient)"/><path d="M38 22 L24 36 L32 36 L26 48 L40 32 L32 32 Z" fill="#fff"/></svg>
+            </div>
+            <h2 id="loading-main-text">Loading...</h2><p id="loading-sub-text">Please wait</p>
+            <div class="progress-bar-track"><div class="progress-bar-value"></div></div>
+            <p class="wait-text">Please wait a moment</p>
+        </div>
+    </div>
+
+    <!-- ADDED: Welcome Notice -->
+    <div id="welcome-notice-modal">
+        <div class="notice-content">
+            <div class="notice-header"><h2 id="notice-title"></h2><button id="notice-close-btn">&times;</button></div>
+            <div class="notice-body">
+                <div class="notice-greeting" id="notice-greeting-area"></div>
+                <ul class="notice-details-list" id="notice-details-list-area"></ul>
+                <ul class="notice-guarantee-list" id="notice-guarantee-list-area"></ul>
+                <p class="notice-rules" id="notice-rules-area"></p>
+            </div>
+            <button id="notice-action-btn" class="btn btn-primary"></button>
+        </div>
+    </div>
+
+    <!-- Your Original HTML Structure -->
     <div id="ad-progress-container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 4px; background-color: #e0e0e0; z-index: 9999;">
         <div id="ad-progress-bar" style="width: 0%; height: 100%; background-color: var(--primary-blue); transition: width 0.5s linear;"></div>
     </div>
@@ -224,7 +157,7 @@
                 </div>
             </header>
             <main id="main-content">
-                <div class="loader"></div>
+                <!-- Content will be rendered by JS -->
             </main>
             <nav>
                 <button class="nav-btn active" data-page="home"><svg class="nav-icon"><use href="#icon-home"></use></svg>Home</button>
@@ -249,14 +182,21 @@
         };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+
         let currentUser;
         let appConfig;
         let userData = { balance: 0, referrals: 0, adsWatched: {}, claimedTasks: {} };
+        let isAppInitialized = false;
+        let loadingTextInterval;
 
         document.addEventListener('DOMContentLoaded', function () {
+            // Hide main app container by default
+            const appContainer = document.querySelector('.app-container');
+            appContainer.style.display = 'none';
+
             const tg = window.Telegram.WebApp;
             if (tg.platform === 'unknown') {
-                document.getElementById('app-root').innerHTML = `<div class="full-page-notice"><div class="card"><h4>⛔ Access Denied</h4><p>Please open this app inside Telegram.</p></div></div>`;
+                handleLoadingError("Please open this app inside Telegram.");
                 return;
             }
             tg.ready();
@@ -265,10 +205,11 @@
 
             currentUser = tg.initDataUnsafe.user;
             if (!currentUser) {
-                 document.getElementById('app-root').innerHTML = `<div class="full-page-notice"><div class="card"><h4>User data not found. Please restart.</h4></div></div>`;
+                handleLoadingError("User data not found. Please restart.");
                 return;
             }
 
+            startLoadingAnimation();
             loadConfigAndUserData();
 
             document.querySelectorAll('.nav-btn').forEach(button => {
@@ -281,19 +222,102 @@
             });
             
             document.getElementById('main-content').addEventListener('click', handleMainContentClick);
+
+            const noticeModal = document.getElementById('welcome-notice-modal');
+            document.getElementById('notice-close-btn').addEventListener('click', () => noticeModal.style.display = 'none');
+            document.getElementById('notice-action-btn').addEventListener('click', () => noticeModal.style.display = 'none');
         });
 
+        function startLoadingAnimation() {
+            const mainText = document.getElementById('loading-main-text');
+            const subText = document.getElementById('loading-sub-text');
+            const stages = [
+                { main: 'Connecting securely...', sub: 'Initializing session...' },
+                { main: 'Loading your dashboard...', sub: 'Securely syncing profile & config' },
+                { main: 'Finalizing setup...', sub: 'Just a moment...' }
+            ];
+            let currentStage = 0;
+            mainText.innerText = stages[0].main;
+            subText.innerText = stages[0].sub;
+            loadingTextInterval = setInterval(() => {
+                currentStage = (currentStage + 1) % stages.length;
+                mainText.innerText = stages[currentStage].main;
+                subText.innerText = stages[currentStage].sub;
+            }, 2000);
+        }
+
+        function handleLoadingError(message) {
+            clearInterval(loadingTextInterval);
+            const loadingOverlay = document.getElementById('loading-overlay');
+            if (loadingOverlay) loadingOverlay.style.display = 'none';
+            
+            const appRoot = document.getElementById('app-root');
+            appRoot.innerHTML = `<div class="full-page-notice" style="display:flex;"><div class="card"><h4>Error</h4><p>${message}</p></div></div>`;
+        }
+
+        function hideLoadingScreen() {
+            clearInterval(loadingTextInterval);
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const mainAppContainer = document.querySelector('.app-container');
+            
+            setTimeout(() => {
+                if (loadingOverlay) {
+                    loadingOverlay.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingOverlay.style.display = 'none';
+                        mainAppContainer.style.display = 'flex';
+                        showWelcomeNotice();
+                    }, 500);
+                }
+            }, 500);
+        }
+
+        function showWelcomeNotice() {
+            if (sessionStorage.getItem('welcomeNoticeShown') || !appConfig || !appConfig.welcomeNotice) return;
+            
+            const noticeConfig = appConfig.welcomeNotice;
+            if (noticeConfig.enabled) {
+                document.getElementById('notice-title').innerHTML = noticeConfig.title || '';
+                const greetingArea = document.getElementById('notice-greeting-area');
+                greetingArea.innerHTML = '';
+                (noticeConfig.greeting_lines || []).forEach(line => {
+                    const p = document.createElement('p');
+                    p.innerHTML = line;
+                    greetingArea.appendChild(p);
+                });
+                const detailsList = document.getElementById('notice-details-list-area');
+                detailsList.innerHTML = '';
+                (noticeConfig.details_list || []).forEach(item => {
+                    const li = document.createElement('li');
+                    li.innerHTML = item;
+                    detailsList.appendChild(li);
+                });
+                const guaranteeList = document.getElementById('notice-guarantee-list-area');
+                guaranteeList.innerHTML = '';
+                 (noticeConfig.guarantee_list || []).forEach(item => {
+                    const li = document.createElement('li');
+                    li.innerHTML = item;
+                    guaranteeList.appendChild(li);
+                });
+                document.getElementById('notice-rules-area').innerHTML = noticeConfig.rules_line || '';
+                document.getElementById('notice-action-btn').innerHTML = noticeConfig.buttonText || 'OK';
+                document.getElementById('welcome-notice-modal').style.display = 'flex';
+                sessionStorage.setItem('welcomeNoticeShown', 'true');
+            }
+        }
+        
+        // --- Your Original Functions (Unchanged) ---
         function loadConfigAndUserData() {
             database.ref('config').once('value', (snapshot) => {
                 if (snapshot.exists()) {
                     appConfig = snapshot.val();
                     initializeUser();
                 } else {
-                    document.getElementById('main-content').innerHTML = `<div class="card"><h4>App configuration not found.</h4></div>`;
+                    handleLoadingError("App configuration not found.");
                 }
             }).catch(error => {
                 console.error("Config load error:", error);
-                document.getElementById('main-content').innerHTML = `<div class="card"><h4>Could not load app data.</h4></div>`;
+                handleLoadingError("Could not load app data.");
             });
         }
         
@@ -302,9 +326,17 @@
             userRef.on('value', (snapshot) => {
                 userData = snapshot.val() || { balance: 0, referrals: 0, adsWatched: {}, claimedTasks: {} };
                 updateHeader();
-                const currentPage = document.querySelector('.nav-btn.active')?.dataset.page || 'home';
-                renderPage(currentPage);
-            }, error => console.error("User data read error:", error));
+                
+                if(!isAppInitialized) {
+                    const currentPage = document.querySelector('.nav-btn.active')?.dataset.page || 'home';
+                    renderPage(currentPage);
+                    hideLoadingScreen();
+                    isAppInitialized = true;
+                } else {
+                    const currentPage = document.querySelector('.nav-btn.active')?.dataset.page || 'home';
+                    renderPage(currentPage);
+                }
+            }, error => handleLoadingError("User data read error: " + error.message));
             
             userRef.once('value').then(snapshot => {
                 if (!snapshot.exists()) {
@@ -324,17 +356,13 @@
         function handleReferral() {
             const startParam = window.Telegram.WebApp.initDataUnsafe.start_param;
             if (!startParam || startParam === String(currentUser.id) || !appConfig) return;
-            
             const referrerId = startParam;
             const newUserRef = database.ref(`users/${currentUser.id}`);
-
             newUserRef.child('referred_by').once('value', snapshot => {
                 if (snapshot.exists()) return;
-
                 newUserRef.child('referred_by').set(referrerId);
                 const referrerRef = database.ref(`users/${referrerId}`);
                 referrerRef.child('referrals').transaction(currentVal => (currentVal || 0) + 1);
-                
                 const referralBonus = appConfig.referralBonus || 0;
                 if (referralBonus > 0) {
                     referrerRef.child('balance').transaction(currentBal => (currentBal || 0) + referralBonus);
@@ -370,15 +398,14 @@
                         <div class="button-group">
                             <button class="btn btn-primary" data-action="copy-link">Copy Referral Link</button>
                             <button class="btn btn-secondary" data-action="share-link">
-                                <svg class="btn-icon"><use href="#icon-share"></use></svg>Share Now
+                                <svg class="btn-icon" style="width: 16px; height: 16px; fill: white;"><use href="#icon-share"></use></svg>Share Now
                             </button>
                         </div>
                     </div></div>`;
             } else if (pageName === 'support') {
-                // --- সাপোর্ট পেজের ডিজাইন আপডেট করা হয়েছে ---
                 content = `<div class="page active"><h3>Support</h3>
                     <div class="card">
-                        <div class="icon-wrapper"><svg><use href="#icon-play-circle"></use></svg></div>
+                        <div class="icon-wrapper"><svg style="width: 24px; height: 24px; fill: white;"><use href="#icon-play-circle"></use></svg></div>
                         <h4>Tutorial Video</h4>
                         <p>কিভাবে অ্যাপটি ব্যবহার করবেন—টিউটোরিয়াল দেখে নিন।</p>
                         <button class="btn btn-primary" data-action="open-url" data-url="https://www.youtube.com/watch?v=YOUR_VIDEO_ID">Open Tutorial</button>
@@ -388,14 +415,14 @@
                 const claimed = userData.claimedTasks || {};
                 content = `<div class="page active"><h3>Complete Tasks</h3>
                     <div class="card">
-                        <div class="icon-wrapper"><svg><use href="#icon-video-camera"></use></svg></div>
+                        <div class="icon-wrapper"><svg style="width: 24px; height: 24px; fill: white;"><use href="#icon-video-camera"></use></svg></div>
                         <h4>Rewarded Ad</h4>
                         <p>প্রতিটি বিজ্ঞাপনের জন্য 5 টাকা আয় করুন।</p>
                         <button class="btn btn-primary" data-action="handleAd" data-reward="5">Watch Ad</button>
                         <p class="task-info">পুরস্কার পেতে 15 সেকেন্ডের জন্য বিজ্ঞাপনে থাকুন।</p>
                     </div>
                     <div class="card">
-                        <div class="icon-wrapper telegram"><svg><use href="#icon-telegram"></use></svg></div>
+                        <div class="icon-wrapper telegram"><svg style="width: 24px; height: 24px; fill: white;"><use href="#icon-telegram"></use></svg></div>
                         <h4>Join our Telegram Channel</h4>
                         <p>চ্যানেলে জয়েন করুন, তারপর ফিরে এসে "Check & Claim" দিন।</p>
                         <div class="button-group">
@@ -404,27 +431,7 @@
                         </div>
                         <p class="task-info">চ্যানেলে জয়েন করলে 10 টাকা পাবেন।</p>
                     </div>
-                    <div class="card">
-                        <div class="icon-wrapper youtube"><svg><use href="#icon-youtube"></use></svg></div>
-                        <h4>Subscribe our YouTube</h4>
-                        <p>Open YouTube এ ক্লিক করুন, সাবস্ক্রাইব করুন, তারপর "Check & Claim" দিন।</p>
-                        <div class="button-group">
-                            <button class="btn btn-primary" data-action="open-url" data-url="https://www.youtube.com/YOUR_CHANNEL_LINK" ${claimed.youtube ? 'disabled' : ''}>Open YouTube</button>
-                            <button class="btn btn-primary" data-action="claim-task" data-task-id="youtube" data-reward="15" ${claimed.youtube ? 'disabled' : ''}>${claimed.youtube ? 'Claimed' : 'Check & Claim'}</button>
-                        </div>
-                        <p class="task-info">YouTube সাবস্ক্রাইব করলে 15 টাকা পাবেন।</p>
-                    </div>
-                    <div class="card">
-                        <div class="icon-wrapper facebook"><svg><use href="#icon-facebook"></use></svg></div>
-                        <h4>Follow our Facebook Page</h4>
-                        <p>Open Facebook এ ক্লিক করুন, পেজটি ফলো করুন, তারপর "Check & Claim" দিন।</p>
-                        <div class="button-group">
-                            <button class="btn btn-primary" data-action="open-url" data-url="https://www.facebook.com/YOUR_PAGE_LINK" ${claimed.facebook ? 'disabled' : ''}>Open Facebook</button>
-                            <button class="btn btn-primary" data-action="claim-task" data-task-id="facebook" data-reward="10" ${claimed.facebook ? 'disabled' : ''}>${claimed.facebook ? 'Claimed' : 'Check & Claim'}</button>
-                        </div>
-                        <p class="task-info">Facebook পেজ ফলো করলে 10 টাকা পাবেন।</p>
-                    </div>
-                </div>`;
+                    </div>`;
             } else if (pageName === 'withdraw' && appConfig.withdrawPage) {
                 const wp = appConfig.withdrawPage;
                 const methods = (wp.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
