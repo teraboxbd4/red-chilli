@@ -124,6 +124,10 @@
             gap: 8px;
             width: 100%;
         }
+        .btn:disabled {
+            background-color: #a0a0a0;
+            cursor: not-allowed;
+        }
         .button-group .btn {
              flex: 1;
         }
@@ -142,7 +146,10 @@
             fill: white;
         }
 
-        .icon-wrapper { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px auto; background-color: var(--primary-blue); }
+        .icon-wrapper { width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px auto; background-color: var(--primary-blue); }
+        .icon-wrapper.telegram { background-color: #2AABEE; }
+        .icon-wrapper.youtube { background-color: #FF0000; }
+        .icon-wrapper.facebook { background-color: #1877F2; }
         .icon-wrapper svg { width: 24px; height: 24px; fill: white; }
         nav { display: flex; justify-content: space-around; padding: 8px 4px; border-top: 1px solid #f1f1f1; background-color: var(--card-background); position: sticky; bottom: 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
         .nav-btn { background: none; border: none; font-size: 0.8em; color: var(--text-light); cursor: pointer; padding: 4px 12px; border-radius: 12px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
@@ -158,7 +165,6 @@
         .withdraw-form input, .withdraw-form select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; background-color: #f8f9fa; }
         .withdraw-form button { margin-top: 10px; width: 100%; }
 
-        /* --- নতুন লোডিং অ্যানিমেশন --- */
         .loader {
             border: 5px solid #f3f3f3;
             border-radius: 50%;
@@ -169,7 +175,7 @@
             position: absolute;
             top: 40%;
             left: 50%;
-            margin-left: -20px; /* Loader কেন্দ্রিক করার জন্য */
+            margin-left: -20px;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -189,7 +195,11 @@
             <symbol id="icon-withdraw" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-1 14H5c-.55 0-1-.45-1-1v-5h16v5c0 .55-.45 1-1 1zm1-10H4V6c0-.55.45-1 1-1h14c.55 0 1 .45 1 1v2z"/></symbol>
             <symbol id="icon-share" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.18c.52.47 1.2.77 1.96.77 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 8.04C7.52 7.56 6.84 7.27 6.12 7.27 4.46 7.27 3.12 8.61 3.12 10.27s1.34 3 3 3c.72 0 1.39-.29 1.88-.73l7.05 4.18c-.05.23-.09.46-.09.7 0 1.66 1.34 3 3 3s3-1.34 3-3-1.34-3-3-3z"/></symbol>
             <symbol id="icon-video-camera" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></symbol>
-            <symbol id="icon-play-circle" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></symbol>
+            
+            <!-- --- নতুন আইকন --- -->
+            <symbol id="icon-telegram" viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.62 11.95c-.8-.25-.79-.76.2-1l14.9-5.99c.68-.28 1.22.16 1.02.97l-2.66 12.55c-.28.84-1.01 1.05-1.72.63l-4.52-3.33-2.14 2.05c-.23.23-.42.42-.83.42z"/></symbol>
+            <symbol id="icon-youtube" viewBox="0 0 24 24"><path d="M21.58 7.19c-.23-.86-.9-1.52-1.76-1.75C18.26 5 12 5 12 5s-6.26 0-7.82.44C3.32 5.67 2.66 6.33 2.43 7.19 2 8.75 2 12 2 12s0 3.25.43 4.81c.23.86.9 1.52 1.76 1.75C5.74 19 12 19 12 19s6.26 0 7.82-.44c.86-.23 1.52-.9 1.75-1.75.43-1.56.43-4.81.43-4.81s0-3.25-.42-4.81zM10 15V9l5.2 3-5.2 3z"/></symbol>
+            <symbol id="icon-facebook" viewBox="0 0 24 24"><path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3v8h4v-8z"/></symbol>
         </defs></svg>
         <div class="app-container">
             <header>
@@ -204,7 +214,6 @@
                 </div>
             </header>
             <main id="main-content">
-                <!-- পুরোনো 'Loading App' লেখাটি এই নতুন লোডার দিয়ে পরিবর্তন করা হয়েছে -->
                 <div class="loader"></div>
             </main>
             <nav>
@@ -232,7 +241,7 @@
         const database = firebase.database();
         let currentUser;
         let appConfig;
-        let userData = { balance: 0, referrals: 0, adsWatched: {} };
+        let userData = { balance: 0, referrals: 0, adsWatched: {}, claimedTasks: {} };
 
         document.addEventListener('DOMContentLoaded', function () {
             const tg = window.Telegram.WebApp;
@@ -281,7 +290,8 @@
         function initializeUser() {
             const userRef = database.ref(`users/${currentUser.id}`);
             userRef.on('value', (snapshot) => {
-                userData = snapshot.val() || { balance: 0, referrals: 0, adsWatched: {} };
+                // --- 'claimedTasks' যুক্ত করা হয়েছে ---
+                userData = snapshot.val() || { balance: 0, referrals: 0, adsWatched: {}, claimedTasks: {} };
                 updateHeader();
                 const currentPage = document.querySelector('.nav-btn.active')?.dataset.page || 'home';
                 renderPage(currentPage);
@@ -289,7 +299,7 @@
             
             userRef.once('value').then(snapshot => {
                 if (!snapshot.exists()) {
-                    userRef.set({ balance: 0, referrals: 0, adsWatched: {}, first_name: currentUser.first_name || '' })
+                    userRef.set({ balance: 0, referrals: 0, adsWatched: {}, first_name: currentUser.first_name || '', claimedTasks: {} })
                         .then(() => handleReferral());
                 } else {
                     handleReferral();
@@ -359,34 +369,62 @@
                 const sp = appConfig.supportPage;
                 content = `<div class="page active"><h3>Support</h3>
                     <div class="card">
-                        <div class="icon-wrapper"><svg><use href="#icon-play-circle"></use></svg></div>
+                        <div class="icon-wrapper"><svg><use href="#icon-support"></use></svg></div>
                         <h4>${sp.title}</h4>
                         <p>${sp.description}</p>
                         <button class="btn btn-primary" style="width: auto; display: inline-flex; padding: 12px 24px; margin-top: 10px;" data-action="open-url" data-url="${sp.videoUrl || '#'}">${sp.buttonText}</button>
-                        <p style="margin-top: 15px; color: #6c757d; font-size: 0.9em;">🎞️ ভিডিও দেখে সব কিছু বুঝে নিন</p>
                     </div></div>`;
-            } else if (pageName === 'tasks' && appConfig.tasks) {
-                const taskItems = (appConfig.tasks || []).filter(task => task.enabled).map(task => {
-                    const iconId = task.icon;
-                    let iconHtml = `<div class="icon-wrapper"><svg><use href="#icon-video-camera"></use></svg></div>`;
-                    if (['home', 'support', 'tasks', 'withdraw'].includes(iconId)) {
-                         iconHtml = `<div class="icon-wrapper"><svg><use href="#icon-${iconId}"></use></svg></div>`;
-                    }
-                    let buttonsHTML = '';
-                    if (task.type === 'ads') {
-                        buttonsHTML = `<button class="btn btn-primary" style="margin-top: 20px;" data-action="handleAd" data-reward="${task.reward || 0}">Verify ☑</button>`;
-                    } else {
-                        const btnGroup = (task.buttons || []).map(btn => 
-                            `<button class="btn btn-primary" data-action="open-url" data-url="${btn.url || '#'}">${btn.text}</button>`
-                        ).join('');
-                        buttonsHTML = `<div class="button-group">${btnGroup}</div>`;
-                    }
-                    return `<div class="card">
-                        ${iconHtml}<h4>${task.title}</h4><p>${task.description}</p>
-                        ${buttonsHTML}<p class="task-info">পুরস্কার: ${task.reward || 0} টাকা</p>
-                    </div>`;
-                }).join('');
-                content = `<div class="page active"><h3>Complete Tasks</h3>${taskItems}</div>`;
+            } else if (pageName === 'tasks') {
+                // --- টাস্ক পেজের সম্পূর্ণ ডিজাইন পরিবর্তন করা হয়েছে ---
+                const claimed = userData.claimedTasks || {};
+                content = `<div class="page active"><h3>Complete Tasks</h3>
+                    
+                    <!-- Rewarded Ad Task -->
+                    <div class="card">
+                        <div class="icon-wrapper"><svg><use href="#icon-video-camera"></use></svg></div>
+                        <h4>Rewarded Ad</h4>
+                        <p>প্রতিটি বিজ্ঞাপনের জন্য 5 টাকা আয় করুন।</p>
+                        <button class="btn btn-primary" data-action="handleAd" data-reward="5">Watch Ad</button>
+                        <p class="task-info">পুরস্কার পেতে 15 সেকেন্ডের জন্য বিজ্ঞাপনে থাকুন।</p>
+                    </div>
+
+                    <!-- Telegram Task -->
+                    <div class="card">
+                        <div class="icon-wrapper telegram"><svg><use href="#icon-telegram"></use></svg></div>
+                        <h4>Join our Telegram Channel</h4>
+                        <p>চ্যানেলে জয়েন করুন, তারপর ফিরে এসে "Check & Claim" দিন।</p>
+                        <div class="button-group">
+                            <button class="btn btn-primary" data-action="open-url" data-url="https://t.me/YOUR_CHANNEL_LINK" ${claimed.telegram ? 'disabled' : ''}>Open Channel</button>
+                            <button class="btn btn-primary" data-action="claim-task" data-task-id="telegram" data-reward="10" ${claimed.telegram ? 'disabled' : ''}>${claimed.telegram ? 'Claimed' : 'Check & Claim'}</button>
+                        </div>
+                        <p class="task-info">চ্যানেলে জয়েন করলে 10 টাকা পাবেন।</p>
+                    </div>
+
+                    <!-- YouTube Task -->
+                    <div class="card">
+                        <div class="icon-wrapper youtube"><svg><use href="#icon-youtube"></use></svg></div>
+                        <h4>Subscribe our YouTube</h4>
+                        <p>Open YouTube এ ক্লিক করুন, সাবস্ক্রাইব করুন, তারপর "Check & Claim" দিন।</p>
+                        <div class="button-group">
+                            <button class="btn btn-primary" data-action="open-url" data-url="https://www.youtube.com/YOUR_CHANNEL_LINK" ${claimed.youtube ? 'disabled' : ''}>Open YouTube</button>
+                            <button class="btn btn-primary" data-action="claim-task" data-task-id="youtube" data-reward="15" ${claimed.youtube ? 'disabled' : ''}>${claimed.youtube ? 'Claimed' : 'Check & Claim'}</button>
+                        </div>
+                        <p class="task-info">YouTube সাবস্ক্রাইব করলে 15 টাকা পাবেন।</p>
+                    </div>
+                    
+                    <!-- Facebook Task -->
+                    <div class="card">
+                        <div class="icon-wrapper facebook"><svg><use href="#icon-facebook"></use></svg></div>
+                        <h4>Follow our Facebook Page</h4>
+                        <p>Open Facebook এ ক্লিক করুন, পেজটি ফলো করুন, তারপর "Check & Claim" দিন।</p>
+                        <div class="button-group">
+                            <button class="btn btn-primary" data-action="open-url" data-url="https://www.facebook.com/YOUR_PAGE_LINK" ${claimed.facebook ? 'disabled' : ''}>Open Facebook</button>
+                            <button class="btn btn-primary" data-action="claim-task" data-task-id="facebook" data-reward="10" ${claimed.facebook ? 'disabled' : ''}>${claimed.facebook ? 'Claimed' : 'Check & Claim'}</button>
+                        </div>
+                        <p class="task-info">Facebook পেজ ফলো করলে 10 টাকা পাবেন।</p>
+                    </div>
+
+                </div>`;
             } else if (pageName === 'withdraw' && appConfig.withdrawPage) {
                 const wp = appConfig.withdrawPage;
                 const methods = (wp.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
@@ -425,14 +463,44 @@
                 if (input) navigator.clipboard.writeText(input.value).then(() => alert('রেফারেল লিঙ্ক কপি করা হয়েছে!'));
             } else if (action === 'share-link') {
                 const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}`;
-                // --- শেয়ার করা মেসেজের শেষে লিঙ্কটি যোগ করা হয়েছে ---
                 const shareText = `এই অ্যাপ থেকে বিজ্ঞাপন দেখে টাকা আয় করুন।\n১০০% পেমেন্ট করে—আমার লিঙ্কে যোগ দিন:\n\n${referralLink}`;
                 const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(shareText)}`;
                 window.Telegram.WebApp.openTelegramLink(shareUrl);
             } else if (action === 'open-url') {
                 const url = button.dataset.url;
-                if (url && url !== '#') window.open(url, '_blank');
+                if(url.includes("YOUR_")){
+                    alert("Please set a valid URL in the code.");
+                    return;
+                }
+                if (url && url !== '#') window.Telegram.WebApp.openLink(url);
+            } else if (action === 'claim-task') {
+                // --- 'Check & Claim' বাটনের জন্য নতুন কার্যকারিতা ---
+                const taskId = button.dataset.taskId;
+                const reward = parseFloat(button.dataset.reward);
+                handleClaimTask(taskId, reward, button);
             }
+        }
+
+        // --- 'Check & Claim' এর জন্য নতুন ফাংশন ---
+        function handleClaimTask(taskId, reward, claimButton) {
+            if (!taskId || !reward) return;
+
+            const claimedTasksRef = database.ref(`users/${currentUser.id}/claimedTasks/${taskId}`);
+
+            claimedTasksRef.once('value', snapshot => {
+                if (snapshot.exists()) {
+                    alert("আপনি এই পুরস্কারটি ইতিমধ্যেই সংগ্রহ করেছেন।");
+                } else {
+                    database.ref(`users/${currentUser.id}/balance`).transaction((bal) => (bal || 0) + reward);
+                    claimedTasksRef.set(true);
+                    alert(`অভিনন্দন! আপনি ${reward} টাকা পুরস্কার পেয়েছেন।`);
+                    
+                    claimButton.disabled = true;
+                    claimButton.textContent = 'Claimed';
+                    const openButton = claimButton.parentElement.querySelector('button[data-action="open-url"]');
+                    if (openButton) openButton.disabled = true;
+                }
+            });
         }
 
         function handleWithdrawRequest() {
@@ -487,7 +555,7 @@
 
             if (adShownSuccessfully) {
                 rewardUser("বিজ্ঞাপনটি সফলভাবে সম্পন্ন হয়েছে।", rewardAmount);
-                database.ref(`users/${currentUser.id}/adsWatched/${today}`).set(adsWatchedToday + 1);
+                database.ref(`users/${currentUser.id}/adsWatched/${today}`).transaction(currentVal => (currentVal || 0) + 1);
             } else {
                 alert("দুঃখিত, কোনো বিজ্ঞাপন দেখানো সম্ভব হচ্ছে না।");
             }
