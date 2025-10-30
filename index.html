@@ -130,6 +130,10 @@
             <button id="notice-action-btn" class="btn btn-primary"></button>
         </div>
     </div>
+    
+    <div id="ad-progress-container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 4px; background-color: #e0e0e0; z-index: 9999;">
+        <div id="ad-progress-bar" style="width: 0%; height: 100%; background-color: var(--primary-blue); transition: width 0.5s linear;"></div>
+    </div>
 
     <div id="app-root">
         <svg style="position: absolute; width: 0; height: 0; overflow: hidden;"><defs>
@@ -187,7 +191,7 @@
         
         let currentUser;
         let appConfig;
-        let userData = { balance: 0, referrals: 0, claimedTasks: {} };
+        let userData = { balance: 0, referrals: 0, claimedTasks: {}, adsWatched: {} };
         let isAppInitialized = false;
         let loadingTextInterval;
 
@@ -413,11 +417,10 @@
                             if (isClaimed && (button.action === 'claim-task' || button.action === 'handleAd')) {
                                 buttonText = 'Completed';
                             } else if (button.text.includes('Verify')) {
-                                buttonText = 'Verify <svg width="16" height="16" viewBox="0 0 24 24" style="margin-left: 5px;"><use href="#icon-check"></use></svg>';
+                                buttonText = 'Verify <svg width="16" height="16" viewBox="0 0 24 24" style="margin-left: 5px; fill: white;"><use href="#icon-check"></use></svg>';
                             }
                             return `<button class="btn btn-primary" data-action="${button.action}" data-url="${button.url || ''}" data-task-id="${task.type}" data-reward="${task.reward}" ${isClaimed ? 'disabled' : ''}>${buttonText}</button>`;
                         }).join('');
-
                         const buttonWrapperClass = (task.buttons || []).length > 1 ? 'button-group' : '';
 
                         return `
@@ -501,10 +504,78 @@
             } else if (action === 'open-url') {
                 const url = button.dataset.url;
                 if(url && url !== '#'){ window.Telegram.WebApp.openLink(url); }
-            } else if (action === 'claim-task' || action === 'handleAd') {
+            } else if (action === 'handleAd') {
+                const adTaskConfig = (appConfig.tasks || []).find(t => t.type === 'ads');
+                handleAdTask(parseFloat(button.dataset.reward), adTaskConfig);
+            } else if (action === 'claim-task') {
                  handleClaimTask(button.dataset.taskId, parseFloat(button.dataset.reward), button);
             } else if(action === 'submit-withdraw') {
                  handleWithdrawRequest();
+            }
+        }
+        
+        async function handleAdTask(rewardAmount, adTaskConfig) {
+            const today = new Date().toISOString().slice(0, 10);
+            const adsWatchedToday = (userData.adsWatched && userData.adsWatched[today]) || 0;
+            if (adsWatchedToday >= adTaskConfig.dailyLimit) {
+                alert("আপনি আজকের জন্য আপনার বিজ্ঞাপন দেখার সীমা অতিক্রম করেছেন।"); return;
+            }
+            
+            updateProgressBar(1);
+            let adShownSuccessfully = false;
+
+            try {
+                if (typeof window['show_' + adTaskConfig.adNetworks.monetag.zoneId] === 'function') {
+                    await window['show_' + adTaskConfig.adNetworks.monetag.zoneId]();
+                    adShownSuccessfully = true;
+                }
+            } catch (monetagError) { console.warn("Monetag ad failed:", monetagError); }
+            
+            updateProgressBar(50);
+            
+            try {
+                if (typeof window.showGiga === 'function') {
+                    if (window.initGiga) window.initGiga(adTaskConfig.adNetworks.gigapub.id);
+                    await window.showGiga();
+                    adShownSuccessfully = true;
+                }
+            } catch (gigapubError) { console.warn("Gigapub ad failed:", gigapubError); }
+
+            updateProgressBar(100);
+
+            if (adShownSuccessfully) {
+                rewardUser("বিজ্ঞাপনটি সফলভাবে সম্পন্ন হয়েছে।", rewardAmount, 'ads');
+            } else {
+                alert("দুঃখিত, কোনো বিজ্ঞাপন দেখানো সম্ভব হচ্ছে না।");
+            }
+            
+            setTimeout(() => updateProgressBar(0), 500);
+        }
+        
+        function rewardUser(message, rewardAmount, taskId) {
+            if (rewardAmount > 0) {
+                database.ref(`users/${currentUser.id}/balance`).transaction((bal) => (bal || 0) + rewardAmount);
+                 if(taskId === 'ads') {
+                    const today = new Date().toISOString().slice(0, 10);
+                    database.ref(`users/${currentUser.id}/adsWatched/${today}`).transaction(currentVal => (currentVal || 0) + 1);
+                 } else {
+                    database.ref(`users/${currentUser.id}/claimedTasks/${taskId}`).set(true);
+                 }
+            }
+            alert(`ধন্যবাদ! ${message}${rewardAmount > 0 ? ` আপনাকে ${rewardAmount} টাকা পুরস্কৃত করা হয়েছে।` : ''}`);
+            const currentPage = document.querySelector('.nav-btn.active')?.dataset.page || 'home';
+            renderPage(currentPage);
+        }
+        
+        function updateProgressBar(progress) {
+             const bar = document.getElementById('ad-progress-bar');
+            const container = document.getElementById('ad-progress-container');
+            if (progress > 0) {
+                container.style.display = 'block';
+                bar.style.width = progress + '%';
+            } else {
+                bar.style.width = '0%';
+                setTimeout(() => { container.style.display = 'none'; }, 500); 
             }
         }
 
@@ -516,14 +587,7 @@
                 if (snapshot.exists()) {
                     alert("আপনি এই পুরস্কারটি ইতিমধ্যেই সংগ্রহ করেছেন।");
                 } else {
-                    database.ref(`users/${currentUser.id}/balance`).transaction((currentBalance) => (currentBalance || 0) + reward);
-                    if(taskId === 'ads'){
-                        const today = new Date().toISOString().slice(0, 10);
-                        database.ref(`users/${currentUser.id}/adsWatched/${today}`).transaction(currentVal => (currentVal || 0) + 1);
-                    }
-                    claimedTasksRef.set(true);
-                    alert(`অভিনন্দন! আপনি ${reward} টাকা পুরস্কার পেয়েছেন।`);
-                    renderPage('tasks'); // Re-render the page to update button states
+                    rewardUser(`"${appConfig.tasks.find(t=>t.type===taskId).title}" টাস্কটি সফল হয়েছে।`, reward, taskId);
                 }
             });
         }
@@ -536,18 +600,9 @@
             const account = document.getElementById('withdraw-account').value;
             const amount = parseFloat(document.getElementById('withdraw-amount').value);
             
-            if (!account || !amount) {
-                alert("অনুগ্রহ করে সমস্ত ঘর পূরণ করুন।");
-                return;
-            }
-            if (amount < wp.minAmount) {
-                alert(`ন্যূনতম ${wp.minAmount} টাকা উইথড্র করতে পারবেন।`);
-                return;
-            }
-            if (amount > userData.balance) {
-                alert("আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই।");
-                return;
-            }
+            if (!account || !amount) { alert("অনুগ্রহ করে সমস্ত ঘর পূরণ করুন।"); return; }
+            if (amount < wp.minAmount) { alert(`ন্যূনতম ${wp.minAmount} টাকা উইথড্র করতে পারবেন।`); return; }
+            if (amount > userData.balance) { alert("আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই।"); return; }
             
             const newRequestRef = database.ref('withdraw_requests').push();
             newRequestRef.set({
