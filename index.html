@@ -60,7 +60,7 @@
         .stat-card p { margin: 0 0 8px 0; font-size: 0.85em; color: var(--text-light); }
         .stat-card .stat-value { font-size: 1.5em; font-weight: 600; color: var(--text-dark); }
         
-        .refer-card .referral-link input { width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 10px; text-align: center; margin: 20px 0; background-color: #f8f9fa; font-size: 0.9em; box-sizing: border-box; color: var(--text-dark); font-weight: 400; }
+        .refer-card .referral-link input { width: 100%; padding: 12px; border: 1px dashed #ced4da; border-radius: 10px; text-align: center; margin: 20px 0; background-color: #f8f9fa; font-size: 0.9em; box-sizing: border-box; color: var(--text-dark); font-weight: 400; }
 
         .button-group { display: flex; gap: 10px; margin-top: 14px; }
         .btn { padding: 14px 10px; border: none; border-radius: 12px; font-size: 1em; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; transition: transform 0.2s; }
@@ -99,6 +99,11 @@
         .notice-details-list li, .notice-guarantee-list li { display: flex; align-items: center; gap: 10px; font-size: 0.95em; margin-bottom: 12px; color: #3c3c43; }
         .notice-rules { text-align: center; font-size: 0.9em; color: #3c3c43; line-height: 1.6; margin-bottom: 25px; }
         #notice-action-btn { width: 100%; padding: 15px; font-size: 1.1em; border-radius: 16px; background-color: var(--primary-blue); }
+
+        .withdraw-form .form-group { text-align: left; margin-bottom: 16px; }
+        .withdraw-form label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9em; color: #333; }
+        .withdraw-form input, .withdraw-form select { width: 100%; padding: 14px; border: 1px solid #e5e5e5; border-radius: 10px; box-sizing: border-box; background-color: #f7f7f7; font-size: 1em; }
+        .withdraw-form button { margin-top: 10px; width: 100%; }
     </style>
 </head>
 <body>
@@ -137,6 +142,7 @@
             <symbol id="icon-telegram" viewBox="0 0 24 24"><path d="M.41 11.41l20.4-8.39c.55-.23.97.26.8.8l-3.69 17.53c-.15.71-.78.89-1.4.45l-5.32-3.94-2.58 2.49c-.28.28-.52.52-1 .52-.41 0-.62-.19-.7-.43L6 14.11l-5.12-1.6c-.72-.23-.73-.82.13-1.1z"/></symbol>
             <symbol id="icon-youtube" viewBox="0 0 24 24"><path d="M21.58 7.19c-.23-.86-.9-1.52-1.76-1.75C18.26 5 12 5 12 5s-6.26 0-7.82.44C3.32 5.67 2.66 6.33 2.43 7.19 2 8.75 2 12 2 12s0 3.25.43 4.81c.23.86.9 1.52 1.76 1.75C5.74 19 12 19 12 19s6.26 0 7.82-.44c.86-.23 1.52-.9 1.75-1.75.43-1.56.43-4.81.43-4.81s0-3.25-.42-4.81zM10 15V9l5.2 3-5.2 3z"/></symbol>
             <symbol id="icon-facebook" viewBox="0 0 24 24"><path d="M14 13.5h2.5l1-4H14v-2c0-1.03.2-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3v8h4v-8z"/></symbol>
+            <symbol id="icon-check" viewBox="0 0 24 24"><path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></symbol>
         </defs></svg>
         
         <div class="app-container" id="main-app-container">
@@ -181,7 +187,7 @@
         
         let currentUser;
         let appConfig;
-        let userData = { balance: 0, referrals: 0 };
+        let userData = { balance: 0, referrals: 0, claimedTasks: {} };
         let isAppInitialized = false;
         let loadingTextInterval;
 
@@ -252,7 +258,7 @@
         function initializeUser() {
             const userRef = database.ref(`users/${currentUser.id}`);
             userRef.on('value', (snapshot) => {
-                userData = snapshot.val() || { balance: 0, referrals: 0, claimedTasks: {} };
+                userData = snapshot.val() || { balance: 0, referrals: 0, claimedTasks: {}, adsWatched: {} };
                 updateHeader();
                 
                 if (!isAppInitialized) {
@@ -267,7 +273,7 @@
             
             userRef.once('value').then(snapshot => {
                 if (!snapshot.exists()) {
-                    userRef.set({ balance: 0, referrals: 0, first_name: currentUser.first_name || '', claimedTasks: {} })
+                    userRef.set({ balance: 0, referrals: 0, first_name: currentUser.first_name || '', claimedTasks: {}, adsWatched: {} })
                         .then(() => handleReferral());
                 } else {
                     handleReferral();
@@ -376,7 +382,7 @@
                 const dailyLimit = adTaskConfig.dailyLimit || 10;
                 const today = new Date().toISOString().slice(0, 10);
                 const adsWatchedToday = (userData.adsWatched && userData.adsWatched[today]) || 0;
-                const referralLink = currentUser ? `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}` : 'https://t.me/Red_Chiliii_bot/app';
+                const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}`;
                 
                 content = `
                     <div class="page active">
@@ -387,10 +393,10 @@
                         </div>
                         <div class="card refer-card">
                             <h4>Refer & Earn More!</h4>
-                            <p>আপনার বন্ধুদের রেফার করে আয় করুন। প্রতি সফল রেফারে পাবেন ${appConfig.referralBonus || 0} টাকা।</p>
+                            <p>আপনার বন্ধুদের রেফার করে আয় করুন। প্রতি রেফারে আয় ${appConfig.referralBonus || 0} টাকা।</p>
                             <div class="referral-link"><input id="referral-link-input" type="text" value="${referralLink}" readonly></div>
                             <div class="button-group">
-                                <button class="btn btn-primary" data-action="copy-link">Copy Link</button>
+                                <button class="btn btn-primary" data-action="copy-link">Copy Referral Link</button>
                                 <button class="btn btn-secondary" data-action="share-link">Share Now</button>
                             </div>
                         </div>
@@ -402,11 +408,16 @@
                     .filter(task => task.enabled)
                     .map(task => {
                         const isClaimed = claimed[task.type];
-                        const buttonsHtml = (task.buttons || []).map(button => `
-                            <button class="btn btn-primary" data-action="${button.action}" data-url="${button.url || ''}" data-task-id="${task.type}" data-reward="${task.reward}" ${isClaimed ? 'disabled' : ''}>
-                                ${isClaimed && (button.action === 'claim-task' || button.action === 'handleAd') ? 'Completed' : button.text}
-                            </button>
-                        `).join('');
+                        const buttonsHtml = (task.buttons || []).map(button => {
+                            let buttonText = button.text;
+                            if (isClaimed && (button.action === 'claim-task' || button.action === 'handleAd')) {
+                                buttonText = 'Completed';
+                            } else if (button.text.includes('Verify')) {
+                                buttonText = 'Verify <svg width="16" height="16" viewBox="0 0 24 24" style="margin-left: 5px;"><use href="#icon-check"></use></svg>';
+                            }
+                            return `<button class="btn btn-primary" data-action="${button.action}" data-url="${button.url || ''}" data-task-id="${task.type}" data-reward="${task.reward}" ${isClaimed ? 'disabled' : ''}>${buttonText}</button>`;
+                        }).join('');
+
                         const buttonWrapperClass = (task.buttons || []).length > 1 ? 'button-group' : '';
 
                         return `
@@ -425,7 +436,34 @@
                 content = `<div class="page active"><h3>Complete Tasks</h3>${tasksHtml || '<div class="card"><p>No tasks available right now.</p></div>'}</div>`;
             
             } else if (pageName === 'withdraw') {
-                 content = `<div class="page active"><h3>Withdraw</h3><div class="card"><p>Withdrawal is currently disabled.</p></div></div>`;
+                 if (appConfig.withdrawPage && appConfig.withdrawPage.enabled) {
+                    const wp = appConfig.withdrawPage;
+                    const methods = (wp.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
+                    content = `
+                        <div class="page active">
+                            <h3>Withdraw (টাকা)</h3>
+                            <div class="card">
+                                <form class="withdraw-form" onsubmit="return false;">
+                                    <p style="text-align: left; margin-bottom: 20px;">${wp.noticeText || ''}</p>
+                                    <div class="form-group">
+                                        <label>Method:</label>
+                                        <select id="withdraw-method">${methods}</select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Account Number:</label>
+                                        <input id="withdraw-account" type="text" placeholder="01XXXXXXXXX">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Amount (টাকা):</label>
+                                        <input id="withdraw-amount" type="number" placeholder="${wp.minAmount || '1500'}">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" data-action="submit-withdraw">Submit Request</button>
+                                </form>
+                            </div>
+                        </div>`;
+                 } else {
+                    content = `<div class="page active"><h3>Withdraw</h3><div class="card"><p>Withdrawal is currently disabled.</p></div></div>`;
+                 }
             } else if (pageName === 'support' && appConfig.supportPage) {
                 const sp = appConfig.supportPage;
                  content = `
@@ -449,7 +487,7 @@
 
         function handleMainContentClick(event) {
             const button = event.target.closest('button[data-action]');
-            if (!button) return;
+            if (!button || button.disabled) return;
             event.preventDefault();
             const action = button.dataset.action;
 
@@ -465,11 +503,13 @@
                 if(url && url !== '#'){ window.Telegram.WebApp.openLink(url); }
             } else if (action === 'claim-task' || action === 'handleAd') {
                  handleClaimTask(button.dataset.taskId, parseFloat(button.dataset.reward), button);
+            } else if(action === 'submit-withdraw') {
+                 handleWithdrawRequest();
             }
         }
 
         function handleClaimTask(taskId, reward, claimButton) {
-            if (!taskId || !reward || claimButton.disabled) return;
+            if (!taskId || !reward) return;
             const claimedTasksRef = database.ref(`users/${currentUser.id}/claimedTasks/${taskId}`);
             
             claimedTasksRef.once('value', snapshot => {
@@ -477,18 +517,52 @@
                     alert("আপনি এই পুরস্কারটি ইতিমধ্যেই সংগ্রহ করেছেন।");
                 } else {
                     database.ref(`users/${currentUser.id}/balance`).transaction((currentBalance) => (currentBalance || 0) + reward);
+                    if(taskId === 'ads'){
+                        const today = new Date().toISOString().slice(0, 10);
+                        database.ref(`users/${currentUser.id}/adsWatched/${today}`).transaction(currentVal => (currentVal || 0) + 1);
+                    }
                     claimedTasksRef.set(true);
                     alert(`অভিনন্দন! আপনি ${reward} টাকা পুরস্কার পেয়েছেন।`);
-                    
-                    claimButton.textContent = 'Completed';
-                    claimButton.disabled = true;
-                    const buttonGroup = claimButton.closest('.button-group');
-                    if (buttonGroup) {
-                        const openButton = buttonGroup.querySelector('[data-action="open-url"]');
-                        if (openButton) openButton.disabled = true;
-                    }
+                    renderPage('tasks'); // Re-render the page to update button states
                 }
             });
+        }
+
+        function handleWithdrawRequest() {
+            const wp = appConfig.withdrawPage;
+            if (!wp || !wp.enabled) return;
+            
+            const method = document.getElementById('withdraw-method').value;
+            const account = document.getElementById('withdraw-account').value;
+            const amount = parseFloat(document.getElementById('withdraw-amount').value);
+            
+            if (!account || !amount) {
+                alert("অনুগ্রহ করে সমস্ত ঘর পূরণ করুন।");
+                return;
+            }
+            if (amount < wp.minAmount) {
+                alert(`ন্যূনতম ${wp.minAmount} টাকা উইথড্র করতে পারবেন।`);
+                return;
+            }
+            if (amount > userData.balance) {
+                alert("আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই।");
+                return;
+            }
+            
+            const newRequestRef = database.ref('withdraw_requests').push();
+            newRequestRef.set({
+                userId: currentUser.id,
+                userName: `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim(),
+                method,
+                account,
+                amount,
+                status: 'pending',
+                timestamp: Date.now()
+            }).then(() => {
+                database.ref(`users/${currentUser.id}/balance`).transaction(bal => bal - amount);
+                alert("আপনার উইথড্র অনুরোধ সফলভাবে জমা দেওয়া হয়েছে।");
+                renderPage('withdraw');
+            }).catch(err => alert("একটি সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।"));
         }
     </script>
 </body>
