@@ -60,19 +60,21 @@
         .nav-btn.active { background-color: #e7f1ff; color: var(--primary-blue); }
         .nav-btn .nav-icon { width: 22px; height: 22px; fill: currentColor; }
         
-        /* --- 1. Pixel-Perfect Dynamic Loading Overlay --- */
-        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(20, 20, 22, 0.8); backdrop-filter: blur(5px); z-index: 10000; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.5s ease; }
-        .loading-box { background: #1c1c1e; padding: 30px; border-radius: 20px; text-align: center; width: 90%; max-width: 320px; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
-        .loading-logo { width: 64px; height: 64px; margin: 0 auto 20px; border-radius: 50%; background: linear-gradient(45deg, #4f46e5, #0ea5e9); display: flex; align-items: center; justify-content: center; }
-        
-        /* -- This is the new spinning icon -- */
-        .spinner-icon { animation: spin 1.2s linear infinite; width: 32px; height: 32px; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        .loading-box h2 { font-size: 1.2em; margin: 0 0 8px; color: #f5f5f7; font-weight: 600; }
+        /* --- 1. Final Pixel-Perfect Loading Overlay --- */
+        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(30, 30, 32, 0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 10000; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.5s ease; }
+        .loading-box { background: #1c1c1e; padding: 25px 30px; border-radius: 20px; text-align: center; width: 85%; max-width: 320px; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+        .loading-logo { width: 64px; height: 64px; margin: 0 auto 20px; }
+        .loading-box h2 { font-size: 1.25em; margin: 0 0 8px; color: #f5f5f7; font-weight: 600; }
         .loading-box p { font-size: 0.9em; margin: 0 0 20px; color: #8e8e93; }
-        .progress-bar-container { width: 100%; height: 8px; background: #3a3a3c; border-radius: 4px; margin-bottom: 12px; overflow: hidden; }
-        #loading-progress-bar { width: 0%; height: 100%; background: #4f46e5; border-radius: 4px; transition: width 1s ease; }
+        
+        /* -- New Indeterminate Progress Bar -- */
+        .progress-bar-track { width: 100%; height: 4px; background: #3a3a3c; border-radius: 2px; margin-bottom: 12px; overflow: hidden; position: relative; }
+        .progress-bar-value { position: absolute; top: 0; left: 0; height: 100%; width: 40%; background: #6366f1; border-radius: 2px; animation: indeterminate-progress 2s ease-in-out infinite; }
+        @keyframes indeterminate-progress {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(250%); }
+        }
+
         .loading-box p.wait-text { font-size: 0.8em; color: #8e8e93; }
 
         /* --- 2. Pixel-Perfect Welcome Notice Modal --- */
@@ -104,16 +106,21 @@
     <div id="loading-overlay">
         <div class="loading-box">
             <div class="loading-logo">
-                <!-- This is the new spinning icon, replacing the letter 'R' -->
-                <svg class="spinner-icon" viewBox="0 0 50 50">
-                    <path fill="#ffffff" d="M25,5 A20,20 0 0,1 45,25 L41,25 A16,16 0 0,0 25,9 Z"></path>
-                    <path fill="#ffffff" d="M5,25 A20,20 0 0,1 25,5 L25,9 A16,16 0 0,0 9,25 Z" opacity="0.3"></path>
+                <svg viewBox="0 0 64 64">
+                    <defs>
+                        <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#4338ca; stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#34d399; stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <circle cx="32" cy="32" r="32" fill="url(#logo-gradient)"/>
+                    <path d="M34.3 20.3l-12 16c-.3.4-.2.9.2 1.2.2.1.4.2.6.2.2 0 .5-.1.6-.3l12-16c.3-.4.2-.9-.2-1.2-.4-.3-.9-.2-1.2.1z M29.1 44.5L29 44.3c-.4-.3-.5-.9-.2-1.3l5.8-7.8-10.1.1c-.5 0-.9-.4-.9-.9s.4-.9.9-.9l11.4-.1c.3 0 .6.2.8.5l.1.2c.1.4 0 .9-.3 1.2l-6.3 8.5c-.3.3-.8.4-1.1.1z" fill="#fff"/>
                 </svg>
             </div>
             <h2 id="loading-main-text">Loading your dashboard...</h2>
             <p id="loading-sub-text">Securely syncing profile & config</p>
-            <div class="progress-bar-container">
-                <div id="loading-progress-bar"></div>
+            <div class="progress-bar-track">
+                <div class="progress-bar-value"></div>
             </div>
             <p class="wait-text">Please wait a moment</p>
         </div>
@@ -162,8 +169,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
-        // The entire JavaScript from the previous response goes here.
-        // It has been confirmed to work perfectly with the new animated logo.
         const firebaseConfig = {
             apiKey: "AIzaSyAIXpawpQH3yRozPbTzP7Tzm6IFsNVpAzQ",
             authDomain: "fake-earn-5d8bd.firebaseapp.com",
@@ -180,7 +185,7 @@
         let appConfig;
         let userData = { balance: 0, referrals: 0, adsWatched: {}, claimedTasks: {} };
         let isAppInitialized = false;
-        let loadingAnimationInterval;
+        let loadingTextInterval;
 
         document.addEventListener('DOMContentLoaded', function () {
             const tg = window.Telegram.WebApp;
@@ -224,30 +229,20 @@
         });
 
         function startLoadingAnimation() {
-            const progressBar = document.getElementById('loading-progress-bar');
             const mainText = document.getElementById('loading-main-text');
             const subText = document.getElementById('loading-sub-text');
-
             const stages = [
-                { progress: '20%', main: 'Connecting securely...', sub: 'Initializing session...' },
-                { progress: '50%', main: 'Loading your dashboard...', sub: 'Securely syncing profile & config' },
-                { progress: '80%', main: 'Finalizing setup...', sub: 'Just a moment...' }
+                { main: 'Connecting securely...', sub: 'Initializing session...' },
+                { main: 'Loading your dashboard...', sub: 'Securely syncing profile & config' },
+                { main: 'Finalizing setup...', sub: 'Just a moment...' }
             ];
-            
             let currentStage = 0;
-            progressBar.style.width = '10%';
-
-            loadingAnimationInterval = setInterval(() => {
-                if (currentStage < stages.length) {
-                    const stage = stages[currentStage];
-                    progressBar.style.width = stage.progress;
-                    mainText.innerText = stage.main;
-                    subText.innerText = stage.sub;
-                    currentStage++;
-                } else {
-                    clearInterval(loadingAnimationInterval);
-                }
-            }, 1500);
+            loadingTextInterval = setInterval(() => {
+                currentStage = (currentStage + 1) % stages.length;
+                const stage = stages[currentStage];
+                mainText.innerText = stage.main;
+                subText.innerText = stage.sub;
+            }, 2000);
         }
 
         function loadConfigAndUserData() {
@@ -278,7 +273,6 @@
                     const currentPage = document.querySelector('.nav-btn.active')?.dataset.page || 'home';
                     renderPage(currentPage);
                 }
-
             }, error => {
                 console.error("User data read error:", error);
                 handleLoadingError("Could not load user data.");
@@ -300,7 +294,7 @@
         }
         
         function handleLoadingError(message) {
-            clearInterval(loadingAnimationInterval);
+            clearInterval(loadingTextInterval);
             document.getElementById('loading-overlay').style.display = 'none';
             const appRoot = document.getElementById('app-root');
             appRoot.innerHTML = `<div class="full-page-notice"><div class="card"><h4>Error</h4><p>${message}</p></div></div>`;
@@ -308,13 +302,10 @@
         }
 
         function hideLoadingScreen() {
-            clearInterval(loadingAnimationInterval);
+            clearInterval(loadingTextInterval);
             const loadingOverlay = document.getElementById('loading-overlay');
-            const progressBar = document.getElementById('loading-progress-bar');
             const mainAppContainer = document.getElementById('main-app-container');
-
-            progressBar.style.width = '100%';
-
+            
             setTimeout(() => {
                 loadingOverlay.style.opacity = '0';
                 setTimeout(() => {
@@ -322,7 +313,7 @@
                     mainAppContainer.style.display = 'flex';
                     showWelcomeNotice();
                 }, 500);
-            }, 800);
+            }, 500);
         }
         
         function showWelcomeNotice() {
@@ -380,16 +371,16 @@
                 const today = new Date().toISOString().slice(0, 10);
                 const adsWatchedToday = (userData.adsWatched && userData.adsWatched[today]) || 0;
                 const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}`;
-                content = `<div class="page active"><h3>Dashboard</h3><div class="dashboard-stats"><div class="stat-card"><p>Daily Ads Watched</p><span class="stat-value">${adsWatchedToday} / ${adTaskConfig.dailyLimit}</span></div><div class="stat-card"><p>Total Referrals</p><span class="stat-value">${userData.referrals || 0}</span></div></div><div class="card refer-card"><h4>Refer & Earn More!</h4><p>আপনার বন্ধুদের রেফার করে আয় করুন। প্রতি সফল রেফারে পাবেন ${appConfig.referralBonus || 0} টাকা।</p><div class="referral-link"><input id="referral-link-input" type="text" value="${referralLink}" readonly></div><div class="button-group"><button class="btn btn-primary" data-action="copy-link">Copy Referral Link</button><button class="btn btn-secondary" data-action="share-link"><svg class="btn-icon"><use href="#icon-share"></use></svg>Share Now</button></div></div></div>`;
+                content = `<div class="page active"><h3>Dashboard</h3><div class="dashboard-stats"><div class="stat-card"><p>Daily Ads Watched</p><span class="stat-value">${adsWatchedToday} / ${adTaskConfig.dailyLimit}</span></div><div class="stat-card"><p>Total Referrals</p><span class="stat-value">${userData.referrals || 0}</span></div></div><div class="card refer-card"><h4>Refer & Earn More!</h4><p>আপনার বন্ধুদের রেফার করে আয় করুন। প্রতি সফল রেফারে পাবেন ${appConfig.referralBonus || 0} টাকা।</p><div class="referral-link"><input id="referral-link-input" type="text" value="${referralLink}" readonly></div><div class="button-group"><button class="btn btn-primary" data-action="copy-link">Copy Link</button><button class="btn btn-secondary" data-action="share-link"><svg class="btn-icon"><use href="#icon-share"></use></svg>Share</button></div></div></div>`;
             } else if (pageName === 'support') {
                  content = `<div class="page active"><h3>Support</h3><div class="card"><h4>Tutorial Video</h4><p>${appConfig.supportPage.description || 'কিভাবে অ্যাপটি ব্যবহার করবেন—টিউটোরিয়াল দেখে নিন।'}</p><button class="btn btn-primary" data-action="open-url" data-url="${appConfig.supportPage.videoUrl || '#'}">${appConfig.supportPage.buttonText || 'Open Tutorial'}</button><p class="task-info">🎞️ ${appConfig.supportPage.notice || 'ভিডিও দেখে সব কিছু বুঝে নিন'}</p></div></div>`;
             } else if (pageName === 'tasks') {
                 const claimed = userData.claimedTasks || {};
-                content = `<div class="page active"><h3>Complete Tasks</h3><div class="card"><h4>Rewarded Ad</h4><p>প্রতিটি বিজ্ঞাপনের জন্য 5 টাকা আয় করুন।</p><button class="btn btn-primary" data-action="handleAd" data-reward="5">Watch Ad</button><p class="task-info">পুরস্কার পেতে 15 সেকেন্ডের জন্য বিজ্ঞাপনে থাকুন।</p></div><div class="card"><h4>Join our Telegram Channel</h4><p>চ্যানেলে জয়েন করুন, তারপর ফিরে এসে "Check & Claim" দিন।</p><div class="button-group"><button class="btn btn-primary" data-action="open-url" data-url="https://t.me/YOUR_CHANNEL_LINK" ${claimed.telegram ? 'disabled' : ''}>Open Channel</button><button class="btn btn-primary" data-action="claim-task" data-task-id="telegram" data-reward="10" ${claimed.telegram ? 'disabled' : ''}>${claimed.telegram ? 'Claimed' : 'Check & Claim'}</button></div><p class="task-info">চ্যানেলে জয়েন করলে 10 টাকা পাবেন।</p></div></div>`;
+                content = `<div class="page active"><h3>Complete Tasks</h3><div class="card"><h4>Rewarded Ad</h4><p>প্রতিটি বিজ্ঞাপনের জন্য 5 টাকা আয় করুন।</p><button class="btn btn-primary" data-action="handleAd" data-reward="5">Watch Ad</button><p class="task-info">পুরস্কার পেতে 15 সেকেন্ডের জন্য বিজ্ঞাপনে থাকুন।</p></div><div class="card"><h4>Join Telegram</h4><p>চ্যানেলে জয়েন করে "Check & Claim" দিন।</p><div class="button-group"><button class="btn btn-primary" data-action="open-url" data-url="https://t.me/YOUR_CHANNEL_LINK" ${claimed.telegram ? 'disabled' : ''}>Open</button><button class="btn btn-primary" data-action="claim-task" data-task-id="telegram" data-reward="10" ${claimed.telegram ? 'disabled' : ''}>${claimed.telegram ? 'Claimed' : 'Claim'}</button></div><p class="task-info">পুরস্কার: 10 টাকা।</p></div></div>`;
             } else if (pageName === 'withdraw' && appConfig.withdrawPage) {
                 const wp = appConfig.withdrawPage;
                 const methods = (wp.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
-                content = `<div class="page active"><h3>Withdraw (টাকা)</h3><div class="withdraw-page-container"><p style="margin-bottom: 20px; color: var(--text-light); font-size: 0.95em; line-height: 1.6; text-align: center;">${(wp.noticeText || "").replace('{minAmount}', wp.minAmount).replace('{minReferrals}', wp.minReferrals)}</p><form class="withdraw-form" onsubmit="return false;"><div class="form-group"><label>Method:</label><select id="withdraw-method">${methods}</select></div><div class="form-group"><label>Account Number:</label><input id="withdraw-account" type="text" placeholder="01XXXXXXXXX"></div><div class="form-group"><label>Amount (টাকা):</label><input id="withdraw-amount" type="number" placeholder="${wp.minAmount}"></div><button type="submit" class="btn btn-primary" data-action="submit-withdraw">Submit Request</button></form></div></div>`;
+                content = `<div class="page active"><h3>Withdraw</h3><div class="withdraw-page-container"><p style="margin-bottom: 20px; color: var(--text-light); font-size: 0.95em; line-height: 1.6; text-align: center;">${(wp.noticeText || "").replace('{minAmount}', wp.minAmount).replace('{minReferrals}', wp.minReferrals)}</p><form class="withdraw-form" onsubmit="return false;"><div class="form-group"><label>Method:</label><select id="withdraw-method">${methods}</select></div><div class="form-group"><label>Account:</label><input id="withdraw-account" type="text" placeholder="01XXXXXXXXX"></div><div class="form-group"><label>Amount:</label><input id="withdraw-amount" type="number" placeholder="${wp.minAmount}"></div><button type="submit" class="btn btn-primary" data-action="submit-withdraw">Submit</button></form></div></div>`;
             } else {
                  content = `<div class="page active"><div class="card"><p>Page not found.</p></div></div>`;
             }
@@ -402,15 +393,15 @@
             event.preventDefault();
             const action = button.dataset.action;
             if (action === 'submit-withdraw') handleWithdrawRequest();
-            else if (action === 'handleAd') { alert("Ads are not available at the moment."); } 
-            else if (action === 'copy-link') { navigator.clipboard.writeText(document.getElementById('referral-link-input').value).then(() => alert('রেফারেল লিঙ্ক কপি করা হয়েছে!')); } 
+            else if (action === 'handleAd') { alert("Ads are not available."); } 
+            else if (action === 'copy-link') { navigator.clipboard.writeText(document.getElementById('referral-link-input').value).then(() => alert('Referral link copied!')); } 
             else if (action === 'share-link') {
                 const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}`;
-                const shareText = `এই অ্যাপ থেকে বিজ্ঞাপন দেখে টাকা আয় করুন।\n১০০% পেমেন্ট করে—আমার লিঙ্কে যোগ দিন:\n\n${referralLink}`;
+                const shareText = `Earn money by watching ads from this app.\nJoin with my link:\n\n${referralLink}`;
                 window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(shareText)}`);
             } else if (action === 'open-url') {
                 const url = button.dataset.url;
-                if(url.includes("YOUR_")){ alert("Admin has not set a valid link for this task."); return; }
+                if(url.includes("YOUR_")){ alert("Admin has not set a valid link."); return; }
                 if (url && url !== '#') window.Telegram.WebApp.openLink(url);
             } else if (action === 'claim-task') {
                 handleClaimTask(button.dataset.taskId, parseFloat(button.dataset.reward), button);
@@ -421,11 +412,11 @@
             if (!taskId || !reward) return;
             const claimedTasksRef = database.ref(`users/${currentUser.id}/claimedTasks/${taskId}`);
             claimedTasksRef.once('value', snapshot => {
-                if (snapshot.exists()) { alert("আপনি এই পুরস্কারটি ইতিমধ্যেই সংগ্রহ করেছেন।"); } 
+                if (snapshot.exists()) { alert("You have already claimed this reward."); } 
                 else {
                     database.ref(`users/${currentUser.id}/balance`).transaction((bal) => (bal || 0) + reward);
                     claimedTasksRef.set(true);
-                    alert(`অভিনন্দন! আপনি ${reward} টাকা পুরস্কার পেয়েছেন।`);
+                    alert(`Congratulations! You have received ${reward} BDT.`);
                     claimButton.disabled = true;
                     claimButton.textContent = 'Claimed';
                     const openButton = claimButton.parentElement.querySelector('button[data-action="open-url"]');
@@ -438,15 +429,15 @@
             const wp = appConfig.withdrawPage;
             const { referrals = 0, balance = 0 } = userData;
             if (referrals < wp.minReferrals || balance < wp.minAmount) {
-                alert(`শর্ত পূরণ হয়নি।\n\nন্যূনতম ${wp.minReferrals}টি রেফারেল এবং ${wp.minAmount} টাকা প্রয়োজন।\n\nআপনার আছে: ${referrals}টি রেফারেল এবং ${balance} টাকা।`);
+                alert(`Requirements not met.\n\nMinimum ${wp.minReferrals} referrals and ${wp.minAmount} BDT required.\n\nYou have: ${referrals} referrals and ${balance} BDT.`);
                 return;
             }
             const amount = document.getElementById('withdraw-amount').value;
             const account = document.getElementById('withdraw-account').value;
-            if (!account || !amount) { alert("অনুগ্রহ করে অ্যাকাউন্ট নম্বর এবং টাকার পরিমাণ লিখুন।"); return; }
-            if (Number(amount) < wp.minAmount) { alert(`ন্যূনতম উইথড্র পরিমাণ ${wp.minAmount} টাকা।`); return; }
-            if (Number(amount) > balance) { alert(`আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই।`); return; }
-            alert('আপনার উইথড্র অনুরোধ সফলভাবে জমা দেওয়া হয়েছে।');
+            if (!account || !amount) { alert("Please enter account number and amount."); return; }
+            if (Number(amount) < wp.minAmount) { alert(`Minimum withdrawal amount is ${wp.minAmount} BDT.`); return; }
+            if (Number(amount) > balance) { alert(`Insufficient balance.`); return; }
+            alert('Your withdrawal request has been submitted successfully.');
         }
     </script>
 </body>
