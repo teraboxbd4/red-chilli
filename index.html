@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Red Chilli</title>
     
+    <!-- Ad Network Scripts from your new file -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src='//libtl.com/sdk.js' data-zone='10099787' data-sdk='show_10099787'></script>
     <script src="https://ad.gigapub.tech/script?id=3877"></script>
@@ -21,124 +22,6 @@
         }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: var(--background-grey); color: var(--text-dark); }
         .app-container { max-width: 420px; margin: 0 auto; background-color: var(--card-background); min-height: 100vh; display: flex; flex-direction: column; }
-        
-        /* --- Loading Screen Styles --- */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #212529;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            transition: opacity 0.5s ease;
-        }
-        .loading-screen.fade-out {
-            opacity: 0;
-        }
-        .loading-card {
-            background-color: #343a40;
-            color: white;
-            padding: 30px;
-            border-radius: 16px;
-            text-align: center;
-            width: 80%;
-            max-width: 300px;
-        }
-        .loading-icon {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto 20px auto;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #00ff87, #60efff);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .loading-icon svg {
-            width: 30px;
-            height: 30px;
-            fill: white;
-        }
-        .loading-card h2 {
-            margin: 0 0 8px 0;
-            font-size: 1.2em;
-        }
-        .loading-card p {
-            margin: 0 0 20px 0;
-            font-size: 0.9em;
-            color: #adb5bd;
-        }
-        .progress-bar {
-            height: 4px;
-            background-color: #495057;
-            border-radius: 2px;
-            overflow: hidden;
-        }
-        .progress-bar-inner {
-            width: 40%;
-            height: 100%;
-            background-color: var(--primary-blue);
-            animation: loading-animation 2s infinite;
-        }
-        @keyframes loading-animation {
-            0% { width: 0%; }
-            50% { width: 100%; }
-            100% { width: 0%; }
-        }
-
-        /* --- Welcome Notice Styles --- */
-        .welcome-notice-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9990;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        .notice-card {
-            background: var(--card-background);
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            max-width: 350px;
-            width: 100%;
-        }
-        .notice-card h3 {
-            font-size: 1.6em;
-            margin-bottom: 15px;
-        }
-        .notice-card p {
-            color: var(--text-light);
-            line-height: 1.6;
-            font-size: 0.95em;
-        }
-        .notice-card ul {
-            list-style-type: none;
-            padding: 0;
-            text-align: left;
-            margin: 20px 0;
-            font-size: 0.9em;
-        }
-        .notice-card ul li {
-            margin-bottom: 8px;
-        }
-        .notice-card .rules {
-            font-size: 0.85em;
-            color: #dc3545;
-            margin-top: 20px;
-            font-style: italic;
-        }
-        
         main { flex-grow: 1; padding: 16px 4px; overflow-y: auto; background-color: var(--background-grey); }
         h3 { font-size: 1.4em; font-weight: 600; margin: 0 4px 16px 4px; text-align: left; }
         header { background-color: var(--card-background); padding: 10px 15px; border-bottom: 1px solid #f1f1f1; }
@@ -184,33 +67,10 @@
     </style>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div id="loading-screen" class="loading-screen">
-        <div class="loading-card">
-            <div class="loading-icon">
-                <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
-            </div>
-            <h2>Loading your dashboard...</h2>
-            <p>Securely syncing profile & config</p>
-            <div class="progress-bar">
-                <div class="progress-bar-inner"></div>
-            </div>
-        </div>
+    <div id="ad-progress-container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 4px; background-color: #e0e0e0; z-index: 9999;">
+        <div id="ad-progress-bar" style="width: 0%; height: 100%; background-color: var(--primary-blue); transition: width 0.5s linear;"></div>
     </div>
-
-    <!-- Welcome Notice -->
-    <div id="welcome-notice-overlay" class="welcome-notice-overlay" style="display: none;">
-        <div class="notice-card">
-            <h3 id="notice-title"></h3>
-            <div id="notice-greetings"></div>
-            <ul id="notice-details"></ul>
-            <ul id="notice-guarantees"></ul>
-            <p id="notice-rules" class="rules"></p>
-            <button id="notice-close-btn" class="btn btn-primary"></button>
-        </div>
-    </div>
-
-    <div id="app-root" style="display: none;">
+    <div id="app-root">
         <svg style="position: absolute; width: 0; height: 0; overflow: hidden;"><defs>
             <symbol id="icon-video-camera" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></symbol>
             <symbol id="icon-telegram" viewBox="0 0 24 24"><path d="m9.417 15.181-.397 5.584c.568 0 .814-.244 1.109-.537l2.663-2.545 5.518 4.041c1.012.564 1.725.267 1.998-.931L22.0 .931c.309-1.25-.5-1.841-1.559-1.434L.182 6.582c-1.274.482-1.241 1.169-.23 1.555l5.88 1.813L17.585 4.8c.702-.454 1.323-.212.799.278L8.38 13.331l.055.055Z"/></symbol>
@@ -264,13 +124,11 @@
         let currentUser;
         let appConfig;
         let userData = { balance: 0, referrals: 0, adsWatched: {}, claimedTasks: {} };
-        let isFirstLoad = true;
 
         document.addEventListener('DOMContentLoaded', function () {
             const tg = window.Telegram.WebApp;
             if (tg.platform === 'unknown') {
-                const loadingScreen = document.getElementById('loading-screen');
-                loadingScreen.innerHTML = `<div class="full-page-notice"><div class="card"><h4>⛔ Access Denied</h4><p>Please open this app inside Telegram.</p></div></div>`;
+                document.getElementById('app-root').innerHTML = `<div class="full-page-notice"><div class="card"><h4>⛔ Access Denied</h4><p>Please open this app inside Telegram.</p></div></div>`;
                 return;
             }
             tg.ready();
@@ -279,8 +137,7 @@
 
             currentUser = tg.initDataUnsafe.user;
             if (!currentUser) {
-                const loadingScreen = document.getElementById('loading-screen');
-                loadingScreen.innerHTML = `<div class="full-page-notice"><div class="card"><h4>User data not found. Please restart.</h4></div></div>`;
+                 document.getElementById('app-root').innerHTML = `<div class="full-page-notice"><div class="card"><h4>User data not found. Please restart.</h4></div></div>`;
                 return;
             }
 
@@ -296,10 +153,6 @@
             });
             
             document.getElementById('main-content').addEventListener('click', handleMainContentClick);
-            
-            document.getElementById('notice-close-btn').addEventListener('click', () => {
-                document.getElementById('welcome-notice-overlay').style.display = 'none';
-            });
         });
 
         function loadConfigAndUserData() {
@@ -308,7 +161,7 @@
                     appConfig = snapshot.val();
                     initializeUser();
                 } else {
-                    document.getElementById('loading-screen').innerHTML = `<div class="card"><h4>App configuration not found.</h4></div>`;
+                    document.getElementById('main-content').innerHTML = `<div class="card"><h4>App configuration not found.</h4></div>`;
                 }
             }).catch(error => console.error("Config load error:", error));
         }
@@ -318,13 +171,8 @@
             userRef.on('value', (snapshot) => {
                 userData = snapshot.val() || { balance: 0, referrals: 0, adsWatched: {}, claimedTasks: {} };
                 updateHeader();
-                
-                if (isFirstLoad) {
-                    const currentPage = document.querySelector('.nav-btn.active')?.dataset.page || 'home';
-                    renderPage(currentPage);
-                    hideLoadingScreen();
-                    isFirstLoad = false;
-                }
+                const currentPage = document.querySelector('.nav-btn.active')?.dataset.page || 'home';
+                renderPage(currentPage);
             }, error => console.error("User data read error:", error));
             
             userRef.once('value').then(snapshot => {
@@ -340,35 +188,6 @@
             const userPhotoEl = document.getElementById('user-photo');
             userNameEl.textContent = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'User';
             userPhotoEl.src = currentUser.photo_url || `https://via.placeholder.com/50/eeeeee/cccccc?text=${(currentUser.first_name || 'U').charAt(0)}`;
-        }
-
-        function hideLoadingScreen() {
-            const loadingScreen = document.getElementById('loading-screen');
-            loadingScreen.classList.add('fade-out');
-            
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-                document.getElementById('app-root').style.display = 'flex'; // Use flex to match the container style
-                showWelcomeNoticeIfNeeded();
-            }, 500); // Match CSS transition time
-        }
-        
-        function showWelcomeNoticeIfNeeded() {
-            const noticeConfig = appConfig.welcomeNotice;
-            if (noticeConfig && noticeConfig.enabled) {
-                const hasSeenNotice = localStorage.getItem('welcomeNoticeShown');
-                if (!hasSeenNotice) {
-                    document.getElementById('notice-title').textContent = noticeConfig.title || '';
-                    document.getElementById('notice-greetings').innerHTML = (noticeConfig.greeting_lines || []).map(line => `<p>${line}</p>`).join('');
-                    document.getElementById('notice-details').innerHTML = (noticeConfig.details_list || []).map(item => `<li>${item}</li>`).join('');
-                    document.getElementById('notice-guarantees').innerHTML = (noticeConfig.guarantee_list || []).map(item => `<li>${item}</li>`).join('');
-                    document.getElementById('notice-rules').textContent = noticeConfig.rules_line || '';
-                    document.getElementById('notice-close-btn').textContent = noticeConfig.buttonText || 'Close';
-                    
-                    document.getElementById('welcome-notice-overlay').style.display = 'flex';
-                    localStorage.setItem('welcomeNoticeShown', 'true');
-                }
-            }
         }
 
         function handleReferral() {
@@ -506,6 +325,7 @@
 
             if (action === 'submit-withdraw') handleWithdrawRequest();
             else if (action === 'handleAd') {
+                // The reward value is taken from the button's data-reward attribute
                 handleAdTask(parseFloat(button.dataset.reward) || 0);
             } else if (action === 'copy-link') {
                 const input = document.getElementById('referral-link-input');
@@ -557,6 +377,7 @@
             window.Telegram.WebApp.showAlert('আপনার উইথড্র অনুরোধ সফলভাবে জমা দেওয়া হয়েছে।');
         }
         
+        // --- NEW Ad Task Handler ---
         async function handleAdTask(rewardAmount) {
             const today = new Date().toISOString().slice(0, 10);
             const adTaskConfig = (appConfig.tasks || []).find(t => t.type === 'ads' && t.enabled) || { dailyLimit: 10 };
@@ -570,14 +391,19 @@
             updateProgressBar(1);
             let adShownSuccessfully = false;
 
-            const monetagZoneId = 10099787;
-            const gigapubId = 3877;
+            // These are example Zone/ID values. Replace them with your actual IDs.
+            const monetagZoneId = 10099787; // From your script tag
+            const gigapubId = 3877;       // From your script tag
 
             try {
+                // Try showing Monetag ad
                 const monetagShowFunction = window['show_' + monetagZoneId];
                 if (typeof monetagShowFunction === 'function') {
+                    console.log("Trying to show Monetag ad...");
                     await monetagShowFunction();
                     adShownSuccessfully = true;
+                } else {
+                     console.warn("Monetag function not found.");
                 }
             } catch (monetagError) {
                 console.warn("Monetag ad failed:", monetagError);
@@ -585,11 +411,16 @@
             
             updateProgressBar(50);
             
+            // If Monetag failed, you can try Gigapub as a fallback.
+            // For this example, we assume either can be shown.
             try {
                 if (typeof window.showGiga === 'function') {
+                    console.log("Trying to show Gigapub ad...");
                     if (window.initGiga) window.initGiga(gigapubId);
                     await window.showGiga();
                     adShownSuccessfully = true;
+                } else {
+                    console.warn("Gigapub function not found.");
                 }
             } catch (gigapubError) {
                 console.warn("Gigapub ad failed:", gigapubError);
@@ -599,6 +430,7 @@
 
             if (adShownSuccessfully) {
                 rewardUser("বিজ্ঞাপনটি সফলভাবে সম্পন্ন হয়েছে।", rewardAmount);
+                // Use a transaction for safe update
                 database.ref(`users/${currentUser.id}/adsWatched/${today}`).transaction(currentVal => (currentVal || 0) + 1);
             } else {
                 window.Telegram.WebApp.showAlert("দুঃখিত, কোনো বিজ্ঞাপন দেখানো সম্ভব হচ্ছে না।");
