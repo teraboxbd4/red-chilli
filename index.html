@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Red Chilli</title>
     
-    <!-- Ad Network Scripts from your new file -->
+    <!-- Ad Network Scripts -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src='//libtl.com/sdk.js' data-zone='10099787' data-sdk='show_10099787'></script>
     <script src="https://ad.gigapub.tech/script?id=3877"></script>
@@ -21,7 +21,8 @@
             --border-color: #e9ecef;
         }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: var(--background-grey); color: var(--text-dark); }
-        .app-container { max-width: 420px; margin: 0 auto; background-color: var(--card-background); min-height: 100vh; display: flex; flex-direction: column; }
+        .app-container { max-width: 420px; margin: 0 auto; background-color: var(--card-background); min-height: 100vh; display: flex; flex-direction: column; opacity: 0; transition: opacity 0.5s ease-in-out; }
+        .app-container.loaded { opacity: 1; }
         main { flex-grow: 1; padding: 16px 4px; overflow-y: auto; background-color: var(--background-grey); }
         h3 { font-size: 1.4em; font-weight: 600; margin: 0 4px 16px 4px; text-align: left; }
         header { background-color: var(--card-background); padding: 10px 15px; border-bottom: 1px solid #f1f1f1; }
@@ -65,76 +66,75 @@
         .withdraw-form input, .withdraw-form select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; background-color: #f8f9fa; }
         .withdraw-form button { margin-top: 10px; }
 
-        /* --- Loading Screen Styles --- */
+        /* --- SEM TO SEM Loading Screen Styles --- */
         #loading-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100vh;
-            background: rgba(20, 20, 30, 0.85);
+            height: 100%;
+            background: #3c3c4a; /* Video background color */
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 10000;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
             transition: opacity 0.5s ease;
         }
         .loading-box {
-            background: #2a2d34;
+            background: #252532; /* Video box color */
             color: #f0f2f5;
-            padding: 30px;
-            border-radius: 16px;
+            padding: 35px 30px;
+            border-radius: 20px;
             text-align: center;
             width: 85%;
             max-width: 320px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
         }
         .loading-icon {
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
-            background: linear-gradient(45deg, #45ffbc, #0d6efd);
+            background: linear-gradient(135deg, #10e99f, #4a69bd); /* Video gradient */
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 20px auto;
+            margin: 0 auto 25px auto;
+            box-shadow: 0 5px 15px rgba(30, 219, 155, 0.2);
         }
         .loading-icon svg {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             fill: white;
         }
         .loading-box h2 {
-            font-size: 1.2em;
-            margin: 0 0 8px 0;
+            font-size: 1.3em;
+            margin: 0 0 10px 0;
             color: #ffffff;
             font-weight: 600;
         }
-        .loading-box p {
+        .loading-box .subtext {
             font-size: 0.9em;
-            color: #bdc3c7;
-            margin: 0 0 20px 0;
+            color: #b2bec3;
+            margin: 0 0 25px 0;
         }
         .progress-bar-container {
             width: 100%;
-            background: #3c414b;
+            background: #3e3e4f;
             border-radius: 5px;
-            height: 6px;
+            height: 5px;
             overflow: hidden;
         }
         .progress-bar {
             width: 0%;
             height: 100%;
-            background: #a29bfe;
+            background: #6c5ce7; /* Video progress bar color */
             border-radius: 5px;
-            animation: loading-progress 2s ease-in-out forwards;
+            animation: loading-progress 2.2s ease-in-out forwards;
         }
         .loading-box .wait-text {
-            font-size: 0.8em;
-            margin-top: 15px;
-            color: #7f8c8d;
+            font-size: 0.85em;
+            margin-top: 20px;
+            color: #8a8a9e;
         }
         @keyframes loading-progress {
             from { width: 0%; }
@@ -150,7 +150,7 @@
                 <svg viewBox="0 0 24 24"><path d="M11 21h-1l1-7H7.5c-.58 0-.57-.32-.38-.66.19-.34.38-.68.52-1.02C8.98 9.99 10.34 8 13 8h1l-1 7h3.5c.49 0 .56.33.47.51l-1.03 2.05c-2.78 3.43-3.93 4.44-4.94 4.44Z"/></svg>
             </div>
             <h2>Loading your dashboard...</h2>
-            <p>Securely syncing profile & config</p>
+            <p class="subtext">Securely syncing profile & config</p>
             <div class="progress-bar-container">
                 <div class="progress-bar"></div>
             </div>
@@ -187,7 +187,7 @@
                 </div>
             </header>
             <main id="main-content">
-                <div class="card"><p>Loading App...</p></div>
+                <!-- Content will be rendered here -->
             </main>
             <nav>
                 <button class="nav-btn active" data-page="home"><svg class="nav-icon"><use href="#icon-home"></use></svg>Home</button>
@@ -219,6 +219,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             const tg = window.Telegram.WebApp;
             if (tg.platform === 'unknown') {
+                document.getElementById('loading-overlay').style.display = 'none';
                 document.getElementById('app-root').innerHTML = `<div class="full-page-notice"><div class="card"><h4>⛔ Access Denied</h4><p>Please open this app inside Telegram.</p></div></div>`;
                 return;
             }
@@ -228,7 +229,8 @@
 
             currentUser = tg.initDataUnsafe.user;
             if (!currentUser) {
-                 document.getElementById('app-root').innerHTML = `<div class="full-page-notice"><div class="card"><h4>User data not found. Please restart.</h4></div></div>`;
+                document.getElementById('loading-overlay').style.display = 'none';
+                document.getElementById('app-root').innerHTML = `<div class="full-page-notice"><div class="card"><h4>User data not found. Please restart.</h4></div></div>`;
                 return;
             }
 
@@ -253,26 +255,36 @@
                     initializeUser();
                 } else {
                     document.getElementById('main-content').innerHTML = `<div class="card"><h4>App configuration not found.</h4></div>`;
+                    hideLoader(); // Hide loader if config fails
                 }
-            }).catch(error => console.error("Config load error:", error));
+            }).catch(error => {
+                console.error("Config load error:", error);
+                hideLoader();
+            });
+        }
+        
+        function hideLoader() {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const appContainer = document.querySelector('.app-container');
+            
+            loadingOverlay.style.opacity = '0';
+            appContainer.classList.add('loaded');
+            
+            setTimeout(() => {
+                loadingOverlay.style.display = 'none';
+            }, 500); // Match CSS transition time
         }
         
         function initializeUser() {
-            // --- Hide loading screen after animation ---
-            setTimeout(() => {
-                const loadingOverlay = document.getElementById('loading-overlay');
-                loadingOverlay.style.opacity = '0';
-                setTimeout(() => {
-                    loadingOverlay.style.display = 'none';
-                }, 500); // Match this with CSS transition time
-            }, 2500); // Show loader for 2.5 seconds
+            // Hide loading screen after animation completes (2.2s) + a small delay
+            setTimeout(hideLoader, 2700); 
             
             const userRef = database.ref(`users/${currentUser.id}`);
             userRef.on('value', (snapshot) => {
                 userData = snapshot.val() || { balance: 0, referrals: 0, adsWatched: {}, claimedTasks: {} };
                 updateHeader();
                 const currentPage = document.querySelector('.nav-btn.active')?.dataset.page || 'home';
-                renderPage(currentPage);
+                if(appConfig) renderPage(currentPage); // Only render if config is loaded
             }, error => console.error("User data read error:", error));
             
             userRef.once('value').then(snapshot => {
@@ -327,7 +339,7 @@
                 const today = new Date().toISOString().slice(0, 10);
                 const adsWatchedToday = (userData.adsWatched && userData.adsWatched[today]) || 0;
                 const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}`;
-                const referralNotice = (appConfig.homePage && appConfig.homePage.referralNotice) || `আপনার বন্ধুদের রেফার করে আয় করুন। প্রতি সফল রেফারে পাবেন ${appConfig.referralBonus || 0} টাকা।`;
+                const referralNotice = `আপনার বন্ধুদের রেফার করে আয় করুন। প্রতি সফল রেফারে পাবেন ${appConfig.referralBonus || 0} টাকা।`;
 
                 content = `<div class="page active"><h3>Dashboard</h3>
                     <div class="dashboard-stats">
@@ -425,7 +437,6 @@
 
             if (action === 'submit-withdraw') handleWithdrawRequest();
             else if (action === 'handleAd') {
-                // The reward value is taken from the button's data-reward attribute
                 handleAdTask(parseFloat(button.dataset.reward) || 0);
             } else if (action === 'copy-link') {
                 const input = document.getElementById('referral-link-input');
@@ -477,7 +488,6 @@
             window.Telegram.WebApp.showAlert('আপনার উইথড্র অনুরোধ সফলভাবে জমা দেওয়া হয়েছে।');
         }
         
-        // --- NEW Ad Task Handler ---
         async function handleAdTask(rewardAmount) {
             const today = new Date().toISOString().slice(0, 10);
             const adTaskConfig = (appConfig.tasks || []).find(t => t.type === 'ads' && t.enabled) || { dailyLimit: 10 };
@@ -490,20 +500,14 @@
             
             updateProgressBar(1);
             let adShownSuccessfully = false;
-
-            // These are example Zone/ID values. Replace them with your actual IDs.
-            const monetagZoneId = 10099787; // From your script tag
-            const gigapubId = 3877;       // From your script tag
+            const monetagZoneId = 10099787;
+            const gigapubId = 3877;
 
             try {
-                // Try showing Monetag ad
                 const monetagShowFunction = window['show_' + monetagZoneId];
                 if (typeof monetagShowFunction === 'function') {
-                    console.log("Trying to show Monetag ad...");
                     await monetagShowFunction();
                     adShownSuccessfully = true;
-                } else {
-                     console.warn("Monetag function not found.");
                 }
             } catch (monetagError) {
                 console.warn("Monetag ad failed:", monetagError);
@@ -511,16 +515,11 @@
             
             updateProgressBar(50);
             
-            // If Monetag failed, you can try Gigapub as a fallback.
-            // For this example, we assume either can be shown.
             try {
-                if (typeof window.showGiga === 'function') {
-                    console.log("Trying to show Gigapub ad...");
+                if (!adShownSuccessfully && typeof window.showGiga === 'function') {
                     if (window.initGiga) window.initGiga(gigapubId);
                     await window.showGiga();
                     adShownSuccessfully = true;
-                } else {
-                    console.warn("Gigapub function not found.");
                 }
             } catch (gigapubError) {
                 console.warn("Gigapub ad failed:", gigapubError);
@@ -530,7 +529,6 @@
 
             if (adShownSuccessfully) {
                 rewardUser("বিজ্ঞাপনটি সফলভাবে সম্পন্ন হয়েছে।", rewardAmount);
-                // Use a transaction for safe update
                 database.ref(`users/${currentUser.id}/adsWatched/${today}`).transaction(currentVal => (currentVal || 0) + 1);
             } else {
                 window.Telegram.WebApp.showAlert("দুঃখিত, কোনো বিজ্ঞাপন দেখানো সম্ভব হচ্ছে না।");
