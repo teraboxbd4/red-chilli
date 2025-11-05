@@ -22,23 +22,122 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: var(--background-grey); color: var(--text-dark); }
         .app-container { max-width: 420px; margin: 0 auto; background-color: var(--card-background); min-height: 100vh; display: flex; flex-direction: column; }
         
-        .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #212529; display: flex; justify-content: center; align-items: center; z-index: 10000; transition: opacity 0.5s ease; }
-        .loading-screen.fade-out { opacity: 0; }
-        .loading-card { background-color: #343a40; color: white; padding: 30px; border-radius: 16px; text-align: center; width: 80%; max-width: 300px; }
-        .loading-icon { width: 60px; height: 60px; margin: 0 auto 20px auto; border-radius: 50%; background: linear-gradient(45deg, #00ff87, #60efff); display: flex; justify-content: center; align-items: center; }
-        .loading-icon svg { width: 30px; height: 30px; fill: white; }
-        .loading-card h2 { margin: 0 0 8px 0; font-size: 1.2em; }
-        .loading-card p { margin: 0 0 20px 0; font-size: 0.9em; color: #adb5bd; }
-        .progress-bar { height: 4px; background-color: #495057; border-radius: 2px; overflow: hidden; }
-        .progress-bar-inner { width: 40%; height: 100%; background-color: var(--primary-blue); animation: loading-animation 2s infinite; }
-        @keyframes loading-animation { 0% { width: 0%; } 50% { width: 100%; } 100% { width: 0%; } }
-        .welcome-notice-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 9990; padding: 20px; box-sizing: border-box; }
-        .notice-card { background: var(--card-background); padding: 25px; border-radius: 15px; text-align: center; max-width: 350px; width: 100%; }
-        .notice-card h3 { font-size: 1.6em; margin-bottom: 15px; }
-        .notice-card p { color: var(--text-light); line-height: 1.6; font-size: 0.95em; }
-        .notice-card ul { list-style-type: none; padding: 0; text-align: left; margin: 20px 0; font-size: 0.9em; }
-        .notice-card ul li { margin-bottom: 8px; }
-        .notice-card .rules { font-size: 0.85em; color: #dc3545; margin-top: 20px; font-style: italic; }
+        /* --- Loading Screen Styles --- */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #212529;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease;
+        }
+        .loading-screen.fade-out {
+            opacity: 0;
+        }
+        .loading-card {
+            background-color: #343a40;
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            width: 80%;
+            max-width: 300px;
+        }
+        .loading-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px auto;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #00ff87, #60efff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .loading-icon svg {
+            width: 30px;
+            height: 30px;
+            fill: white;
+        }
+        .loading-card h2 {
+            margin: 0 0 8px 0;
+            font-size: 1.2em;
+        }
+        .loading-card p {
+            margin: 0 0 20px 0;
+            font-size: 0.9em;
+            color: #adb5bd;
+        }
+        .progress-bar {
+            height: 4px;
+            background-color: #495057;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .progress-bar-inner {
+            width: 40%;
+            height: 100%;
+            background-color: var(--primary-blue);
+            animation: loading-animation 2s infinite;
+        }
+        @keyframes loading-animation {
+            0% { width: 0%; }
+            50% { width: 100%; }
+            100% { width: 0%; }
+        }
+
+        /* --- Welcome Notice Styles --- */
+        .welcome-notice-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9990;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .notice-card {
+            background: var(--card-background);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 350px;
+            width: 100%;
+        }
+        .notice-card h3 {
+            font-size: 1.6em;
+            margin-bottom: 15px;
+        }
+        .notice-card p {
+            color: var(--text-light);
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+        .notice-card ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: left;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        .notice-card ul li {
+            margin-bottom: 8px;
+        }
+        .notice-card .rules {
+            font-size: 0.85em;
+            color: #dc3545;
+            margin-top: 20px;
+            font-style: italic;
+        }
         
         main { flex-grow: 1; padding: 16px 4px; overflow-y: auto; background-color: var(--background-grey); }
         h3 { font-size: 1.4em; font-weight: 600; margin: 0 4px 16px 4px; text-align: left; }
@@ -66,25 +165,13 @@
         .button-group .btn { flex: 1; }
         .btn-primary { background-color: var(--primary-blue); color: white; }
         .btn-secondary { background-color: var(--primary-green); color: white; }
-        
-        /* --- UPDATED Icon Wrapper Style --- */
-        .icon-wrapper { 
-            width: 50px; 
-            height: 50px; 
-            border-radius: 12px; /* Changed from 50% to 12px */
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            margin: 0 auto; 
-        }
-        /* Added specific colors to match screenshot */
-        .icon-wrapper.support { background-color: #0d6efd; }
+        .icon-wrapper { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
         .icon-wrapper.video-camera { background-color: #0d6efd; }
-        .icon-wrapper.telegram { background-color: #34B7F1; }
-        .icon-wrapper.youtube { background-color: #FF3B30; }
-        .icon-wrapper.facebook { background-color: #007AFF; }
+        .icon-wrapper.telegram { background-color: #2AABEE; }
+        .icon-wrapper.youtube { background-color: #FF0000; }
+        .icon-wrapper.facebook { background-color: #1877F2; }
+        .icon-wrapper.support { background-color: #198754; }
         .icon-wrapper svg { width: 28px; height: 28px; fill: white; }
-        
         nav { display: flex; justify-content: space-around; padding: 8px 4px; border-top: 1px solid #f1f1f1; background-color: var(--card-background); position: sticky; bottom: 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
         .nav-btn { background: none; border: none; font-size: 0.8em; color: var(--text-light); cursor: pointer; padding: 4px 12px; border-radius: 12px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-btn.active { background-color: #e7f1ff; color: var(--primary-blue); }
@@ -100,15 +187,26 @@
     <!-- Loading Screen -->
     <div id="loading-screen" class="loading-screen">
         <div class="loading-card">
-            <div class="loading-icon"><svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg></div>
-            <h2>Loading your dashboard...</h2><p>Securely syncing profile & config</p><div class="progress-bar"><div class="progress-bar-inner"></div></div>
+            <div class="loading-icon">
+                <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+            </div>
+            <h2>Loading your dashboard...</h2>
+            <p>Securely syncing profile & config</p>
+            <div class="progress-bar">
+                <div class="progress-bar-inner"></div>
+            </div>
         </div>
     </div>
 
     <!-- Welcome Notice -->
     <div id="welcome-notice-overlay" class="welcome-notice-overlay" style="display: none;">
         <div class="notice-card">
-            <h3 id="notice-title"></h3><div id="notice-greetings"></div><ul id="notice-details"></ul><ul id="notice-guarantees"></ul><p id="notice-rules" class="rules"></p><button id="notice-close-btn" class="btn btn-primary"></button>
+            <h3 id="notice-title"></h3>
+            <div id="notice-greetings"></div>
+            <ul id="notice-details"></ul>
+            <ul id="notice-guarantees"></ul>
+            <p id="notice-rules" class="rules"></p>
+            <button id="notice-close-btn" class="btn btn-primary"></button>
         </div>
     </div>
 
@@ -152,8 +250,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
-        // --- All JavaScript logic from the previous final version remains unchanged ---
-        
         const firebaseConfig = {
             apiKey: "AIzaSyAIXpawpQH3yRozPbTzP7Tzm6IFsNVpAzQ",
             authDomain: "fake-earn-5d8bd.firebaseapp.com",
@@ -252,9 +348,9 @@
             
             setTimeout(() => {
                 loadingScreen.style.display = 'none';
-                document.getElementById('app-root').style.display = 'flex';
+                document.getElementById('app-root').style.display = 'flex'; // Use flex to match the container style
                 showWelcomeNoticeIfNeeded();
-            }, 500);
+            }, 500); // Match CSS transition time
         }
         
         function showWelcomeNoticeIfNeeded() {
@@ -336,10 +432,9 @@
                         <h4>${sp.title}</h4>
                         <p>${sp.description}</p>
                         <button class="btn btn-primary" style="margin-top: 20px;" data-action="open-url" data-url="${sp.videoUrl || '#'}">${sp.buttonText}</button>
-                        <p class="task-info">${sp.notice}</p>
                     </div></div>`;
             } else if (pageName === 'tasks') {
-                let tasksHtml = '<h3>Complete Tasks</h3>';
+                let tasksHtml = '';
                 if (appConfig.tasks && appConfig.tasks.length > 0) {
                     appConfig.tasks.forEach(task => {
                         if (task.enabled) {
@@ -347,30 +442,32 @@
                             const isClaimed = claimed[task.type];
                             let buttonsHtml = '';
 
-                            if (task.type === 'ads') {
-                                const button = task.buttons[0];
-                                buttonsHtml = `<button class="btn btn-primary" style="margin-top: 20px;" 
-                                    data-action="${button.action}" 
-                                    data-reward="${task.reward || 0}">
-                                    ${button.text}
-                                </button>`;
-                            } else {
-                                buttonsHtml += '<div class="button-group">';
-                                task.buttons.forEach(button => {
-                                    let btnText = button.text;
-                                    if (button.action === 'claim-task' && isClaimed) {
-                                        btnText = 'Claimed';
-                                    }
-                                    buttonsHtml += `<button class="btn btn-primary" 
+                            if (task.buttons && task.buttons.length > 0) {
+                                if (task.type === 'ads') {
+                                    const button = task.buttons[0];
+                                    buttonsHtml = `<button class="btn btn-primary" style="margin-top: 20px;" 
                                         data-action="${button.action}" 
-                                        data-url="${button.url || ''}" 
-                                        data-task-id="${task.type}" 
-                                        data-reward="${task.reward || 0}" 
-                                        ${isClaimed ? 'disabled' : ''}>
-                                        ${btnText}
+                                        data-reward="${task.reward || 0}">
+                                        ${button.text}
                                     </button>`;
-                                });
-                                buttonsHtml += '</div>';
+                                } else { // Social tasks with claim button
+                                    buttonsHtml += '<div class="button-group">';
+                                    task.buttons.forEach(button => {
+                                        let btnText = button.text;
+                                        if (button.action === 'claim-task' && isClaimed) {
+                                            btnText = 'Claimed';
+                                        }
+                                        buttonsHtml += `<button class="btn btn-primary" 
+                                            data-action="${button.action}" 
+                                            data-url="${button.url || ''}" 
+                                            data-task-id="${task.type}" 
+                                            data-reward="${task.reward || 0}" 
+                                            ${isClaimed ? 'disabled' : ''}>
+                                            ${btnText}
+                                        </button>`;
+                                    });
+                                    buttonsHtml += '</div>';
+                                }
                             }
                             
                             tasksHtml += `<div class="card">
@@ -383,7 +480,7 @@
                         }
                     });
                 }
-                content = `<div class="page active">${tasksHtml}</div>`;
+                content = `<div class="page active"><h3>Complete Tasks</h3>${tasksHtml}</div>`;
             } else if (pageName === 'withdraw' && appConfig.withdrawPage) {
                 const wp = appConfig.withdrawPage;
                 const methods = (wp.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
@@ -408,8 +505,9 @@
             const action = button.dataset.action;
 
             if (action === 'submit-withdraw') handleWithdrawRequest();
-            else if (action === 'handleAd') handleAdTask(parseFloat(button.dataset.reward) || 0);
-            else if (action === 'copy-link') {
+            else if (action === 'handleAd') {
+                handleAdTask(parseFloat(button.dataset.reward) || 0);
+            } else if (action === 'copy-link') {
                 const input = document.getElementById('referral-link-input');
                 if (input) navigator.clipboard.writeText(input.value).then(() => window.Telegram.WebApp.showAlert('রেফারেল লিঙ্ক কপি করা হয়েছে!'));
             } else if (action === 'share-link') {
@@ -417,8 +515,14 @@
                 const shareText = `এই অ্যাপ থেকে বিজ্ঞাপন দেখে টাকা আয় করুন।\n১০০% পেমেন্ট করে—আমার লিঙ্কে যোগ দিন:\n\n${referralLink}`;
                 const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(shareText)}`;
                 window.Telegram.WebApp.openTelegramLink(shareUrl);
-            } else if (action === 'open-url') window.Telegram.WebApp.openLink(button.dataset.url);
-            else if (action === 'claim-task') handleClaimTask(button.dataset.taskId, parseFloat(button.dataset.reward), button);
+            } else if (action === 'open-url') {
+                const url = button.dataset.url;
+                if (url && url !== '#') window.Telegram.WebApp.openLink(url);
+            } else if (action === 'claim-task') {
+                const taskId = button.dataset.taskId;
+                const reward = parseFloat(button.dataset.reward);
+                handleClaimTask(taskId, reward, button);
+            }
         }
 
         function handleClaimTask(taskId, reward, claimButton) {
@@ -444,38 +548,82 @@
             const wp = appConfig.withdrawPage;
             const userBalance = userData.balance || 0;
             const amount = document.getElementById('withdraw-amount').value;
+            const account = document.getElementById('withdraw-account').value;
+
+            if (!account || !amount) { window.Telegram.WebApp.showAlert("অনুগ্রহ করে অ্যাকাউন্ট নম্বর এবং টাকার পরিমাণ লিখুন।"); return; }
             if (Number(amount) < wp.minAmount) { window.Telegram.WebApp.showAlert(`ন্যূনতম উইথড্র পরিমাণ ${wp.minAmount} টাকা।`); return; }
             if (Number(amount) > userBalance) { window.Telegram.WebApp.showAlert(`আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই।`); return; }
+            
             window.Telegram.WebApp.showAlert('আপনার উইথড্র অনুরোধ সফলভাবে জমা দেওয়া হয়েছে।');
         }
         
         async function handleAdTask(rewardAmount) {
             const today = new Date().toISOString().slice(0, 10);
-            const adTaskConfig = (appConfig.tasks || []).find(t => t.type === 'ads' && t.enabled);
+            const adTaskConfig = (appConfig.tasks || []).find(t => t.type === 'ads' && t.enabled) || { dailyLimit: 10 };
             const adsWatchedToday = (userData.adsWatched && userData.adsWatched[today]) || 0;
+            
             if (adsWatchedToday >= adTaskConfig.dailyLimit) {
                 window.Telegram.WebApp.showAlert("আপনি আজকের জন্য আপনার বিজ্ঞাপন দেখার সীমা অতিক্রম করেছেন।"); 
                 return;
             }
+            
+            updateProgressBar(1);
             let adShownSuccessfully = false;
+
+            const monetagZoneId = 10099787;
+            const gigapubId = 3877;
+
             try {
-                const monetagShowFunction = window['show_10099787'];
+                const monetagShowFunction = window['show_' + monetagZoneId];
                 if (typeof monetagShowFunction === 'function') {
                     await monetagShowFunction();
                     adShownSuccessfully = true;
                 }
-            } catch (e) { console.warn("Ad error:", e); }
+            } catch (monetagError) {
+                console.warn("Monetag ad failed:", monetagError);
+            }
+            
+            updateProgressBar(50);
+            
+            try {
+                if (typeof window.showGiga === 'function') {
+                    if (window.initGiga) window.initGiga(gigapubId);
+                    await window.showGiga();
+                    adShownSuccessfully = true;
+                }
+            } catch (gigapubError) {
+                console.warn("Gigapub ad failed:", gigapubError);
+            }
+
+            updateProgressBar(100);
+
             if (adShownSuccessfully) {
                 rewardUser("বিজ্ঞাপনটি সফলভাবে সম্পন্ন হয়েছে।", rewardAmount);
-                database.ref(`users/${currentUser.id}/adsWatched/${today}`).transaction(val => (val || 0) + 1);
+                database.ref(`users/${currentUser.id}/adsWatched/${today}`).transaction(currentVal => (currentVal || 0) + 1);
             } else {
                 window.Telegram.WebApp.showAlert("দুঃখিত, কোনো বিজ্ঞাপন দেখানো সম্ভব হচ্ছে না।");
             }
+            
+            setTimeout(() => updateProgressBar(0), 500);
         }
         
         function rewardUser(message, rewardAmount) {
-            if (rewardAmount > 0) database.ref(`users/${currentUser.id}/balance`).transaction(bal => (bal || 0) + rewardAmount);
+            if (rewardAmount > 0) {
+                database.ref(`users/${currentUser.id}/balance`).transaction((bal) => (bal || 0) + rewardAmount);
+            }
             window.Telegram.WebApp.showAlert(`ধন্যবাদ! ${message}${rewardAmount > 0 ? ` আপনাকে ${rewardAmount} টাকা পুরস্কৃত করা হয়েছে।` : ''}`);
+        }
+        
+        function updateProgressBar(progress) {
+             const bar = document.getElementById('ad-progress-bar');
+            const container = document.getElementById('ad-progress-container');
+            if (progress > 0) {
+                container.style.display = 'block';
+                bar.style.width = progress + '%';
+            } else {
+                bar.style.width = '0%';
+                setTimeout(() => { container.style.display = 'none'; }, 500); 
+            }
         }
     </script>
 </body>
