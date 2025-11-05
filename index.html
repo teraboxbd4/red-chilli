@@ -34,9 +34,7 @@
         .progress-bar { height: 4px; background-color: #495057; border-radius: 2px; overflow: hidden; }
         .progress-bar-inner { width: 100%; height: 100%; background-color: var(--primary-blue); animation: indeterminate-animation 1.5s infinite linear; }
         @keyframes indeterminate-animation { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-
-        /* --- Welcome Notice & Other Styles --- */
-        .welcome-notice-overlay { display: none; /* ... */ }
+        
         main { flex-grow: 1; padding: 16px 4px; overflow-y: auto; }
         h3 { font-size: 1.4em; font-weight: 600; margin: 0 4px 16px 4px; text-align: left; }
         header { background-color: var(--background-grey); padding: 10px 15px; border-bottom: none; }
@@ -47,6 +45,7 @@
         .user-details h2 { display: flex; align-items: center; gap: 6px; margin: 0 0 4px 0; font-size: 1.2em; font-weight: 600; }
         .user-details #balance-display { margin: 0; color: var(--text-light); font-weight: 500; font-size: 0.9em; }
         .verified-badge { background-color: var(--primary-blue); color: white; width: 16px; height: 16px; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; font-size: 10px; font-weight: bold; }
+
         .page { display: none; animation: fadeIn 0.3s; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -54,9 +53,10 @@
         .card h4 { margin: 15px 0 10px 0; font-size: 1.15em; font-weight: 600; }
         .card p { color: var(--text-light); line-height: 1.6; margin: 0 0 14px 0; font-size: 0.95em; }
         .card .task-info { font-size: 0.8em; color: var(--text-light); margin-top: 12px; }
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 8px; background-color: var(--primary-blue); color: white; }
         .button-group { display: flex; gap: 10px; margin-top: 20px; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 8px; color: white; background-color: var(--primary-blue);}
         .button-group .btn { flex: 1; }
+        
         .icon-wrapper { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
         .icon-wrapper.support { background-color: #0d6efd; }
         .icon-wrapper.video-camera { background-color: #0d6efd; }
@@ -64,15 +64,23 @@
         .icon-wrapper.youtube { background-color: #FF3B30; }
         .icon-wrapper.facebook { background-color: #007AFF; }
         .icon-wrapper svg { width: 28px; height: 28px; fill: white; }
+
         nav { display: flex; justify-content: space-around; padding: 8px 4px; border-top: 1px solid #f1f1f1; background-color: var(--card-background); position: sticky; bottom: 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
         .nav-btn { background: none; border: none; font-size: 0.8em; color: var(--text-light); cursor: pointer; padding: 4px 12px; border-radius: 12px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-btn.active { background-color: #e7f1ff; color: var(--primary-blue); }
         .nav-btn .nav-icon { width: 22px; height: 22px; fill: currentColor; }
         
-        /* Original Withdraw Form Style from user index (2).html */
+        /* --- NEW Withdraw Page Styles --- */
+        .withdraw-page-container { padding: 0 4px; }
+        .withdraw-page-container .notice { text-align: left; margin-bottom: 20px; color: var(--text-dark); }
         .withdraw-form .form-group { text-align: left; margin-bottom: 16px; }
-        .withdraw-form label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9em;}
-        .withdraw-form input, .withdraw-form select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; background-color: #f8f9fa; }
+        .withdraw-form label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9em; color: var(--text-dark); }
+        .withdraw-form input, .withdraw-form select { 
+            width: 100%; padding: 14px; border: 1px solid var(--border-color); 
+            border-radius: 8px; box-sizing: border-box; background-color: var(--card-background);
+            font-size: 1em;
+            -webkit-appearance: none; -moz-appearance: none; appearance: none;
+        }
         .withdraw-form button { margin-top: 10px; }
     </style>
 </head>
@@ -80,18 +88,14 @@
     <div id="loading-screen" class="loading-screen">
         <div class="loading-card">
             <div class="loading-icon">
-                 <svg viewBox="0 0 24 24"><path d="M13,2V8H11V2H13M12,10A2,2 0 0,1 14,12C14,13.11 13.11,14 12,14C10.89,14 10,13.11 10,12A2,2 0 0,1 12,10M17.66,6.34L16.24,7.76C17.3,8.82 18,10.32 18,12C18,14.76 15.76,17 13,17V19C16.87,19 20,15.87 20,12C20,9.9 19.05,8.05 17.66,6.34M6.34,17.66L7.76,16.24C6.7,15.18 6,13.68 6,12C6,9.24 8.24,7 11,7V5C7.13,5 4,8.13 4,12C4,14.1 4.95,15.95 6.34,17.66Z" /></svg>
+                <svg viewBox="0 0 24 24"><path d="M13,2V8H11V2H13M12,10A2,2 0 0,1 14,12C14,13.11 13.11,14 12,14C10.89,14 10,13.11 10,12A2,2 0 0,1 12,10M17.66,6.34L16.24,7.76C17.3,8.82 18,10.32 18,12C18,14.76 15.76,17 13,17V19C16.87,19 20,15.87 20,12C20,9.9 19.05,8.05 17.66,6.34M6.34,17.66L7.76,16.24C6.7,15.18 6,13.68 6,12C6,9.24 8.24,7 11,7V5C7.13,5 4,8.13 4,12C4,14.1 4.95,15.95 6.34,17.66Z" /></svg>
             </div>
-            <h2>Loading your dashboard...</h2>
-            <p>Securely syncing profile & config</p>
-            <div class="progress-bar"><div class="progress-bar-inner"></div></div>
-            <p class="wait-text">Please wait a moment</p>
+            <h2>Loading your dashboard...</h2><p>Securely syncing profile & config</p><div class="progress-bar"><div class="progress-bar-inner"></div></div><p class="wait-text">Please wait a moment</p>
         </div>
     </div>
     
     <div id="app-root" style="display: none;">
         <svg style="position: absolute; width: 0; height: 0; overflow: hidden;"><defs>
-            <!-- Icons -->
             <symbol id="icon-video-camera" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></symbol>
             <symbol id="icon-telegram" viewBox="0 0 24 24"><path d="m9.417 15.181-.397 5.584c.568 0 .814-.244 1.109-.537l2.663-2.545 5.518 4.041c1.012.564 1.725.267 1.998-.931L22.0 .931c.309-1.25-.5-1.841-1.559-1.434L.182 6.582c-1.274.482-1.241 1.169-.23 1.555l5.88 1.813L17.585 4.8c.702-.454 1.323-.212.799.278L8.38 13.331l.055.055Z"/></symbol>
             <symbol id="icon-youtube" viewBox="0 0 24 24"><path d="M10,16.5V7.5L16,12M20,4.4C19.4,4.2 15.7,4 12,4C8.3,4 4.6,4.2 4,4.4C3.4,4.6 3,5.4 3,6.2V17.8C3,18.6 3.4,19.4 4,19.6C4.6,19.8 8.3,20 12,20C15.7,20 19.4,19.8 20,19.6C20.6,19.4 21,18.6 21,17.8V6.2C21,5.4 20.6,4.6 20,4.4Z"/></symbol>
@@ -148,8 +152,8 @@
                 button.addEventListener('click', (e) => {
                     e.preventDefault();
                     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-                    renderPage(button.dataset.page);
+                    e.currentTarget.classList.add('active');
+                    renderPage(e.currentTarget.dataset.page);
                 });
             });
             document.getElementById('main-content').addEventListener('click', handleMainContentClick);
@@ -170,14 +174,18 @@
                 userData = snapshot.val() || { balance: 0, referrals: 0, adsWatched: {}, claimedTasks: {} };
                 updateHeader();
                 if (isFirstLoad) {
-                    renderPage('home');
+                    const currentPage = document.querySelector('.nav-btn.active')?.dataset.page || 'home';
+                    renderPage(currentPage);
                     hideLoadingScreen();
                     isFirstLoad = false;
+                } else {
+                    const currentPage = document.querySelector('.nav-btn.active')?.dataset.page || 'home';
+                    renderPage(currentPage);
                 }
             });
             userRef.once('value').then(snapshot => {
                 if (!snapshot.exists()) {
-                    userRef.set({ balance: 0, referrals: 0, adsWatched: {}, first_name: currentUser.first_name || '' }).then(() => handleReferral());
+                    userRef.set({ balance: 0, referrals: 0, adsWatched: {}, claimedTasks: {}, first_name: currentUser.first_name || '' }).then(() => handleReferral());
                 } else {
                     handleReferral();
                 }
@@ -195,7 +203,7 @@
             }, 500);
         }
         
-        function handleReferral() { /* Unchanged */ }
+        function handleReferral() { /* Your referral logic */ }
         function updateHeader() { document.getElementById('balance-display').textContent = `ব্যালেন্স: ${userData.balance || 0} টাকা 💰`; }
         
         function renderPage(pageName) {
@@ -209,8 +217,8 @@
                 const adsWatchedToday = (userData.adsWatched && userData.adsWatched[today]) || 0;
                 content = `<h3>Dashboard</h3>
                     <div class="dashboard-stats">
-                        <div class="stat-card"><p>Daily Ads Watched</p><span class="stat-value">${adsWatchedToday} / ${adTaskConfig.dailyLimit}</span></div>
-                        <div class="stat-card"><p>Total Referrals</p><span class="stat-value">${userData.referrals || 0}</span></div>
+                        <div class="stat-card"><p>Daily Ads Watched</p><span style="font-size: 1.5em; font-weight: 600;">${adsWatchedToday} / ${adTaskConfig.dailyLimit}</span></div>
+                        <div class="stat-card"><p>Total Referrals</p><span style="font-size: 1.5em; font-weight: 600;">${userData.referrals || 0}</span></div>
                     </div>`;
             } else if (pageName === 'support' && appConfig.supportPage) {
                 const sp = appConfig.supportPage;
@@ -218,49 +226,47 @@
                     <div class="card">
                         <div class="icon-wrapper support"><svg><use href="#icon-play-circle"></use></svg></div>
                         <h4>${sp.title}</h4><p>${sp.description}</p>
-                        <button class="btn btn-primary" style="margin-top: 20px;" data-action="open-url" data-url="${sp.videoUrl || '#'}">${sp.buttonText}</button>
+                        <button class="btn" style="margin-top: 20px;" data-action="open-url" data-url="${sp.videoUrl || '#'}">${sp.buttonText}</button>
                         <p class="task-info">${sp.notice}</p>
                     </div>`;
             } else if (pageName === 'tasks') {
                 let tasksHtml = '<h3>Complete Tasks</h3>';
                 if (appConfig.tasks && appConfig.tasks.length > 0) {
-                    appConfig.tasks.forEach(task => {
-                        if (task.enabled) {
-                            const claimed = userData.claimedTasks || {}; const isClaimed = claimed[task.type];
-                            let buttonsHtml = '';
-                            if (task.type === 'ads') {
-                                const button = task.buttons[0];
-                                buttonsHtml = `<button class="btn btn-primary" style="margin-top: 20px;" data-action="handleAd" data-reward="${task.reward || 0}">${button.text}</button>`;
-                            } else {
-                                buttonsHtml += '<div class="button-group">';
-                                task.buttons.forEach(button => {
-                                    let btnText = button.text;
-                                    if (button.action === 'claim-task' && isClaimed) btnText = 'Claimed';
-                                    buttonsHtml += `<button class="btn btn-primary" data-action="${button.action}" data-url="${button.url || ''}" data-task-id="${task.type}" data-reward="${task.reward || 0}" ${isClaimed ? 'disabled' : ''}>${btnText}</button>`;
-                                });
-                                buttonsHtml += '</div>';
-                            }
-                            tasksHtml += `<div class="card">
+                    tasksHtml += appConfig.tasks.filter(task => task.enabled).map(task => {
+                        const isClaimed = userData.claimedTasks ? userData.claimedTasks[task.type] : false;
+                        let buttonsHtml = '';
+                        if (task.type === 'ads') {
+                            buttonsHtml = `<button class="btn" style="margin-top: 20px;" data-action="handleAd" data-reward="${task.reward || 0}">${task.buttons[0].text}</button>`;
+                        } else {
+                            buttonsHtml = `<div class="button-group">
+                                ${task.buttons.map(button => {
+                                    const btnText = (button.action === 'claim-task' && isClaimed) ? 'Claimed' : button.text;
+                                    return `<button class="btn" data-action="${button.action}" data-url="${button.url || ''}" data-task-id="${task.type}" data-reward="${task.reward || 0}" ${isClaimed ? 'disabled' : ''}>${btnText}</button>`;
+                                }).join('')}
+                            </div>`;
+                        }
+                        return `<div class="card">
                                 <div class="icon-wrapper ${task.icon}"><svg><use href="#icon-${task.icon}"></use></svg></div>
                                 <h4>${task.title}</h4><p>${task.description}</p>${buttonsHtml}
                                 <p class="task-info">${task.notice}</p>
                             </div>`;
-                        }
-                    });
+                    }).join('');
                 }
                 content = tasksHtml;
             } 
             else if (pageName === 'withdraw' && appConfig.withdrawPage) {
                 const wp = appConfig.withdrawPage;
                 const methods = (wp.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
-                content = `<h3>Withdraw (টাকা)</h3><div class="card">
-                    <p style="margin-bottom: 20px;">${wp.noticeText.replace('{minAmount}', wp.minAmount).replace('{minReferrals}', wp.minReferrals)}</p>
-                    <form class="withdraw-form" onsubmit="return false;">
-                        <div class="form-group"><label>Method:</label><select id="withdraw-method">${methods}</select></div>
-                        <div class="form-group"><label>Account Number:</label><input id="withdraw-account" type="text" placeholder="01XXXXXXXXX"></div>
-                        <div class="form-group"><label>Amount (টাকা):</label><input id="withdraw-amount" type="number" placeholder="${wp.minAmount}"></div>
-                        <button type="submit" class="btn btn-primary" data-action="submit-withdraw">Submit Request</button>
-                    </form></div>`;
+                content = `<h3>Withdraw (টাকা)</h3>
+                    <div class="withdraw-page-container">
+                         <p class="notice">${wp.noticeText.replace('{minAmount}', wp.minAmount).replace('{minReferrals}', wp.minReferrals)}</p>
+                        <form class="withdraw-form" onsubmit="return false;">
+                            <div class="form-group"><label>Method:</label><select id="withdraw-method">${methods}</select></div>
+                            <div class="form-group"><label>Account Number:</label><input id="withdraw-account" type="text" placeholder="01XXXXXXXXX"></div>
+                            <div class="form-group"><label>Amount (টাকা):</label><input id="withdraw-amount" type="number" placeholder="${wp.minAmount}"></div>
+                            <button type="submit" class="btn" data-action="submit-withdraw">Submit Request</button>
+                        </form>
+                    </div>`;
             } else {
                  content = `<div class="card"><p>Page not found.</p></div>`;
             }
@@ -282,15 +288,15 @@
             else if (action === 'open-url') window.Telegram.WebApp.openLink(button.dataset.url);
             else if (action === 'claim-task') handleClaimTask(button.dataset.taskId, parseFloat(button.dataset.reward), button);
         }
+        
         function handleClaimTask(taskId, reward, claimButton) { /* Unchanged */ }
         
         function handleWithdrawRequest() {
             const wp = appConfig.withdrawPage;
             const userReferrals = userData.referrals || 0;
             const userBalance = userData.balance || 0;
-
             if (userReferrals < wp.minReferrals || userBalance < wp.minAmount) {
-                window.Telegram.WebApp.showAlert(`শর্ত পূরণ হয়নি।\n\nউইথড্র করার জন্য আপনার ন্যূনতম ${wp.minReferrals}টি রেফারেল এবং ব্যালেন্সে ${wp.minAmount} টাকা থাকতে হবে।\n\nআপনার বর্তমান রেফারেল: ${userReferrals}টি\nবর্তমান ব্যালেন্স: ${userBalance} টাকা।`);
+                window.Telegram.WebApp.showAlert(`শর্ত পূরণ হয়নি।\n\nন্যূনতম ${wp.minReferrals}টি রেফারেল এবং ${wp.minAmount} টাকা প্রয়োজন।`);
                 return;
             }
             const amount = document.getElementById('withdraw-amount').value;
@@ -309,17 +315,12 @@
             let adShownSuccessfully = false;
             try {
                 const monetagShowFunction = window['show_' + monetagZoneId];
-                if (typeof monetagShowFunction === 'function') {
-                    await monetagShowFunction();
-                    adShownSuccessfully = true;
-                }
+                if (typeof monetagShowFunction === 'function') { await monetagShowFunction(); adShownSuccessfully = true; }
             } catch (e) { console.warn("Monetag ad failed:", e); }
-            
             try {
                 if (typeof window.showGiga === 'function') {
                     if (window.initGiga) window.initGiga(gigapubId);
-                    await window.showGiga();
-                    adShownSuccessfully = true;
+                    await window.showGiga(); adShownSuccessfully = true;
                 }
             } catch (e) { console.warn("Gigapub ad failed:", e); }
 
