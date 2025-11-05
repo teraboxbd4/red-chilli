@@ -90,7 +90,7 @@
             background: linear-gradient(135deg, #4292FF, #2EFFB2);
             display: flex; align-items: center; justify-content: center;
             margin: 0 auto 25px auto;
-            animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite; /* This makes the icon spin */
         }
         @keyframes spin {
             from { transform: rotate(0deg); }
@@ -106,12 +106,11 @@
         .progress-bar-indeterminate {
             position: absolute; top: 0; left: 0; height: 100%; width: 50%;
             background: #5D5FEF;
-            animation: indeterminate-progress 2s ease-in-out infinite;
+            animation: indeterminate-progress 2s ease-in-out infinite; /* Corrected Animation */
         }
         @keyframes indeterminate-progress {
-            0% { transform: translateX(-100%); }
-            50% { transform: translateX(200%); }
-            100% { transform: translateX(-100%); }
+            0% { transform: translateX(-100%); }   /* Starts from completely left */
+            100% { transform: translateX(200%); }  /* Moves to completely right */
         }
         .loading-box .wait-text { font-size: 0.85em; margin-top: 20px; color: #8a8a9e; }
         
