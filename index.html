@@ -12,124 +12,75 @@
     <style>
         :root {
             --primary-blue: #0d6efd;
-            --primary-green: #198754;
             --background-grey: #f0f2f5;
             --card-background: #ffffff;
             --text-dark: #212529;
             --text-light: #6c757d;
-            --border-color: #e9ecef;
         }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: var(--background-grey); color: var(--text-dark); }
-        .app-container { max-width: 420px; margin: 0 auto; background-color: var(--background-grey); min-height: 100vh; display: flex; flex-direction: column; }
-        
-        .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(30, 30, 30, 0.9); display: flex; justify-content: center; align-items: center; z-index: 10000; transition: opacity 0.5s ease; }
-        .loading-screen.fade-out { opacity: 0; }
-        .loading-card { background-color: #212529; color: white; padding: 30px 25px; border-radius: 18px; text-align: center; width: 80%; max-width: 280px; }
-        .loading-icon { width: 60px; height: 60px; margin: 0 auto 20px auto; border-radius: 50%; background: linear-gradient(45deg, #00C6FF, #0072FF); display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4); }
-        .loading-icon svg { width: 28px; height: 28px; fill: white; }
-        .loading-card h2 { margin: 0 0 8px 0; font-size: 1.1em; font-weight: 600; }
-        .loading-card p { margin: 0 0 20px 0; font-size: 0.85em; color: #adb5bd; }
-        .loading-card .wait-text { font-size: 0.8em; color: #6c757d; margin-top: -10px; }
-        .progress-bar { height: 4px; background-color: #495057; border-radius: 2px; overflow: hidden; }
-        .progress-bar-inner { width: 100%; height: 100%; background-color: var(--primary-blue); animation: indeterminate-animation 1.5s infinite linear; }
-        @keyframes indeterminate-animation { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-        
-        .welcome-notice-overlay { display: none; /* Other styles unchanged */ }
-        
-        main { flex-grow: 1; padding: 16px 4px; overflow-y: auto; }
+        .app-container { max-width: 420px; margin: 0 auto; background-color: var(--card-background); min-height: 100vh; display: flex; flex-direction: column; }
+        main { flex-grow: 1; padding: 16px 4px; overflow-y: auto; background-color: var(--background-grey); }
         h3 { font-size: 1.4em; font-weight: 600; margin: 0 4px 16px 4px; text-align: left; }
-        header { background-color: var(--background-grey); padding: 10px 15px; border-bottom: none; }
+        header { background-color: var(--card-background); padding: 10px 15px; border-bottom: 1px solid #f1f1f1; }
         .header-content { display: flex; align-items: center; justify-content: space-between; }
         .header-left { display: flex; align-items: center; gap: 12px; }
         .user-photo img { border-radius: 50%; width: 50px; height: 50px; }
         .user-details { text-align: left; }
-        .user-details h2 { display: flex; align-items: center; gap: 6px; margin: 0 0 4px 0; font-size: 1.2em; font-weight: 600; }
-        .user-details #balance-display { margin: 0; color: var(--text-light); font-weight: 500; font-size: 0.9em; }
-        .verified-badge { background-color: var(--primary-blue); color: white; width: 16px; height: 16px; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; font-size: 10px; font-weight: bold; }
-
+        .user-details h2 { margin: 0 0 4px 0; font-size: 1.2em; font-weight: 600; }
+        .user-details p { margin: 0; color: var(--text-light); font-weight: 500; font-size: 0.9em; }
         .page { display: none; animation: fadeIn 0.3s; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .card { background-color: var(--card-background); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--border-color); margin: 0 4px 16px 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .card { background-color: var(--card-background); padding: 20px; border-radius: 12px; text-align: center; margin: 0 4px 16px 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
         .card h4 { margin: 15px 0 10px 0; font-size: 1.15em; font-weight: 600; }
-        .card p { color: var(--text-light); line-height: 1.6; margin: 0 0 14px 0; font-size: 0.95em; }
+        .card p { color: var(--text-light); line-height: 1.6; margin: 0; font-size: 0.95em; }
         .card .task-info { font-size: 0.8em; color: var(--text-light); margin-top: 12px; }
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 8px; background-color: var(--primary-blue); color: white; }
+        .dashboard-stats { display: flex; gap: 8px; margin: 0 4px 16px 4px; }
+        .stat-card { background-color: var(--card-background); padding: 16px; border-radius: 12px; text-align: center; flex: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .refer-card .referral-link input { width: 100%; padding: 10px 12px; border: 1px dashed var(--primary-blue); border-radius: 8px; text-align: center; margin: 16px 0; background-color: #f8f9fa; font-size: 0.9em; box-sizing: border-box; }
         .button-group { display: flex; gap: 10px; margin-top: 20px; }
-        .button-group .btn { flex: 1; }
-
-        .icon-wrapper { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
-        .icon-wrapper.support { background-color: #0d6efd; }
-        .icon-wrapper.video-camera { background-color: #0d6efd; }
-        .icon-wrapper.telegram { background-color: #34B7F1; }
-        .icon-wrapper.youtube { background-color: #FF3B30; }
-        .icon-wrapper.facebook { background-color: #007AFF; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 600; color: white; background-color: var(--primary-blue); }
+        .icon-wrapper { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; background-color: var(--primary-blue); }
         .icon-wrapper svg { width: 28px; height: 28px; fill: white; }
-
         nav { display: flex; justify-content: space-around; padding: 8px 4px; border-top: 1px solid #f1f1f1; background-color: var(--card-background); position: sticky; bottom: 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
         .nav-btn { background: none; border: none; font-size: 0.8em; color: var(--text-light); cursor: pointer; padding: 4px 12px; border-radius: 12px; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-btn.active { background-color: #e7f1ff; color: var(--primary-blue); }
-        .nav-btn .nav-icon { width: 22px; height: 22px; fill: currentColor; }
-        
-        .withdraw-page-container { padding: 0 4px; }
-        .withdraw-page-container .notice { text-align: left; margin-bottom: 20px; color: var(--text-dark); }
+        .nav-btn .nav-icon { width: 22px; height: 22px; }
         .withdraw-form .form-group { text-align: left; margin-bottom: 16px; }
-        .withdraw-form label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9em; color: var(--text-dark); }
-        .withdraw-form input, .withdraw-form select { 
-            width: 100%; padding: 14px; border: 1px solid var(--border-color); 
-            border-radius: 8px; box-sizing: border-box; background-color: var(--card-background);
-            font-size: 1em;
-            /* --- UPDATED STYLE TO HIDE ARROW --- */
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-        }
-        .withdraw-form button { margin-top: 10px; }
+        .withdraw-form label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9em;}
+        .withdraw-form input, .withdraw-form select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; background-color: #f8f9fa; }
     </style>
 </head>
 <body>
-    <div id="loading-screen" class="loading-screen">
-        <div class="loading-card">
-            <div class="loading-icon">
-                <svg viewBox="0 0 24 24"><path d="M13,2V8H11V2H13M12,10A2,2 0 0,1 14,12C14,13.11 13.11,14 12,14C10.89,14 10,13.11 10,12A2,2 0 0,1 12,10M17.66,6.34L16.24,7.76C17.3,8.82 18,10.32 18,12C18,14.76 15.76,17 13,17V19C16.87,19 20,15.87 20,12C20,9.9 19.05,8.05 17.66,6.34M6.34,17.66L7.76,16.24C6.7,15.18 6,13.68 6,12C6,9.24 8.24,7 11,7V5C7.13,5 4,8.13 4,12C4,14.1 4.95,15.95 6.34,17.66Z" /></svg>
-            </div>
-            <h2>Loading your dashboard...</h2>
-            <p>Securely syncing profile & config</p>
-            <div class="progress-bar"><div class="progress-bar-inner"></div></div>
-            <p class="wait-text">Please wait a moment</p>
-        </div>
-    </div>
-
-    <!-- Welcome Notice (structure unchanged) -->
-    
-    <div id="app-root" style="display: none;">
+    <div id="app-root">
         <svg style="position: absolute; width: 0; height: 0; overflow: hidden;"><defs>
-            <!-- All icons are kept the same as previous version -->
             <symbol id="icon-video-camera" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></symbol>
             <symbol id="icon-telegram" viewBox="0 0 24 24"><path d="m9.417 15.181-.397 5.584c.568 0 .814-.244 1.109-.537l2.663-2.545 5.518 4.041c1.012.564 1.725.267 1.998-.931L22.0 .931c.309-1.25-.5-1.841-1.559-1.434L.182 6.582c-1.274.482-1.241 1.169-.23 1.555l5.88 1.813L17.585 4.8c.702-.454 1.323-.212.799.278L8.38 13.331l.055.055Z"/></symbol>
             <symbol id="icon-youtube" viewBox="0 0 24 24"><path d="M10,16.5V7.5L16,12M20,4.4C19.4,4.2 15.7,4 12,4C8.3,4 4.6,4.2 4,4.4C3.4,4.6 3,5.4 3,6.2V17.8C3,18.6 3.4,19.4 4,19.6C4.6,19.8 8.3,20 12,20C15.7,20 19.4,19.8 20,19.6C20.6,19.4 21,18.6 21,17.8V6.2C21,5.4 20.6,4.6 20,4.4Z"/></symbol>
             <symbol id="icon-facebook" viewBox="0 0 24 24"><path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3V22h4v-8.5z"/></symbol>
-            <symbol id="icon-play-circle" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></symbol>
             <symbol id="icon-home" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></symbol>
             <symbol id="icon-support" viewBox="0 0 24 24"><path d="M12 1a9 9 0 0 0-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2a7 7 0 0 1 14 0v2h-4v8h4c1.66 0 3-1.34 3-3v-7a9 9 0 0 0-9-9z"/></symbol>
             <symbol id="icon-tasks" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></symbol>
             <symbol id="icon-withdraw" viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></symbol>
         </defs></svg>
+        
         <div class="app-container">
             <header>
                 <div class="header-content">
                     <div class="header-left">
-                        <div class="user-photo"><img id="user-photo" src="" alt="User"></div>
+                        <div class="user-photo"><img id="user-photo" src=""></div>
                         <div class="user-details">
-                            <h2 id="user-name-container"><span id="user-name"></span><span class="verified-badge">✔</span></h2>
-                            <p id="balance-display">ব্যালেন্স: 0 টাকা 💰</p>
+                            <h2 id="user-name"></h2>
+                            <p id="balance-display"></p>
                         </div>
                     </div>
                 </div>
             </header>
+            
             <main id="main-content">
-                <!-- Content is rendered here by JavaScript -->
+                <!-- Pages will be rendered here -->
             </main>
+            
             <nav>
                 <button class="nav-btn active" data-page="home"><svg class="nav-icon"><use href="#icon-home"></use></svg>Home</button>
                 <button class="nav-btn" data-page="support"><svg class="nav-icon"><use href="#icon-support"></use></svg>Support</button>
@@ -142,179 +93,128 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
-        // --- All JavaScript logic is exactly the same as the previous complete version ---
-        
-        const firebaseConfig = {
-            apiKey: "AIzaSyAIXpawpQH3yRozPbTzP7Tzm6IFsNVpAzQ",
-            authDomain: "fake-earn-5d8bd.firebaseapp.com",
-            databaseURL: "https://fake-earn-5d8bd-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "fake-earn-5d8bd"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        let currentUser; let appConfig; let userData = {}; let isFirstLoad = true;
-
         document.addEventListener('DOMContentLoaded', function () {
+            const firebaseConfig = {
+                apiKey: "AIzaSyAIXpawpQH3yRozPbTzP7Tzm6IFsNVpAzQ",
+                authDomain: "fake-earn-5d8bd.firebaseapp.com",
+                databaseURL: "https://fake-earn-5d8bd-default-rtdb.asia-southeast1.firebasedatabase.app",
+                projectId: "fake-earn-5d8bd",
+            };
+            firebase.initializeApp(firebaseConfig);
+            const database = firebase.database();
+            let currentUser;
+            let appConfig;
+            let userData = {};
+
             const tg = window.Telegram.WebApp;
-            if (tg.platform === 'unknown') {
-                document.getElementById('loading-screen').innerHTML = `... Access Denied ...`;
-                return;
-            }
-            tg.ready(); tg.expand(); tg.MainButton.hide();
+            tg.ready();
+            
             currentUser = tg.initDataUnsafe.user;
-            if (!currentUser) {
-                document.getElementById('loading-screen').innerHTML = `... User not found ...`;
-                return;
-            }
+            
             loadConfigAndUserData();
+
             document.querySelectorAll('.nav-btn').forEach(button => {
                 button.addEventListener('click', (e) => {
                     e.preventDefault();
+                    const pageName = e.currentTarget.dataset.page;
                     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-                    renderPage(button.dataset.page);
+                    e.currentTarget.classList.add('active');
+                    renderPage(pageName);
                 });
             });
-            document.getElementById('main-content').addEventListener('click', handleMainContentClick);
-        });
-
-        function loadConfigAndUserData() {
-            database.ref('config').once('value').then(snapshot => {
-                if (snapshot.exists()) {
-                    appConfig = snapshot.val();
-                    initializeUser();
-                } else {
-                    document.getElementById('loading-screen').innerHTML = `... Config not found ...`;
-                }
-            });
-        }
-        
-        function initializeUser() {
-            const userRef = database.ref(`users/${currentUser.id}`);
-            userRef.on('value', (snapshot) => {
-                userData = snapshot.val() || { balance: 0, referrals: 0, adsWatched: {}, claimedTasks: {} };
-                updateHeader();
-                if (isFirstLoad) {
-                    renderPage('home');
-                    hideLoadingScreen();
-                    isFirstLoad = false;
-                }
-            });
-            userRef.once('value').then(snapshot => {
-                if (!snapshot.exists()) {
-                    userRef.set({ balance: 0, referrals: 0, adsWatched: {}, claimedTasks: {}, first_name: currentUser.first_name || '' }).then(() => handleReferral());
-                } else {
-                    handleReferral();
-                }
-            });
-            document.getElementById('user-name').textContent = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'User';
-            document.getElementById('user-photo').src = currentUser.photo_url || `https://via.placeholder.com/50/eeeeee/cccccc?text=${(currentUser.first_name || 'U').charAt(0)}`;
-        }
-
-        function hideLoadingScreen() {
-            const loadingScreen = document.getElementById('loading-screen');
-            loadingScreen.classList.add('fade-out');
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-                document.getElementById('app-root').style.display = 'flex';
-            }, 500);
-        }
-        
-        function handleReferral() { /* Unchanged */ }
-        function updateHeader() { document.getElementById('balance-display').textContent = `ব্যালেন্স: ${userData.balance || 0} টাকা 💰`; }
-        
-        function renderPage(pageName) {
-            const mainContent = document.getElementById('main-content');
-            if (!appConfig) { mainContent.innerHTML = `<div class="card"><p>Loading...</p></div>`; return; }
-            let content = '';
             
-            if (pageName === 'home') {
-                const adTaskConfig = (appConfig.tasks || []).find(t => t.type === 'ads' && t.enabled) || { dailyLimit: 10 };
-                const today = new Date().toISOString().slice(0, 10);
-                const adsWatchedToday = (userData.adsWatched && userData.adsWatched[today]) || 0;
-                content = `<h3>Dashboard</h3>
-                    <div class="dashboard-stats">
-                        <div class="stat-card"><p>Daily Ads Watched</p><span class="stat-value">${adsWatchedToday} / ${adTaskConfig.dailyLimit}</span></div>
-                        <div class="stat-card"><p>Total Referrals</p><span class="stat-value">${userData.referrals || 0}</span></div>
-                    </div>`;
-            } else if (pageName === 'support' && appConfig.supportPage) {
-                const sp = appConfig.supportPage;
-                content = `<h3>Support</h3>
-                    <div class="card">
-                        <div class="icon-wrapper support"><svg><use href="#icon-play-circle"></use></svg></div>
-                        <h4>${sp.title}</h4><p>${sp.description}</p>
-                        <button class="btn btn-primary" style="margin-top: 20px;" data-action="open-url" data-url="${sp.videoUrl || '#'}">${sp.buttonText}</button>
-                        <p class="task-info">${sp.notice}</p>
-                    </div>`;
-            } else if (pageName === 'tasks') {
-                let tasksHtml = '<h3>Complete Tasks</h3>';
-                if (appConfig.tasks && appConfig.tasks.length > 0) {
-                    appConfig.tasks.forEach(task => {
-                        if (task.enabled) {
-                            const claimed = userData.claimedTasks || {}; const isClaimed = claimed[task.type];
-                            let buttonsHtml = '';
-                            if (task.type === 'ads') {
-                                const button = task.buttons[0];
-                                buttonsHtml = `<button class="btn btn-primary" style="margin-top: 20px;" data-action="${button.action}" data-reward="${task.reward || 0}">${button.text}</button>`;
-                            } else {
-                                buttonsHtml += '<div class="button-group">';
-                                task.buttons.forEach(button => {
-                                    let btnText = button.text;
-                                    if (button.action === 'claim-task' && isClaimed) btnText = 'Claimed';
-                                    buttonsHtml += `<button class="btn btn-primary" data-action="${button.action}" data-url="${button.url || ''}" data-task-id="${task.type}" data-reward="${task.reward || 0}" ${isClaimed ? 'disabled' : ''}>${btnText}</button>`;
-                                });
-                                buttonsHtml += '</div>';
-                            }
-                            tasksHtml += `<div class="card">
-                                <div class="icon-wrapper ${task.icon}"><svg><use href="#icon-${task.icon}"></use></svg></div>
-                                <h4>${task.title}</h4><p>${task.description}</p>${buttonsHtml}
-                                <p class="task-info">${task.notice}</p>
-                            </div>`;
-                        }
-                    });
-                }
-                content = tasksHtml;
-            } 
-            else if (pageName === 'withdraw' && appConfig.withdrawPage) {
-                const wp = appConfig.withdrawPage;
-                const methods = (wp.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
-                content = `<h3>Withdraw (টাকা)</h3>
-                    <div class="withdraw-page-container">
-                        <p class="notice">${wp.noticeText || ''}</p>
-                        <form class="withdraw-form" onsubmit="return false;">
-                            <div class="form-group"><label>Method:</label><select id="withdraw-method">${methods}</select></div>
-                            <div class="form-group"><label>Account Number:</label><input id="withdraw-account" type="text" placeholder="01XXXXXXXXX"></div>
-                            <div class="form-group"><label>Amount (টাকা):</label><input id="withdraw-amount" type="number" placeholder="${wp.minAmount || 0}"></div>
-                            <button type="submit" class="btn btn-primary" data-action="submit-withdraw">Submit Request</button>
-                        </form>
-                    </div>`;
-            } else {
-                 content = `<div class="card"><p>Page not found.</p></div>`;
-            }
-            mainContent.innerHTML = `<div class="page active">${content}</div>`;
-        }
+            document.getElementById('main-content').addEventListener('click', handleMainContentClick);
 
-        function handleMainContentClick(event) {
-            const button = event.target.closest('button[data-action]');
-            if (!button) return;
-            event.preventDefault();
-            const action = button.dataset.action;
-            if (action === 'submit-withdraw') handleWithdrawRequest();
-            else if (action === 'handleAd') handleAdTask(parseFloat(button.dataset.reward) || 0);
-            else if (action === 'open-url') window.Telegram.WebApp.openLink(button.dataset.url);
-            else if (action === 'claim-task') handleClaimTask(button.dataset.taskId, parseFloat(button.dataset.reward), button);
-        }
-        function handleClaimTask(taskId, reward, claimButton) { /* Unchanged */ }
-        function handleWithdrawRequest() {
-            const wp = appConfig.withdrawPage;
-            const userBalance = userData.balance || 0;
-            const amount = document.getElementById('withdraw-amount').value;
-            if (Number(amount) < wp.minAmount) { window.Telegram.WebApp.showAlert(`ন্যূনতম উইথড্র পরিমাণ ${wp.minAmount} টাকা।`); return; }
-            if (Number(amount) > userBalance) { window.Telegram.WebApp.showAlert(`আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই।`); return; }
-            window.Telegram.WebApp.showAlert('আপনার উইথড্র অনুরোধ সফলভাবে জমা দেওয়া হয়েছে।');
-        }
-        async function handleAdTask(rewardAmount) { /* Unchanged */ }
-        function rewardUser(message, rewardAmount) { /* Unchanged */ }
+            function loadConfigAndUserData() {
+                database.ref('config').once('value').then(snapshot => {
+                    if (snapshot.exists()) {
+                        appConfig = snapshot.val();
+                        initializeUser();
+                    }
+                });
+            }
+            
+            function initializeUser() {
+                const userRef = database.ref(`users/${currentUser.id}`);
+                userRef.on('value', (snapshot) => {
+                    userData = snapshot.val() || {};
+                    updateHeader();
+                    const currentPage = document.querySelector('.nav-btn.active')?.dataset.page || 'home';
+                    renderPage(currentPage);
+                });
+                
+                userRef.once('value').then(snapshot => {
+                    if (!snapshot.exists()) {
+                        userRef.set({ first_name: currentUser.first_name || '', lastSeen: firebase.database.ServerValue.TIMESTAMP });
+                    } else {
+                        userRef.child('lastSeen').set(firebase.database.ServerValue.TIMESTAMP);
+                    }
+                });
+
+                document.getElementById('user-name').textContent = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim();
+                document.getElementById('user-photo').src = currentUser.photo_url || '';
+            }
+            
+            function updateHeader() {
+                document.getElementById('balance-display').textContent = `ব্যালেন্স: ${userData.balance || 0} টাকা 💰`;
+            }
+            
+            function renderPage(pageName) {
+                const mainContent = document.getElementById('main-content');
+                let content = '';
+                
+                if (pageName === 'tasks') {
+                    const allTasks = [];
+                    if (appConfig.adsTask && appConfig.adsTask.enabled) allTasks.push(appConfig.adsTask);
+                    if (appConfig.socialTasks && Array.isArray(appConfig.socialTasks)) {
+                        allTasks.push(...appConfig.socialTasks.filter(task => task.enabled));
+                    }
+                    
+                    if (allTasks.length > 0) {
+                        const taskItems = allTasks.map(task => {
+                            const icon = task.icon;
+                            let buttonsHTML = (task.buttons || []).map(btn => {
+                                return `<button class="btn btn-primary" data-action="${btn.action}" data-reward="${task.reward || 0}" data-url="${btn.url || '#'}">${btn.text}</button>`;
+                            }).join('');
+                            
+                            return `<div class="card">
+                                <div class="icon-wrapper"><svg><use href="#icon-${icon}"></use></svg></div>
+                                <h4>${task.title}</h4>
+                                <p>${task.description}</p>
+                                <div class="button-group">${buttonsHTML}</div>
+                                <p class="task-info">${task.notice || ''}</p>
+                            </div>`;
+                        }).join('');
+                        content = `<div class="page active"><h3>Complete Tasks</h3>${taskItems}</div>`;
+                    } else {
+                        content = `<div class="page active"><div class="card"><p>No tasks available.</p></div></div>`;
+                    }
+                } else if (pageName === 'withdraw') {
+                    const wp = appConfig.withdrawPage;
+                    const methods = (wp.methods || []).map(m => `<option value="${m}">${m}</option>`).join('');
+                    content = `<div class="page active"><h3>Withdraw (টাকা)</h3><div class="card">
+                        <form class="withdraw-form" onsubmit="return false;">
+                            <div class="form-group"><label>Method:</label><select>${methods}</select></div>
+                            <div class="form-group"><label>Account Number:</label><input type="text" placeholder="01XXXXXXXXX"></div>
+                            <div class="form-group"><label>Amount (টাকা):</label><input type="number" placeholder="${wp.minAmount}"></div>
+                            <button type="submit" class="btn btn-primary" data-action="submit-withdraw">Submit Request</button>
+                        </form></div></div>`;
+                }
+                mainContent.innerHTML = content;
+            }
+
+            function handleMainContentClick(event) {
+                const button = event.target.closest('button[data-action]');
+                if (!button) return;
+                
+                const action = button.dataset.action;
+                if (action === 'handleAd') {
+                    // Ad handling logic
+                } else if (action === 'submit-withdraw') {
+                    // Withdraw logic
+                }
+            }
+        });
     </script>
 </body>
 </html>
