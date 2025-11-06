@@ -12,8 +12,9 @@
     
     <style>
         :root {
-            --primary-blue: #0d6efd;
-            --primary-green: #198754;
+            /* Updated colors to match the image */
+            --primary-blue: #007bff;
+            --primary-green: #34c759;
             --background-grey: #f0f2f5;
             --card-background: #ffffff;
             --text-dark: #212529;
@@ -41,13 +42,31 @@
         .stat-card { display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: var(--card-background); padding: 16px; border-radius: 12px; text-align: center; flex: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid var(--border-color); }
         .stat-card p { font-size: 0.85em; color: var(--text-light); margin-bottom: 8px; }
         .stat-card .stat-value { font-size: 1.5em; font-weight: 600; color: var(--primary-blue); }
-        .refer-card .referral-link input { width: 100%; padding: 10px 12px; border: 1px dashed var(--primary-blue); border-radius: 8px; text-align: center; margin: 16px 0; background-color: #f8f9fa; font-size: 0.9em; box-sizing: border-box; }
+        
+        /* --- Styles Updated to Match Image --- */
+        .refer-card .referral-link input {
+            width: 100%;
+            padding: 14px 12px;
+            border: 2px dashed var(--primary-blue);
+            border-radius: 14px;
+            text-align: center;
+            margin: 16px 0;
+            background-color: #f8f9fa;
+            font-size: 1em;
+            font-family: monospace;
+            box-sizing: border-box;
+            color: #333;
+        }
         .button-group { display: flex; gap: 10px; margin-top: 20px; }
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 14px; font-size: 1em; cursor: pointer; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 8px; transition: opacity 0.2s; }
+        .btn:active { opacity: 0.8; }
         .btn:disabled { background-color: #a0a0a0; cursor: not-allowed; }
         .button-group .btn { flex: 1; }
         .btn-primary { background-color: var(--primary-blue); color: white; }
         .btn-secondary { background-color: var(--primary-green); color: white; }
+        .btn .btn-icon { width: 20px; height: 20px; fill: white; }
+        /* --- End of Updated Styles --- */
+
         .icon-wrapper { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
         .icon-wrapper.video-camera { background-color: #0d6efd; }
         .icon-wrapper.telegram { background-color: #2AABEE; }
@@ -65,75 +84,11 @@
         .withdraw-form input, .withdraw-form select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; background-color: #f8f9fa; }
         .withdraw-form button { margin-top: 10px; }
 
-        /* --- Loading Screen Styles --- */
-        #loading-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #393943;
-            display: flex; align-items: center; justify-content: center;
-            z-index: 10000;
-            opacity: 1; visibility: visible;
-            transition: opacity 0.5s ease, visibility 0s linear 0.5s;
-        }
-        #loading-overlay.hidden {
-            opacity: 0; visibility: hidden;
-            transition: opacity 0.5s ease, visibility 0s linear 0.5s;
-        }
-        .loading-box {
-            background: #1e1e26;
-            padding: 35px 30px; border-radius: 24px; text-align: center;
-            width: 85%; max-width: 330px;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .loading-icon {
-            width: 70px; height: 70px; border-radius: 50%;
-            background: linear-gradient(135deg, #5158f6, #1de6a9); 
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 25px auto;
-            animation: spin 2s linear infinite;
-        }
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .loading-icon svg { width: 32px; height: 32px; fill: white; }
-        .loading-box h2 { font-size: 1.3em; margin: 0 0 10px 0; color: #ffffff; font-weight: 600; }
-        .loading-box .subtext { font-size: 0.9em; color: #a0a0b0; margin: 0 0 25px 0; }
-        .progress-bar-container {
-            width: 100%; background: #3a3a4a; border-radius: 5px; height: 5px;
-        }
-        .progress-bar {
-            height: 100%; width: 0%;
-            background: #5D5FEF;
-            border-radius: 5px;
-            animation: pulse-progress 2s ease-in-out infinite;
-        }
-        @keyframes pulse-progress {
-            0% { width: 0%; }
-            50% { width: 75%; }
-            100% { width: 0%; }
-        }
-        .loading-box .wait-text { font-size: 0.85em; margin-top: 20px; color: #8a8a9e; }
-        
-        #app-root { opacity: 0; visibility: hidden; transition: opacity 0.5s ease; }
-        #app-root.loaded { opacity: 1; visibility: visible; }
+        /* Loading Screen Styles */
+        #loading-overlay { display: none; } /* Hide loader by default */
     </style>
 </head>
 <body>
-    <div id="loading-overlay">
-        <div class="loading-box">
-            <div class="loading-icon">
-                <svg viewBox="0 0 24 24"><path d="M11 21h-1l1-7H7.5c-.58 0-.57-.32-.38-.66.19-.34.38-.68.52-1.02C8.98 9.99 10.34 8 13 8h1l-1 7h3.5c.49 0 .56.33.47.51l-1.03 2.05c-2.78 3.43-3.93 4.44-4.94 4.44Z"/></svg>
-            </div>
-            <h2>Loading your dashboard...</h2>
-            <p class="subtext">Securely syncing profile & config</p>
-            <div class="progress-bar-container">
-                <div class="progress-bar"></div>
-            </div>
-            <p class="wait-text">Please wait a moment</p>
-        </div>
-    </div>
-    
     <div id="ad-progress-container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 4px; background-color: #e0e0e0; z-index: 9999;">
         <div id="ad-progress-bar" style="width: 0%; height: 100%; background-color: var(--primary-blue); transition: width 0.5s linear;"></div>
     </div>
@@ -165,6 +120,7 @@
                 </div>
             </header>
             <main id="main-content">
+                 <!-- Content Rendered by JS -->
             </main>
             <nav>
                 <button class="nav-btn active" data-page="home"><svg class="nav-icon"><use href="#icon-home"></use></svg>Home</button>
@@ -195,13 +151,8 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             const tg = window.Telegram.WebApp;
-            const loadingOverlay = document.getElementById('loading-overlay');
-            const appRoot = document.getElementById('app-root');
-
             if (tg.platform === 'unknown') {
-                loadingOverlay.classList.add('hidden');
-                appRoot.innerHTML = `<div class="full-page-notice"><div class="card"><h4>⛔ Access Denied</h4><p>Please open this app inside Telegram.</p></div></div>`;
-                appRoot.classList.add('loaded');
+                document.body.innerHTML = `<div class="full-page-notice"><div class="card"><h4>⛔ Access Denied</h4><p>Please open this app inside Telegram.</p></div></div>`;
                 return;
             }
             tg.ready();
@@ -210,9 +161,7 @@
 
             currentUser = tg.initDataUnsafe.user;
             if (!currentUser) {
-                loadingOverlay.classList.add('hidden');
-                appRoot.innerHTML = `<div class="full-page-notice"><div class="card"><h4>User data not found. Please restart.</h4></div></div>`;
-                appRoot.classList.add('loaded');
+                document.body.innerHTML = `<div class="full-page-notice"><div class="card"><h4>User data not found. Please restart.</h4></div></div>`;
                 return;
             }
 
@@ -237,24 +186,11 @@
                     initializeUser();
                 } else {
                     document.getElementById('main-content').innerHTML = `<div class="card"><h4>App configuration not found.</h4></div>`;
-                    hideLoader();
                 }
-            }).catch(error => {
-                console.error("Config load error:", error);
-                hideLoader();
-            });
-        }
-        
-        function hideLoader() {
-            const loadingOverlay = document.getElementById('loading-overlay');
-            const appRoot = document.getElementById('app-root');
-            loadingOverlay.classList.add('hidden');
-            appRoot.classList.add('loaded');
+            }).catch(error => console.error("Config load error:", error));
         }
         
         function initializeUser() {
-            setTimeout(hideLoader, 2800); 
-            
             const userRef = database.ref(`users/${currentUser.id}`);
             userRef.on('value', (snapshot) => {
                 userData = snapshot.val() || { balance: 0, referrals: 0, adsWatched: {}, claimedTasks: {} };
@@ -315,6 +251,7 @@
                 const referralLink = `https://t.me/Red_Chiliii_bot/app?startapp=${currentUser.id}`;
                 const referralNotice = `আপনার বন্ধুদের রেফার করে আয় করুন। প্রতি সফল রেফারে পাবেন ${appConfig.referralBonus || 0} টাকা।`;
 
+                // --- HTML Updated to Match Image ---
                 content = `<div class="page active"><h3>Dashboard</h3>
                     <div class="dashboard-stats">
                         <div class="stat-card"><p>Daily Ads Watched</p><span class="stat-value">${adsWatchedToday} / ${adTaskConfig.dailyLimit}</span></div>
@@ -325,8 +262,11 @@
                         <p>${referralNotice}</p>
                         <div class="referral-link"><input id="referral-link-input" type="text" value="${referralLink}" readonly></div>
                         <div class="button-group">
-                            <button class="btn btn-primary" data-action="copy-link">Copy Link</button>
-                            <button class="btn btn-secondary" data-action="share-link">Share Now</button>
+                            <button class="btn btn-primary" data-action="copy-link">Copy Referral Link</button>
+                            <button class="btn btn-secondary" data-action="share-link">
+                                <svg class="btn-icon"><use href="#icon-share"></use></svg>
+                                Share Now
+                            </button>
                         </div>
                     </div></div>`;
             } else if (pageName === 'support' && appConfig.supportPage) {
@@ -343,7 +283,8 @@
                     let buttonsHtml = (task.buttons || []).map(button => {
                         let btnText = button.text;
                         if (button.action === 'claim-task' && isClaimed) btnText = 'Claimed';
-                        return `<button class="btn ${button.action === 'claim-task' ? 'btn-secondary' : 'btn-primary'}"
+                        const btnClass = button.action === 'claim-task' ? 'btn-secondary' : 'btn-primary';
+                        return `<button class="btn ${btnClass}"
                             data-action="${button.action}" data-url="${button.url || ''}"
                             data-task-id="${task.type}" data-reward="${task.reward || 0}" ${isClaimed ? 'disabled' : ''}>
                             ${btnText}
@@ -427,7 +368,6 @@
             window.Telegram.WebApp.showAlert('আপনার উইথড্র অনুরোধ সফলভাবে জমা দেওয়া হয়েছে।');
         }
         
-        // --- MODIFIED Ad Task Handler (Shows 2 Ads) ---
         async function handleAdTask(rewardAmount) {
             const today = new Date().toISOString().slice(0, 10);
             const adTaskConfig = (appConfig.tasks || []).find(t => t.type === 'ads' && t.enabled) || { dailyLimit: 10 };
@@ -439,51 +379,31 @@
             }
             
             updateAdProgressBar(1);
-            
-            let firstAdSuccess = false;
-            let secondAdSuccess = false;
-            const monetagZoneId = 10099787;
-            const gigapubId = 3877;
+            let firstAdSuccess = false, secondAdSuccess = false;
 
-            // --- Show First Ad (Monetag) ---
             try {
-                const monetagShowFunction = window['show_' + monetagZoneId];
+                const monetagShowFunction = window['show_10099787'];
                 if (typeof monetagShowFunction === 'function') {
-                    console.log("Showing first ad (Monetag)...");
-                    await monetagShowFunction();
-                    firstAdSuccess = true;
-                    window.Telegram.WebApp.showAlert("প্রথম বিজ্ঞাপন সম্পন্ন হয়েছে। দ্বিতীয় বিজ্ঞাপনের জন্য প্রস্তুত হন।");
-                } else {
-                     console.warn("Monetag function not found.");
+                    await monetagShowFunction(); firstAdSuccess = true;
                 }
-            } catch (monetagError) {
-                console.warn("Monetag ad failed:", monetagError);
-            }
-
+            } catch (e) { console.warn("Monetag ad failed:", e); }
+            
             updateAdProgressBar(50);
-
-            // --- Show Second Ad (Gigapub) ---
+            
             try {
                 if (typeof window.showGiga === 'function') {
-                    console.log("Showing second ad (Gigapub)...");
-                    if (window.initGiga) window.initGiga(gigapubId);
-                    await window.showGiga();
-                    secondAdSuccess = true;
-                } else {
-                    console.warn("Gigapub function not found.");
+                    if (window.initGiga) window.initGiga(3877);
+                    await window.showGiga(); secondAdSuccess = true;
                 }
-            } catch (gigapubError) {
-                console.warn("Gigapub ad failed:", gigapubError);
-            }
-            
+            } catch (e) { console.warn("Gigapub ad failed:", e); }
+
             updateAdProgressBar(100);
 
-            // --- Reward Logic ---
             if (firstAdSuccess || secondAdSuccess) {
                 rewardUser("বিজ্ঞাপন দেখা সফল হয়েছে।", rewardAmount);
                 database.ref(`users/${currentUser.id}/adsWatched/${today}`).transaction(currentVal => (currentVal || 0) + 1);
             } else {
-                window.Telegram.WebApp.showAlert("দুঃখিত, কোনো বিজ্ঞাপন দেখানো সম্ভব হচ্ছে না। অনুগ্রহ করে আবার চেষ্টা করুন।");
+                window.Telegram.WebApp.showAlert("দুঃখিত, কোনো বিজ্ঞাপন দেখানো সম্ভব হচ্ছে না।");
             }
             
             setTimeout(() => updateAdProgressBar(0), 500);
