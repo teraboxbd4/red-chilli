@@ -12,7 +12,6 @@
     
     <style>
         :root {
-            /* Updated colors to match the image */
             --primary-blue: #007bff;
             --primary-green: #34c759;
             --background-grey: #f0f2f5;
@@ -42,8 +41,6 @@
         .stat-card { display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: var(--card-background); padding: 16px; border-radius: 12px; text-align: center; flex: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid var(--border-color); }
         .stat-card p { font-size: 0.85em; color: var(--text-light); margin-bottom: 8px; }
         .stat-card .stat-value { font-size: 1.5em; font-weight: 600; color: var(--primary-blue); }
-        
-        /* --- Referral Section Styles Updated to Match Image --- */
         .refer-card .referral-link input {
             width: 100%; padding: 14px 12px;
             border: 2px dashed var(--primary-blue);
@@ -59,7 +56,6 @@
         .btn-primary { background-color: var(--primary-blue); color: white; }
         .btn-secondary { background-color: var(--primary-green); color: white; }
         .btn .btn-icon { width: 20px; height: 20px; fill: white; }
-
         .icon-wrapper { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
         .icon-wrapper.video-camera { background-color: #0d6efd; }
         .icon-wrapper.telegram { background-color: #2AABEE; }
@@ -77,30 +73,24 @@
         .withdraw-form input, .withdraw-form select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; background-color: #f8f9fa; }
         .withdraw-form button { margin-top: 10px; }
 
-        /* --- FINAL AND 100% CORRECTED Loading Screen Styles --- */
+        /* --- Loading Screen Styles --- */
         #loading-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #393943;
-            display: flex; align-items: center; justify-content: center;
-            z-index: 10000;
-            opacity: 1; visibility: visible;
+            background: #393943; display: flex; align-items: center; justify-content: center;
+            z-index: 10000; opacity: 1; visibility: visible;
             transition: opacity 0.5s ease, visibility 0s linear 0.5s;
         }
-        #loading-overlay.hidden {
-            opacity: 0; visibility: hidden;
-            transition: opacity 0.5s ease, visibility 0s linear 0.5s;
-        }
+        #loading-overlay.hidden { opacity: 0; visibility: hidden; transition: opacity 0.5s ease, visibility 0s linear 0.5s; }
         .loading-box {
             background: #1e1e26; padding: 35px 30px; border-radius: 24px; text-align: center;
-            width: 85%; max-width: 330px;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.4); border: 1px solid rgba(255, 255, 255, 0.05);
+            width: 85%; max-width: 330px; box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .loading-icon {
             width: 70px; height: 70px; border-radius: 50%;
             background: linear-gradient(135deg, #5158f6, #1de6a9); 
             display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 25px auto;
-            animation: spin 2s linear infinite;
+            margin: 0 auto 25px auto; animation: spin 2s linear infinite;
         }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .loading-icon svg { width: 32px; height: 32px; fill: white; }
@@ -108,13 +98,10 @@
         .loading-box .subtext { font-size: 0.9em; color: #a0a0b0; margin: 0 0 25px 0; }
         .progress-bar-container { width: 100%; background: #3a3a4a; border-radius: 5px; height: 5px; }
         .progress-bar {
-            height: 100%; width: 0%;
-            background: #5D5FEF; border-radius: 5px;
+            height: 100%; width: 0%; background: #5D5FEF; border-radius: 5px;
             animation: pulse-progress 2s ease-in-out infinite;
         }
-        @keyframes pulse-progress {
-            0% { width: 0%; } 50% { width: 75%; } 100% { width: 0%; }
-        }
+        @keyframes pulse-progress { 0% { width: 0%; } 50% { width: 75%; } 100% { width: 0%; } }
         .loading-box .wait-text { font-size: 0.85em; margin-top: 20px; color: #8a8a9e; }
         #app-root { opacity: 0; visibility: hidden; transition: opacity 0.5s ease; }
         #app-root.loaded { opacity: 1; visibility: visible; }
@@ -420,14 +407,22 @@
         function handleWithdrawRequest() {
             const wp = appConfig.withdrawPage;
             const userBalance = userData.balance || 0;
-            const amount = document.getElementById('withdraw-amount').value;
+            const amountInput = document.getElementById('withdraw-amount');
+            const amount = Number(amountInput.value);
             const account = document.getElementById('withdraw-account').value;
 
             if (!account || !amount) { window.Telegram.WebApp.showAlert("অনুগ্রহ করে অ্যাকাউন্ট নম্বর এবং টাকার পরিমাণ লিখুন।"); return; }
-            if (Number(amount) < wp.minAmount) { window.Telegram.WebApp.showAlert(`ন্যূনতম উইথড্র পরিমাণ ${wp.minAmount} টাকা।`); return; }
-            if (Number(amount) > userBalance) { window.Telegram.WebApp.showAlert(`আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই।`); return; }
+            if (amount < wp.minAmount) { window.Telegram.WebApp.showAlert(`ন্যূনতম উইথড্র পরিমাণ ${wp.minAmount} টাকা।`); return; }
+            if (amount > userBalance) { window.Telegram.WebApp.showAlert(`আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই।`); return; }
             
-            window.Telegram.WebApp.showAlert('আপনার উইথড্র অনুরোধ সফলভাবে জমা দেওয়া হয়েছে।');
+            // --- DEDUCT BALANCE FROM USER ACCOUNT ---
+            database.ref(`users/${currentUser.id}/balance`).transaction(currentBalance => {
+                return (currentBalance || 0) - amount;
+            });
+            
+            window.Telegram.WebApp.showAlert('আপনার উইথড্র অনুরোধ সফলভাবে জমা দেওয়া হয়েছে। আপনার ব্যালেন্স আপডেট করা হয়েছে।');
+            amountInput.value = ''; // Clear input after submission
+            document.getElementById('withdraw-account').value = '';
         }
         
         async function handleAdTask(rewardAmount) {
@@ -445,9 +440,7 @@
 
             try {
                 const monetagShowFunction = window['show_10099787'];
-                if (typeof monetagShowFunction === 'function') {
-                    await monetagShowFunction(); firstAdSuccess = true;
-                }
+                if (typeof monetagShowFunction === 'function') { await monetagShowFunction(); firstAdSuccess = true; }
             } catch (e) { console.warn("Monetag ad failed:", e); }
             
             updateAdProgressBar(50);
