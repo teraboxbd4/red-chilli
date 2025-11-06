@@ -72,7 +72,6 @@
         .withdraw-form label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9em;}
         .withdraw-form input, .withdraw-form select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; background-color: #f8f9fa; }
         .withdraw-form button { margin-top: 10px; }
-
         #loading-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #393943; display: flex; align-items: center; justify-content: center;
@@ -176,7 +175,7 @@
         const database = firebase.database();
         let currentUser;
         let appConfig;
-        let userData = { balance: 0, referrals: 0, adsWatched: {}, claimedTasks: {} };
+        let userData = {};
 
         document.addEventListener('DOMContentLoaded', function () {
             const tg = window.Telegram.WebApp;
@@ -237,45 +236,53 @@
             appRoot.classList.add('loaded');
         }
         
-        function initializeUser() {
-            setTimeout(hideLoader, 2800); 
-            
-            const userRef = database.ref(`users/${currentUser.id}`);
-            
-            // This listener will keep the UI in sync with the database in real-time
+        function setupRealtimeListener(userRef) {
             userRef.on('value', (snapshot) => {
-                // Ensure the local userData object has a default structure if the DB is sparse
                 const defaultData = { balance: 0, referrals: 0, adsWatched: {}, claimedTasks: {} };
                 userData = { ...defaultData, ...snapshot.val() };
-
+                
                 updateHeader();
                 const currentPage = document.querySelector('.nav-btn.active')?.dataset.page || 'home';
-                if(appConfig) renderPage(currentPage);
+                if (appConfig) {
+                    renderPage(currentPage);
+                }
             }, error => console.error("User data read error:", error));
-            
-            // This runs once to create or update the user's data structure
+        }
+
+        function initializeUser() {
+            const userRef = database.ref(`users/${currentUser.id}`);
+
             userRef.once('value').then(snapshot => {
-                if (!snapshot.exists()) {
-                    // Create a new user with the complete data structure
-                    userRef.set({
+                let initialData = snapshot.val();
+                let updates = {};
+
+                if (!initialData) {
+                    const newUser = {
                         first_name: currentUser.first_name || '',
                         balance: 0,
                         referrals: 0,
                         adsWatched: {},
                         claimedTasks: {}
-                    }).then(() => handleReferral());
-                } else {
-                    // For existing users, ensure all necessary fields exist
-                    const data = snapshot.val();
-                    const updates = {};
-                    if (data.balance === undefined) updates.balance = 0;
-                    if (data.referrals === undefined) updates.referrals = 0;
-                    if (data.adsWatched === undefined) updates.adsWatched = {};
-                    if (data.claimedTasks === undefined) updates.claimedTasks = {};
+                    };
+                    userRef.set(newUser).then(() => {
+                        setupRealtimeListener(userRef);
+                        handleReferral();
+                    });
+                    return;
+                }
 
-                    if (Object.keys(updates).length > 0) {
-                        userRef.update(updates);
-                    }
+                if (initialData.balance === undefined) updates.balance = 0;
+                if (initialData.referrals === undefined) updates.referrals = 0;
+                if (initialData.adsWatched === undefined) updates.adsWatched = {};
+                if (initialData.claimedTasks === undefined) updates.claimedTasks = {};
+
+                if (Object.keys(updates).length > 0) {
+                    userRef.update(updates).then(() => {
+                        setupRealtimeListener(userRef);
+                        handleReferral();
+                    });
+                } else {
+                    setupRealtimeListener(userRef);
                     handleReferral();
                 }
             });
@@ -284,6 +291,8 @@
             const userPhotoEl = document.getElementById('user-photo');
             userNameEl.textContent = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim() || 'User';
             userPhotoEl.src = currentUser.photo_url || `https://via.placeholder.com/50/eeeeee/cccccc?text=${(currentUser.first_name || 'U').charAt(0)}`;
+
+            setTimeout(hideLoader, 2800);
         }
 
         function handleReferral() {
@@ -297,7 +306,6 @@
                 newUserRef.child('referred_by').set(referrerId);
                 const referrerRef = database.ref(`users/${referrerId}`);
                 
-                // Correctly update the referrer's count
                 referrerRef.child('referrals').transaction(currentVal => (currentVal || 0) + 1);
                 
                 const referralBonus = appConfig.referralBonus || 0;
