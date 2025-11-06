@@ -73,7 +73,6 @@
         .withdraw-form input, .withdraw-form select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; background-color: #f8f9fa; }
         .withdraw-form button { margin-top: 10px; }
 
-        /* --- Loading Screen Styles --- */
         #loading-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #393943; display: flex; align-items: center; justify-content: center;
@@ -242,18 +241,41 @@
             setTimeout(hideLoader, 2800); 
             
             const userRef = database.ref(`users/${currentUser.id}`);
+            
+            // This listener will keep the UI in sync with the database in real-time
             userRef.on('value', (snapshot) => {
-                userData = snapshot.val() || { balance: 0, referrals: 0, adsWatched: {}, claimedTasks: {} };
+                // Ensure the local userData object has a default structure if the DB is sparse
+                const defaultData = { balance: 0, referrals: 0, adsWatched: {}, claimedTasks: {} };
+                userData = { ...defaultData, ...snapshot.val() };
+
                 updateHeader();
                 const currentPage = document.querySelector('.nav-btn.active')?.dataset.page || 'home';
                 if(appConfig) renderPage(currentPage);
             }, error => console.error("User data read error:", error));
             
+            // This runs once to create or update the user's data structure
             userRef.once('value').then(snapshot => {
                 if (!snapshot.exists()) {
-                    userRef.set({ balance: 0, referrals: 0, adsWatched: {}, claimedTasks: {}, first_name: currentUser.first_name || '' })
-                        .then(() => handleReferral());
+                    // Create a new user with the complete data structure
+                    userRef.set({
+                        first_name: currentUser.first_name || '',
+                        balance: 0,
+                        referrals: 0,
+                        adsWatched: {},
+                        claimedTasks: {}
+                    }).then(() => handleReferral());
                 } else {
+                    // For existing users, ensure all necessary fields exist
+                    const data = snapshot.val();
+                    const updates = {};
+                    if (data.balance === undefined) updates.balance = 0;
+                    if (data.referrals === undefined) updates.referrals = 0;
+                    if (data.adsWatched === undefined) updates.adsWatched = {};
+                    if (data.claimedTasks === undefined) updates.claimedTasks = {};
+
+                    if (Object.keys(updates).length > 0) {
+                        userRef.update(updates);
+                    }
                     handleReferral();
                 }
             });
@@ -274,6 +296,8 @@
                 if (snapshot.exists()) return;
                 newUserRef.child('referred_by').set(referrerId);
                 const referrerRef = database.ref(`users/${referrerId}`);
+                
+                // Correctly update the referrer's count
                 referrerRef.child('referrals').transaction(currentVal => (currentVal || 0) + 1);
                 
                 const referralBonus = appConfig.referralBonus || 0;
@@ -389,7 +413,7 @@
         }
 
         function handleClaimTask(taskId, reward, claimButton) {
-            if (!taskId || !reward) return;
+            if (!taskId || isNaN(reward)) return;
             const claimedTasksRef = database.ref(`users/${currentUser.id}/claimedTasks/${taskId}`);
             claimedTasksRef.once('value', snapshot => {
                 if (snapshot.exists()) {
@@ -415,13 +439,12 @@
             if (amount < wp.minAmount) { window.Telegram.WebApp.showAlert(`ন্যূনতম উইথড্র পরিমাণ ${wp.minAmount} টাকা।`); return; }
             if (amount > userBalance) { window.Telegram.WebApp.showAlert(`আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই।`); return; }
             
-            // --- DEDUCT BALANCE FROM USER ACCOUNT ---
             database.ref(`users/${currentUser.id}/balance`).transaction(currentBalance => {
                 return (currentBalance || 0) - amount;
             });
             
             window.Telegram.WebApp.showAlert('আপনার উইথড্র অনুরোধ সফলভাবে জমা দেওয়া হয়েছে। আপনার ব্যালেন্স আপডেট করা হয়েছে।');
-            amountInput.value = ''; // Clear input after submission
+            amountInput.value = '';
             document.getElementById('withdraw-account').value = '';
         }
         
@@ -465,7 +488,7 @@
         }
         
         function rewardUser(message, rewardAmount) {
-            if (rewardAmount > 0) {
+            if (!isNaN(rewardAmount) && rewardAmount > 0) {
                 database.ref(`users/${currentUser.id}/balance`).transaction((bal) => (bal || 0) + rewardAmount);
             }
             window.Telegram.WebApp.showAlert(`ধন্যবাদ! ${message}${rewardAmount > 0 ? ` আপনাকে ${rewardAmount} টাকা পুরস্কৃত করা হয়েছে।` : ''}`);
