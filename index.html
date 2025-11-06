@@ -215,7 +215,7 @@
         });
 
         function loadConfigAndUserData() {
-            database.ref('config').once('value', (snapshot) => {
+            database.ref('config').once('value').then(snapshot => {
                 if (snapshot.exists()) {
                     appConfig = snapshot.val();
                     initializeUser();
@@ -235,7 +235,7 @@
             loadingOverlay.classList.add('hidden');
             appRoot.classList.add('loaded');
         }
-        
+
         function setupRealtimeListener(userRef) {
             userRef.on('value', (snapshot) => {
                 const defaultData = { balance: 0, referrals: 0, adsWatched: {}, claimedTasks: {} };
@@ -253,10 +253,7 @@
             const userRef = database.ref(`users/${currentUser.id}`);
 
             userRef.once('value').then(snapshot => {
-                let initialData = snapshot.val();
-                let updates = {};
-
-                if (!initialData) {
+                if (!snapshot.exists()) {
                     const newUser = {
                         first_name: currentUser.first_name || '',
                         balance: 0,
@@ -268,22 +265,23 @@
                         setupRealtimeListener(userRef);
                         handleReferral();
                     });
-                    return;
-                }
+                } else {
+                    const data = snapshot.val();
+                    const updates = {};
+                    if (data.balance === undefined) updates.balance = 0;
+                    if (data.referrals === undefined) updates.referrals = 0;
+                    if (data.adsWatched === undefined) updates.adsWatched = {};
+                    if (data.claimedTasks === undefined) updates.claimedTasks = {};
 
-                if (initialData.balance === undefined) updates.balance = 0;
-                if (initialData.referrals === undefined) updates.referrals = 0;
-                if (initialData.adsWatched === undefined) updates.adsWatched = {};
-                if (initialData.claimedTasks === undefined) updates.claimedTasks = {};
-
-                if (Object.keys(updates).length > 0) {
-                    userRef.update(updates).then(() => {
+                    if (Object.keys(updates).length > 0) {
+                        userRef.update(updates).then(() => {
+                            setupRealtimeListener(userRef);
+                            handleReferral();
+                        });
+                    } else {
                         setupRealtimeListener(userRef);
                         handleReferral();
-                    });
-                } else {
-                    setupRealtimeListener(userRef);
-                    handleReferral();
+                    }
                 }
             });
 
